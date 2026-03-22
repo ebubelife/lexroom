@@ -61,9 +61,8 @@
                 autofocus
                 class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
                 style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"
-                placeholder="08012345678, +2348012345678, or 2348012345678"
+                placeholder="Enter your phone number"
             >
-            <p class="mt-1 text-xs" style="color: var(--text-secondary);">Supports all Nigerian networks (MTN, Airtel, Glo, 9mobile, etc.)</p>
             @error('phone')
                 <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
             @enderror
