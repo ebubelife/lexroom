@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Complete your LexRoom account — Google Sign Up')
-@section('description', 'Complete your LexRoom account setup after signing up with Google.')
+@section('title', 'Complete your FirstMediator account — Google Sign Up')
+@section('description', 'Complete your FirstMediator account setup after signing up with Google.')
 
 @section('content')
 <div class="p-8 rounded-xl shadow-lg" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
@@ -9,13 +9,13 @@
     <div class="text-center mb-8">
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-light"
             style="display: var(--logo-light-display, block);"
         >
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-dark"
             style="display: var(--logo-dark-display, none);"
         >
@@ -24,7 +24,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Complete your account</h1>
-        <p class="text-sm" style="color: var(--text-secondary);">Add your phone number to complete your LexRoom setup.</p>
+        <p class="text-sm" style="color: var(--text-secondary);">Add your phone number to complete your FirstMediator setup.</p>
     </div>
 
     <!-- Google Account Info -->

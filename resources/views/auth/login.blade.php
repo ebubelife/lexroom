@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Log in to LexRoom — AI-assisted dispute resolution')
-@section('description', 'Log in to your LexRoom account to manage your dispute sessions, evidence vault, and mediation reports.')
+@section('title', 'Log in to FirstMediator — AI-assisted dispute resolution')
+@section('description', 'Log in to your FirstMediator account to manage your dispute sessions, evidence vault, and mediation reports.')
 
 @section('content')
 <div class="p-8 rounded-xl shadow-lg" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
@@ -9,13 +9,13 @@
     <div class="text-center mb-8">
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-light"
             style="display: var(--logo-light-display, block);"
         >
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-dark"
             style="display: var(--logo-dark-display, none);"
         >
@@ -24,7 +24,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Welcome back</h1>
-        <p class="text-sm" style="color: var(--text-secondary);">Log in to continue to your LexRoom dashboard.</p>
+        <p class="text-sm" style="color: var(--text-secondary);">Log in to continue to your FirstMediator dashboard.</p>
     </div>
 
     <!-- Status Messages -->

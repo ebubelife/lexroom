@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Wallet & Credits — LexRoom')
+@section('title', 'Wallet & Credits — FirstMediator')
 @section('page-title', 'Wallet & Credits')
 
 @section('content')
@@ -9,14 +9,14 @@
         <div class="lg:col-span-2">
             <div class="p-8 rounded-xl" style="background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);">
                 <p class="text-sm font-medium text-white mb-2">Available Balance</p>
-                <h2 class="text-4xl font-bold text-white mb-4">₦{{ number_format($balance) }}</h2>
+                <h2 class="text-4xl font-bold text-white mb-4">${{ number_format($balance) }}</h2>
                 <p class="text-sm text-white opacity-90">Enough for {{ floor($balance / 7500) }} standard sessions</p>
             </div>
         </div>
         <div class="p-6 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
             <p class="text-sm font-medium mb-2" style="color: var(--text-secondary);">Quick Top-up</p>
             <button class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: var(--gold); color: var(--white);">
-                Add ₦10,000
+                Add $10,000
             </button>
             <button class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                 Custom Amount

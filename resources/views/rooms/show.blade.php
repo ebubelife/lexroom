@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Room Session — LexRoom')
+@section('title', 'Room Session — FirstMediator')
 @section('page-title', 'Live Session')
 
 @section('content')
@@ -62,7 +62,7 @@
                             </div>
                             <div class="p-2 md:p-3 rounded-lg rounded-tl-none" style="background-color: rgba(29, 78, 216, 0.1); border: 1px solid rgba(29, 78, 216, 0.2);">
                                 <p class="text-xs md:text-sm" style="color: var(--text-primary);">
-                                    I hired the defendant to build a website for my business. We agreed on ₦150,000 for the project...
+                                    I hired the defendant to build a website for my business. We agreed on $1,500 for the project...
                                 </p>
                                 <span class="text-xs" style="color: var(--text-secondary);">10:23 AM</span>
                             </div>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="p-2 md:p-3 rounded-lg rounded-tr-none" style="background-color: rgba(126, 34, 206, 0.1); border: 1px solid rgba(126, 34, 206, 0.2);">
                                 <p class="text-xs md:text-sm" style="color: var(--text-primary);">
-                                    That's not accurate. The agreement was for ₦100,000, and I completed all the work as specified...
+                                    That's not accurate. The agreement was for $1,000, and I completed all the work as specified...
                                 </p>
                                 <span class="text-xs" style="color: var(--text-secondary);">10:25 AM</span>
                             </div>
@@ -95,7 +95,7 @@
                                 <span class="text-sm md:text-base font-medium" style="color: var(--gold);">Lex AI Mediator</span>
                             </div>
                             <p class="text-sm md:text-base" style="color: var(--text-primary);">
-                                I notice a discrepancy regarding the agreed amount. Party A claims ₦150,000 while Party B states ₦100,000. 
+                                I notice a discrepancy regarding the agreed amount. Party A claims $1,500 while Party B states $1,000. 
                                 Do either of you have written documentation of the agreement? Please upload any contracts or communications to the Evidence Vault.
                             </p>
                         </div>

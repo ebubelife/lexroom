@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LexRoom — Dispute Resolution, Without the Legal Bill</title>
+<title>FirstMediator — Dispute Resolution, Without the Legal Bill</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
@@ -799,7 +799,7 @@ footer {
       </a>
       <a href="#how" class="btn-ghost" style="font-size:16px; padding: 14px 24px;">See how it works</a>
     </div>
-    <p class="hero-note reveal reveal-delay-4">Setup in 15 minutes · Starts from ₦4,500 · PDF report included</p>
+    <p class="hero-note reveal reveal-delay-4">Setup in 15 minutes · Starts from $45 · PDF report included</p>
 
     <!-- Browser Mockup -->
     <div class="hero-mockup reveal reveal-delay-4">
@@ -955,7 +955,7 @@ footer {
 <section id="trust">
   <div class="container">
     <div class="reveal" style="text-align:center">
-      <div class="section-label">Why LexRoom</div>
+      <div class="section-label">Why FirstMediator</div>
       <h2>Designed for the way disputes actually happen.</h2>
     </div>
     <div class="trust-grid">
@@ -964,7 +964,7 @@ footer {
         <div class="trust-label">Average time to set up and start a session</div>
       </div>
       <div class="trust-item reveal reveal-delay-2">
-        <div class="trust-stat">₦<span>4,500</span></div>
+        <div class="trust-stat">$<span>45</span></div>
         <div class="trust-label">Starting price — a fraction of any legal consultation</div>
       </div>
       <div class="trust-item reveal reveal-delay-3">
@@ -990,7 +990,7 @@ footer {
     <div class="pricing-grid">
       <div class="pricing-card reveal reveal-delay-1">
         <div class="pricing-name">Starter</div>
-        <div class="pricing-amount"><sup>₦</sup>4,500</div>
+        <div class="pricing-amount"><sup>$</sup>45</div>
         <div class="pricing-period">30 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -1004,7 +1004,7 @@ footer {
       <div class="pricing-card featured reveal reveal-delay-2">
         <div class="pricing-badge">Most popular</div>
         <div class="pricing-name">Standard</div>
-        <div class="pricing-amount"><sup>₦</sup>7,500</div>
+        <div class="pricing-amount"><sup>$</sup>75</div>
         <div class="pricing-period">60 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -1018,7 +1018,7 @@ footer {
       </div>
       <div class="pricing-card reveal reveal-delay-3">
         <div class="pricing-name">Extended</div>
-        <div class="pricing-amount"><sup>₦</sup>10,000</div>
+        <div class="pricing-amount"><sup>$</sup>100</div>
         <div class="pricing-period">90 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -1052,7 +1052,7 @@ footer {
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          <p>No. The Mediation Report is not a court order and does not constitute legal advice. However, it is a timestamped, formal document that can be used as supporting evidence if your dispute proceeds to court. LexRoom is a technology tool, not a law firm.</p>
+          <p>No. The Mediation Report is not a court order and does not constitute legal advice. However, it is a timestamped, formal document that can be used as supporting evidence if your dispute proceeds to court. FirstMediator is a technology tool, not a law firm.</p>
         </div>
       </div>
       <div class="faq-item">
@@ -1079,7 +1079,7 @@ footer {
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          <p>Yes. All session data is encrypted at rest (AES-256) and in transit (TLS 1.3). Evidence files are stored on secure cloud infrastructure. LexRoom complies with the Nigeria Data Protection Regulation (NDPR). Session transcripts are retained for 12 months then deleted.</p>
+          <p>Yes. All session data is encrypted at rest (AES-256) and in transit (TLS 1.3). Evidence files are stored on secure cloud infrastructure. FirstMediator complies with global data protection standards (GDPR, CCPA). Session transcripts are retained for 12 months then deleted.</p>
         </div>
       </div>
       <div class="faq-item">
@@ -1111,7 +1111,7 @@ footer {
           </svg>
         </a>
       </div>
-      <p class="hero-note reveal reveal-delay-4" style="margin-top:20px">No subscription · Starts from ₦4,500 · Setup in 15 minutes</p>
+      <p class="hero-note reveal reveal-delay-4" style="margin-top:20px">No subscription · Starts from $45 · Setup in 15 minutes</p>
     </div>
   </div>
 </section>
@@ -1159,7 +1159,7 @@ footer {
       <li><a href="#">Terms of Service</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
-    <p class="footer-copy">© 2026 LexRoom · Symbi Technologies Ltd</p>
+    <p class="footer-copy">© 2026 FirstMediator · Symbi Technologies Ltd</p>
   </div>
 </footer>
 

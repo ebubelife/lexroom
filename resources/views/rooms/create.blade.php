@@ -204,7 +204,7 @@
                                          :style="formData.duration === plan.duration ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                         <div class="text-center">
                                             <h3 class="font-bold text-lg mb-1" style="color: var(--text-primary);" x-text="plan.name"></h3>
-                                            <p class="text-2xl font-bold mb-2" style="color: var(--gold);" x-text="'₦' + plan.price.toLocaleString()"></p>
+                                            <p class="text-2xl font-bold mb-2" style="color: var(--gold);" x-text="'$' + plan.price.toLocaleString()"></p>
                                             <p class="text-sm" style="color: var(--text-secondary);" x-text="plan.duration + ' minutes'"></p>
                                         </div>
                                     </div>
@@ -228,7 +228,7 @@
                                      :style="formData.payment_type === 'full' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                     <h3 class="font-medium mb-1" style="color: var(--text-primary);">Pay Full Amount</h3>
                                     <p class="text-sm mb-2" style="color: var(--text-secondary);">You cover the entire session cost</p>
-                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'₦' + getSelectedPlanPrice().toLocaleString()"></p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'$' + getSelectedPlanPrice().toLocaleString()"></p>
                                 </div>
                             </label>
                             <label class="relative cursor-pointer">
@@ -242,7 +242,7 @@
                                      :style="formData.payment_type === 'split' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                     <h3 class="font-medium mb-1" style="color: var(--text-primary);">Split Payment</h3>
                                     <p class="text-sm mb-2" style="color: var(--text-secondary);">Both parties pay half each</p>
-                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'₦' + (getSelectedPlanPrice() / 2).toLocaleString() + ' each'"></p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'$' + (getSelectedPlanPrice() / 2).toLocaleString() + ' each'"></p>
                                 </div>
                             </label>
                         </div>
@@ -332,9 +332,9 @@ function roomCreation() {
             { value: 'mandarin', label: 'Mandarin' }
         ],
         plans: [
-            { name: 'Starter', duration: '30', price: 4500 },
-            { name: 'Standard', duration: '60', price: 7500 },
-            { name: 'Extended', duration: '90', price: 10000 }
+            { name: 'Starter', duration: '30', price: 45 },
+            { name: 'Standard', duration: '60', price: 75 },
+            { name: 'Extended', duration: '90', price: 100 }
         ],
         
         init() {

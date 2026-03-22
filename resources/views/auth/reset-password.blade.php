@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Create a new password — LexRoom')
-@section('description', 'Set a new secure password for your LexRoom account.')
+@section('title', 'Create a new password — FirstMediator')
+@section('description', 'Set a new secure password for your FirstMediator account.')
 
 @section('content')
 <div class="p-8 rounded-xl shadow-lg" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
@@ -9,13 +9,13 @@
     <div class="text-center mb-8">
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-light"
             style="display: var(--logo-light-display, block);"
         >
         <img 
             src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-            alt="LexRoom" 
+            alt="FirstMediator" 
             class="h-10 mx-auto logo-dark"
             style="display: var(--logo-dark-display, none);"
         >

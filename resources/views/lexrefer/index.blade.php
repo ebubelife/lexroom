@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'LexRefer — LexRoom')
+@section('title', 'LexRefer — FirstMediator')
 @section('page-title', 'LexRefer')
 
 @section('content')
@@ -10,7 +10,7 @@
             Refer & Earn
         </h1>
         <p class="text-base" style="color: var(--text-secondary);">
-            Invite friends and earn ₦1,000 credits for every successful referral
+            Invite friends and earn $1,000 credits for every successful referral
         </p>
     </div>
 
@@ -25,7 +25,7 @@
         </div>
         <div class="stats-card-gold">
             <p class="text-sm font-medium mb-2" style="color: var(--text-secondary);">Total Earned</p>
-            <p class="text-3xl font-bold" style="color: var(--gold);">₦{{ number_format($stats['earned']) }}</p>
+            <p class="text-3xl font-bold" style="color: var(--gold);">${{ number_format($stats['earned']) }}</p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                 Copy Link
             </button>
         </div>
-        <p class="text-sm text-white opacity-75 mt-3">Share this link with friends. When they sign up and complete their first session, you both earn ₦1,000 credits!</p>
+        <p class="text-sm text-white opacity-75 mt-3">Share this link with friends. When they sign up and complete their first session, you both earn $1,000 credits!</p>
     </div>
 
     <div>
