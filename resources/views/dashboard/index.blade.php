@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <!-- Welcome Header -->
-    <div class="mb-8 animate-fade-up">
+    <div class="mb-6 animate-fade-up">
         <h1 class="text-3xl font-serif mb-2" style="color: var(--text-primary);">
             Welcome back, {{ auth()->user()->first_name }} 👋
         </h1>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Stats Row -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
         <!-- Total Sessions -->
         <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-1">
             <div class="flex items-start justify-between mb-3">

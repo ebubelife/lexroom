@@ -352,7 +352,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="p-4 lg:p-6">
+        <main class="p-4 lg:p-6 pt-2 lg:pt-4">
             @yield('content')
         </main>
     </div>
