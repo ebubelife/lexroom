@@ -754,13 +754,13 @@ footer {
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display, none);"
+        style="height: 24px; display: var(--logo-dark-display);"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display, block);"
+        style="height: 24px; display: var(--logo-light-display);"
       >
      
     </a>
@@ -1148,13 +1148,13 @@ footer {
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display, block);"
+        style="height: 24px; display: var(--logo-light-display);"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display, none);"
+        style="height: 24px; display: var(--logo-dark-display);"
       >
     </a>
     <ul class="footer-links">
