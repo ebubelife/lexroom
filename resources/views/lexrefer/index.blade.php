@@ -78,7 +78,7 @@ function copyReferralLink() {
     const input = document.querySelector('input[readonly]');
     input.select();
     document.execCommand('copy');
-    alert('Referral link copied to clipboard!');
+    showToast('Referral link copied to clipboard!', 'success');
 }
 </script>
 @endsection

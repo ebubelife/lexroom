@@ -235,13 +235,13 @@ function liveRoom(roomUuid, token) {
             if (!file) return;
             
             if (file.size > 20 * 1024 * 1024) {
-                alert('File size must be less than 20MB');
+                showToast('File size must be less than 20MB', 'error');
                 return;
             }
             
             const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/png', 'image/jpeg', 'video/mp4'];
             if (!allowedTypes.includes(file.type)) {
-                alert('Invalid file type. Allowed: PDF, DOCX, PNG, JPG, MP4');
+                showToast('Invalid file type. Allowed: PDF, DOCX, PNG, JPG, MP4', 'error');
                 return;
             }
             
@@ -267,12 +267,13 @@ function liveRoom(roomUuid, token) {
                 if (data.success) {
                     this.files.push(data.file);
                     event.target.value = '';
+                    showToast('File uploaded successfully!', 'success');
                 } else {
-                    alert(data.message || 'Upload failed');
+                    showToast(data.message || 'Upload failed', 'error');
                 }
             } catch (error) {
                 console.error('Upload error:', error);
-                alert('Upload failed. Please try again.');
+                showToast('Upload failed. Please try again.', 'error');
             } finally {
                 this.uploading = false;
             }
@@ -295,12 +296,13 @@ function liveRoom(roomUuid, token) {
                 
                 if (data.success) {
                     this.files = this.files.filter(f => f.id !== fileId);
+                    showToast('File deleted successfully', 'success');
                 } else {
-                    alert(data.message || 'Delete failed');
+                    showToast(data.message || 'Delete failed', 'error');
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                alert('Delete failed. Please try again.');
+                showToast('Delete failed. Please try again.', 'error');
             }
         }
     }

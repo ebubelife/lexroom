@@ -343,15 +343,17 @@ function roomCreation() {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    // Redirect to payment page
-                    window.location.href = data.payment_url;
+                    showToast('Room created successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.payment_url;
+                    }, 1000);
                 } else {
-                    alert(data.message || 'An error occurred. Please try again.');
+                    showToast(data.message || 'An error occurred. Please try again.', 'error');
                     this.submitting = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                showToast('An error occurred. Please try again.', 'error');
                 this.submitting = false;
             }
         }
