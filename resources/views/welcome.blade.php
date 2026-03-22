@@ -35,6 +35,8 @@
   --radius-lg: 20px;
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   --shadow-lg: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --logo-light-display: block;
+  --logo-dark-display: none;
 }
 
 [data-theme="dark"] {
@@ -48,6 +50,8 @@
   --nav-bg: rgba(13,27,42,0.95);
   --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
   --shadow-lg: 0 4px 24px rgba(0,0,0,0.4);
+  --logo-light-display: none;
+  --logo-dark-display: block;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -722,6 +726,7 @@ footer {
 <nav>
   <div class="nav-inner">
     <a href="#" class="logo">
+      <!-- Original SVG Logo (commented out for potential future use)
       <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <line x1="16" y1="4" x2="16" y2="7" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="8" y1="12" x2="24" y2="12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
@@ -731,7 +736,29 @@ footer {
         <line x1="8" y1="7" x2="8" y2="12" stroke="#C9A84C" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
         <line x1="24" y1="7" x2="24" y2="12" stroke="#C9A84C" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
       </svg>
-      <span class="logo-text">Lex<span>Room</span></span>
+      -->
+      
+      <!-- FM Icon -->
+      <img 
+        src="{{ asset('assets/images/logos/FM_Icon.svg') }}" 
+        alt="LexRoom Icon" 
+        class="logo-icon"
+        style="width: 32px; height: 32px;"
+      >
+      
+      <!-- FM Logo Text -->
+      <img 
+        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+        alt="LexRoom" 
+        class="logo-text logo-light"
+        style="height: 24px; display: var(--logo-light-display, block);"
+      >
+      <img 
+        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+        alt="LexRoom" 
+        class="logo-text logo-dark"
+        style="height: 24px; display: var(--logo-dark-display, none);"
+      >
     </a>
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
@@ -1094,6 +1121,7 @@ footer {
 <footer>
   <div class="footer-inner">
     <a href="#" class="logo">
+      <!-- Original SVG Logo (commented out for potential future use)
       <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
         <line x1="16" y1="4" x2="16" y2="7" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="8" y1="12" x2="24" y2="12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
@@ -1101,7 +1129,29 @@ footer {
         <path d="M8 12 Q6 18 8 22 Q10 26 14 26" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
         <path d="M24 12 Q26 18 24 22 Q22 26 18 26" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
       </svg>
-      <span class="logo-text">Lex<span>Room</span></span>
+      -->
+      
+      <!-- FM Icon -->
+      <img 
+        src="{{ asset('assets/images/logos/FM_Icon.svg') }}" 
+        alt="LexRoom Icon" 
+        class="logo-icon"
+        style="width: 32px; height: 32px;"
+      >
+      
+      <!-- FM Logo Text -->
+      <img 
+        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+        alt="LexRoom" 
+        class="logo-text logo-light"
+        style="height: 24px; display: var(--logo-light-display, block);"
+      >
+      <img 
+        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+        alt="LexRoom" 
+        class="logo-text logo-dark"
+        style="height: 24px; display: var(--logo-dark-display, none);"
+      >
     </a>
     <ul class="footer-links">
       <li><a href="#">How it works</a></li>
