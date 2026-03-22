@@ -145,14 +145,14 @@
             background-color: rgba(255, 255, 255, 0.05);
         }
 
-        /* Stats cards improvements */
+        <!-- Stats cards improvements */
         .stats-card {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
-            padding: 1.25rem;
+            padding: 1rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            min-height: 120px;
+            min-height: 100px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -352,7 +352,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="p-4 lg:p-6 pt-2 lg:pt-4">
+        <main class="px-4 lg:px-6 py-2">
             @yield('content')
         </main>
     </div>
