@@ -1172,6 +1172,10 @@ function toggleTheme() {
   const isDark = html.getAttribute('data-theme') === 'dark';
   html.setAttribute('data-theme', isDark ? 'light' : 'dark');
   document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+  
+  // Update logo display
+  html.style.setProperty('--logo-light-display', isDark ? 'block' : 'none');
+  html.style.setProperty('--logo-dark-display', isDark ? 'none' : 'block');
 }
 
 // Scroll reveal
