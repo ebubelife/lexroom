@@ -718,6 +718,9 @@ footer {
   .mockup-content { grid-template-columns: 1fr; }
   .mockup-sidebar { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
+  
+  /* Hide login button on mobile, show only Create a Room */
+  .btn-ghost { display: none !important; }
 }
 </style>
 </head>
