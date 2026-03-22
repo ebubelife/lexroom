@@ -18,7 +18,7 @@
     <!-- Stats Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Sessions -->
-        <div class="p-6 rounded-xl hover-lift animate-fade-up animate-fade-up-delay-1" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-1">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
                     <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Active Sessions -->
-        <div class="p-6 rounded-xl hover-lift animate-fade-up animate-fade-up-delay-2" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-2">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Resolved -->
-        <div class="p-6 rounded-xl hover-lift animate-fade-up animate-fade-up-delay-3" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-3">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Credits Balance -->
-        <div class="p-6 rounded-xl hover-lift animate-fade-up" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); animation-delay: 0.4s;">
+        <div class="stats-card hover-lift animate-fade-up" style="animation-delay: 0.4s;">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
                     <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-2xl font-bold" style="color: var(--text-primary);">₦{{ number_format($stats['credits'], 0) }}</p>
+                    <p class="text-2xl font-bold" style="color: var(--text-primary);">₦{{ number_format($stats['credits']) }}</p>
                     <p class="text-sm" style="color: var(--text-secondary);">Credits Balance</p>
                 </div>
             </div>

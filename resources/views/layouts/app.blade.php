@@ -124,23 +124,43 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        /* Sidebar active link */
+        /* Sidebar improvements */
         .nav-link-active {
             border-left: 3px solid var(--gold);
             background-color: rgba(201, 168, 76, 0.1);
-            color: var(--gold);
+            color: var(--gold) !important;
         }
 
         .nav-link {
             transition: all 0.2s ease;
+            color: var(--text-secondary);
         }
 
         .nav-link:hover {
             background-color: rgba(107, 107, 104, 0.1);
+            color: var(--text-primary);
         }
 
         [data-theme="dark"] .nav-link:hover {
             background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Stats cards improvements */
+        .stats-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .stats-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
     </style>
 
@@ -290,7 +310,7 @@
             <div class="flex items-center space-x-4">
                 <!-- Wallet Credits -->
                 <a href="{{ route('wallet.index') }}" class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: var(--gold); color: var(--white);">
-                    ₦{{ number_format(auth()->user()->wallet?->credits_balance ?? 0, 0) }} credits
+                    ₦{{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
                 </a>
 
                 <!-- Create Room Button -->
