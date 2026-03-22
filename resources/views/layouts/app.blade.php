@@ -351,7 +351,7 @@
 
         <!-- User Info -->
         <div class="flex-shrink-0 p-4" style="border-top: 1px solid var(--border-color);">
-            <div class="flex items-center">
+            <a href="{{ route('settings.index') }}" class="flex items-center hover:opacity-80 transition-opacity">
                 @if(auth()->user()->profile_image_url)
                     <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover border-2" style="border-color: var(--gold);">
                 @else
@@ -363,15 +363,16 @@
                     <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ auth()->user()->name }}</p>
                     <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth()->user()->email }}</p>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="ml-2">
-                    @csrf
-                    <button type="submit" class="p-1 rounded hover:bg-opacity-10 hover:bg-gray-500" title="Logout">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                        </svg>
-                    </button>
-                </form>
-            </div>
+            </a>
+            <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                @csrf
+                <button type="submit" class="w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-red-500" style="color: #DC2626; border: 1px solid var(--border-color);">
+                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 
@@ -427,13 +428,15 @@
                 </button>
 
                 <!-- User Avatar -->
-                @if(auth()->user()->profile_image_url)
-                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2" style="border-color: var(--gold);">
-                @else
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
-                        {{ auth()->user()->initials }}
-                    </div>
-                @endif
+                <a href="{{ route('settings.index') }}" class="hover:opacity-80 transition-opacity" title="Profile Settings">
+                    @if(auth()->user()->profile_image_url)
+                        <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                    @else
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
+                            {{ auth()->user()->initials }}
+                        </div>
+                    @endif
+                </a>
             </div>
         </header>
 
