@@ -35,8 +35,8 @@
   --radius-lg: 20px;
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   --shadow-lg: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
-  --logo-light-display: block;
-  --logo-dark-display: none;
+  --logo-light-display: block !important;
+  --logo-dark-display: none !important;
 }
 
 [data-theme="dark"] {
@@ -50,8 +50,8 @@
   --nav-bg: rgba(13,27,42,0.95);
   --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
   --shadow-lg: 0 4px 24px rgba(0,0,0,0.4);
-  --logo-light-display: none;
-  --logo-dark-display: block;
+  --logo-light-display: none !important;
+  --logo-dark-display: block !important;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -754,13 +754,13 @@ footer {
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display);"
+        style="height: 24px; display: var(--logo-dark-display) !important;"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display);"
+        style="height: 24px; display: var(--logo-light-display) !important;"
       >
      
     </a>
@@ -1148,13 +1148,13 @@ footer {
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display);"
+        style="height: 24px; display: var(--logo-light-display) !important;"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display);"
+        style="height: 24px; display: var(--logo-dark-display) !important;"
       >
     </a>
     <ul class="footer-links">
