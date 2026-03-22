@@ -69,13 +69,13 @@ class DashboardController extends Controller
 
         // Rooms where user is Party A
         $myRooms = Room::where('party_a_id', $user->id)
-            ->with(['partyB', 'billing'])
+            ->with(['partyB'])
             ->latest()
             ->paginate(10);
 
         // Rooms where user is Party B
         $invitedRooms = Room::where('party_b_id', $user->id)
-            ->with(['partyA', 'billing'])
+            ->with(['partyA'])
             ->latest()
             ->paginate(10);
 
