@@ -721,6 +721,9 @@ footer {
   
   /* Hide login button on mobile, show only Create a Room */
   .btn-ghost { display: none !important; }
+  
+  /* Ensure logo images display on mobile */
+  .logo img { display: block !important; max-width: 150px; height: auto; }
 }
 </style>
 </head>
