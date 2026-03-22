@@ -492,8 +492,8 @@
                 moonIcon.classList.toggle('hidden', !isDark);
                 
                 // Update logo display (Light logo for light mode, Dark logo for dark mode)
-                html.style.setProperty('--logo-light-display', isDark ? 'none' : 'block');
-                html.style.setProperty('--logo-dark-display', isDark ? 'block' : 'none');
+                html.style.setProperty('--logo-light-display', isDark ? 'block' : 'none');
+                html.style.setProperty('--logo-dark-display', isDark ? 'none' : 'block');
             }
 
             themeToggle.addEventListener('click', function() {
