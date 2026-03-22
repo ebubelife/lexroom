@@ -16,64 +16,64 @@
     </div>
 
     <!-- Stats Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
         <!-- Total Sessions -->
         <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-1">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
-                    <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start justify-between mb-3">
+                <div class="p-2.5 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
+                    <svg class="w-5 h-5" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10a2 2 0 002 2h4a2 2 0 002-2V11m-6 0V9a2 2 0 012-2h4a2 2 0 012 2v2m-6 0h8"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold" style="color: var(--text-primary);">{{ $stats['total'] }}</p>
-                    <p class="text-sm" style="color: var(--text-secondary);">Total Sessions</p>
-                </div>
+            </div>
+            <div>
+                <p class="text-3xl font-bold mb-1" style="color: var(--text-primary);">{{ $stats['total'] }}</p>
+                <p class="text-sm font-medium" style="color: var(--text-secondary);">Total Sessions</p>
             </div>
         </div>
 
         <!-- Active Sessions -->
         <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-2">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start justify-between mb-3">
+                <div class="p-2.5 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold" style="color: var(--text-primary);">{{ $stats['active'] }}</p>
-                    <p class="text-sm" style="color: var(--text-secondary);">Active Sessions</p>
-                </div>
+            </div>
+            <div>
+                <p class="text-3xl font-bold mb-1" style="color: var(--text-primary);">{{ $stats['active'] }}</p>
+                <p class="text-sm font-medium" style="color: var(--text-secondary);">Active Sessions</p>
             </div>
         </div>
 
         <!-- Resolved -->
         <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-3">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start justify-between mb-3">
+                <div class="p-2.5 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold" style="color: var(--text-primary);">{{ $stats['resolved'] }}</p>
-                    <p class="text-sm" style="color: var(--text-secondary);">Resolved</p>
-                </div>
+            </div>
+            <div>
+                <p class="text-3xl font-bold mb-1" style="color: var(--text-primary);">{{ $stats['resolved'] }}</p>
+                <p class="text-sm font-medium" style="color: var(--text-secondary);">Resolved</p>
             </div>
         </div>
 
         <!-- Credits Balance -->
         <div class="stats-card hover-lift animate-fade-up" style="animation-delay: 0.4s;">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
-                    <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start justify-between mb-3">
+                <div class="p-2.5 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
+                    <svg class="w-5 h-5" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold" style="color: var(--text-primary);">₦{{ number_format($stats['credits']) }}</p>
-                    <p class="text-sm" style="color: var(--text-secondary);">Credits Balance</p>
-                </div>
+            </div>
+            <div>
+                <p class="text-3xl font-bold mb-1" style="color: var(--text-primary);">₦{{ number_format($stats['credits']) }}</p>
+                <p class="text-sm font-medium" style="color: var(--text-secondary);">Credits Balance</p>
             </div>
         </div>
     </div>

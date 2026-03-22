@@ -150,8 +150,12 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
-            padding: 1.5rem;
+            padding: 1.25rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .stats-card:hover {
@@ -190,12 +194,12 @@
 
     <!-- Sidebar -->
     <div 
-        class="fixed inset-y-0 left-0 z-50 w-60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0"
+        class="fixed inset-y-0 left-0 z-50 w-60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col"
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
         style="background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);"
     >
         <!-- Logo -->
-        <div class="flex items-center justify-center h-16 px-6" style="border-bottom: 1px solid var(--border-color);">
+        <div class="flex items-center justify-center h-16 px-6 flex-shrink-0" style="border-bottom: 1px solid var(--border-color);">
             <a href="{{ route('dashboard') }}" class="flex items-center">
                 <img 
                     src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
@@ -213,7 +217,7 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="mt-6 px-3">
+        <nav class="flex-1 mt-6 px-3 overflow-y-auto">
             <div class="space-y-1">
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
@@ -268,7 +272,7 @@
         </nav>
 
         <!-- User Info -->
-        <div class="absolute bottom-0 left-0 right-0 p-4" style="border-top: 1px solid var(--border-color);">
+        <div class="flex-shrink-0 p-4" style="border-top: 1px solid var(--border-color);">
             <div class="flex items-center">
                 <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background-color: var(--gold);">
                     {{ auth()->user()->initials }}
@@ -292,12 +296,12 @@
     <!-- Main Content -->
     <div class="lg:pl-60">
         <!-- Top Bar -->
-        <header class="h-16 flex items-center justify-between px-6" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+        <header class="h-16 flex items-center justify-between px-4 lg:px-6" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
             <!-- Left: Mobile menu + Page title -->
             <div class="flex items-center">
                 <button 
                     @click="sidebarOpen = true"
-                    class="lg:hidden p-2 rounded-md hover:bg-opacity-10 hover:bg-gray-500 mr-4"
+                    class="lg:hidden p-2 rounded-md hover:bg-opacity-10 hover:bg-gray-500 mr-3"
                 >
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -307,15 +311,22 @@
             </div>
 
             <!-- Right: Wallet + Create Room + Theme + User -->
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 lg:space-x-4">
                 <!-- Wallet Credits -->
-                <a href="{{ route('wallet.index') }}" class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: var(--gold); color: var(--white);">
+                <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-full text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                     ₦{{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
                 </a>
 
                 <!-- Create Room Button -->
-                <a href="#" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                <a href="#" class="hidden sm:flex px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                     Create a Room
+                </a>
+
+                <!-- Mobile Create Room Button -->
+                <a href="#" class="sm:hidden p-2 rounded-lg transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);" title="Create Room">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
                 </a>
 
                 <!-- Theme Toggle -->
@@ -341,7 +352,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="p-6">
+        <main class="p-4 lg:p-6">
             @yield('content')
         </main>
     </div>
