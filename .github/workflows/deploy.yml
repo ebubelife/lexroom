@@ -35,7 +35,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./
-        server-dir: /aidev.kodeblooded.com.ng/
+        server-dir: ./
         exclude: |
           **/.git*
           **/.git*/**

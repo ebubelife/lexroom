@@ -1,14 +1,23 @@
-# Redirect to public folder
+# Laravel Root .htaccess
+# Redirect all requests to public folder
+
 RewriteEngine On
+
+# Handle Angular and Vue.js client-side routing
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(.*)$ /public/$1 [L,QSA]
+
+# If request is for root, redirect to public
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^(.*)$ /public/ [L,QSA]
 
 # Security headers
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options nosniff
     Header always set X-Frame-Options DENY
     Header always set X-XSS-Protection "1; mode=block"
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
@@ -29,6 +38,11 @@ RewriteRule ^(.*)$ /public/$1 [L,QSA]
 </Files>
 
 <Files "package.json">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
     Order allow,deny
     Deny from all
 </Files>
