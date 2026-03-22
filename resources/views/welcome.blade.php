@@ -180,6 +180,7 @@ h2 { font-size: clamp(32px, 4vw, 52px); font-weight: 400; }
 h3 { font-size: 22px; font-weight: 400; }
 p { color: var(--text-secondary); line-height: 1.7; }
 
+
 /* ── HERO ── */
 #hero {
   padding-top: 160px;
