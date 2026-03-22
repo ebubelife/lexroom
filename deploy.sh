@@ -8,6 +8,12 @@ echo "🚀 Setting up LexRoom on cPanel..."
 # Navigate to project directory
 cd /home/kodebloo/aidev.kodeblooded.com.ng
 
+# Copy production environment file if it exists
+if [ -f ".env.production" ]; then
+    echo "📝 Setting up production environment..."
+    cp .env.production .env
+fi
+
 # Check if composer exists
 if ! command -v composer &> /dev/null; then
     echo "❌ Composer not found. Please install Composer first."
@@ -57,6 +63,7 @@ echo "🌐 Your site should now be available at: https://aidev.kodeblooded.com.n
 echo ""
 echo "📋 Next steps:"
 echo "   1. Update .env with your database credentials"
-echo "   2. Update .env with your Google OAuth credentials"
+echo "   2. Update .env with your Google OAuth credentials:"
+echo "      GOOGLE_REDIRECT_URI=https://aidev.kodeblooded.com.ng/auth/google/callback"
 echo "   3. Test the site functionality"
 echo "   4. Set up your domain to point to the public folder"
