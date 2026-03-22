@@ -61,27 +61,19 @@ class RoomController extends Controller
         // Store Party B email temporarily (we'll create user account later if they sign up)
         $room->update(['party_b_email' => $validated['party_b_email']]);
 
-        // Calculate amount based on payment type
-        $prices = [
-            '30' => 4500,
-            '60' => 7500,
-            '90' => 10000,
-        ];
-
-        $totalAmount = $prices[$validated['duration']];
-        $amountToPay = $validated['payment_type'] === 'split' ? $totalAmount / 2 : $totalAmount;
-
-        // Initialize Paystack payment
-        $paystackData = $this->initializePaystackPayment($room, $amountToPay);
-
         // Send invitation email to Party B
-        Mail::to($validated['party_b_email'])->queue(new RoomInvitation($room));
+        try {
+            Mail::to($validated['party_b_email'])->queue(new RoomInvitation($room));
+        } catch (\Exception $e) {
+            // Continue even if email fails (for demo)
+        }
 
+        // For demo: bypass payment and go directly to room
         return response()->json([
             'success' => true,
             'room_id' => $room->id,
-            'payment_url' => $paystackData['authorization_url'],
-            'message' => 'Room created successfully. Redirecting to payment...'
+            'payment_url' => route('rooms.show', $room->uuid),
+            'message' => 'Room created successfully!'
         ]);
     }
 
