@@ -41,4 +41,15 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL').'/auth/google/callback'),
     ],
 
+    'claude' => [
+        'api_key' => env('CLAUDE_API_KEY'),
+        'model' => env('CLAUDE_MODEL', 'claude-sonnet-4-20250514'),
+    ],
+
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+    ],
+
 ];

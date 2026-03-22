@@ -75,7 +75,7 @@ class RoomController extends Controller
         $paystackData = $this->initializePaystackPayment($room, $amountToPay);
 
         // Send invitation email to Party B
-        // Mail::to($validated['party_b_email'])->queue(new RoomInvitation($room));
+        Mail::to($validated['party_b_email'])->queue(new RoomInvitation($room));
 
         return response()->json([
             'success' => true,

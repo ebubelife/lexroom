@@ -53,11 +53,17 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/rooms', [\App\Http\Controllers\RoomController::class, 'index'])->name('rooms.index');
     Route::get('/rooms/create', [\App\Http\Controllers\RoomController::class, 'create'])->name('rooms.create');
     Route::post('/rooms', [\App\Http\Controllers\RoomController::class, 'store'])->name('rooms.store');
-    Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
+    
+    // Settings routes
+    Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
+    Route::put('/settings', [\App\Http\Controllers\ProfileController::class, 'update'])->name('settings.update');
+    Route::put('/settings/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('settings.password');
     
     // Stub routes for sidebar links
     Route::get('/reports', fn() => view('reports.index'))->name('reports.index');
     Route::get('/wallet', fn() => view('wallet.index'))->name('wallet.index');
     Route::get('/lexrefer', fn() => view('lexrefer.index'))->name('lexrefer.index');
-    Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
 });
+
+// Room access (guest or authenticated)
+Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');

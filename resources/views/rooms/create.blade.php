@@ -5,7 +5,8 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 lg:p-8"
+    <div class="rounded-xl shadow-sm border p-6 lg:p-8"
+         style="background-color: var(--bg-secondary); border-color: var(--border-color);"
          x-data="roomCreation()"
          x-init="init()">
         
@@ -19,8 +20,8 @@
                                  :class="currentStep > index ? 'bg-gold text-white' : currentStep === index ? 'bg-gold text-white' : 'bg-gray-200 text-gray-600'">
                                 <span x-text="index + 1"></span>
                             </div>
-                            <span class="text-xs mt-2 text-center" 
-                                  :class="currentStep >= index ? 'text-gray-900 font-medium' : 'text-gray-500'"
+                            <span class="text-xs mt-2 text-center transition-colors" 
+                                  :style="currentStep >= index ? 'color: var(--gold); font-weight: 600;' : 'color: var(--text-secondary);'"
                                   x-text="stepName"></span>
                         </div>
                         <div x-show="index < steps.length - 1" 
@@ -46,7 +47,8 @@
                                    x-model="formData.category"
                                    class="sr-only peer">
                             <div class="p-4 rounded-lg border-2 transition-all peer-checked:border-gold peer-checked:bg-gold/5"
-                                 :class="formData.category === cat.value ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'">
+                                 style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                                 :style="formData.category === cat.value ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                 <div class="flex items-start">
                                     <div class="p-2 rounded-lg mr-3" :style="`background-color: ${cat.color}20`">
                                         <svg class="w-6 h-6" :style="`color: ${cat.color}`" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,8 +56,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="font-medium mb-1" x-text="cat.label"></h3>
-                                        <p class="text-xs text-gray-600" x-text="cat.description"></p>
+                                        <h3 class="font-medium mb-1" style="color: var(--text-primary);" x-text="cat.label"></h3>
+                                        <p class="text-xs" style="color: var(--text-secondary);" x-text="cat.description"></p>
                                     </div>
                                 </div>
                             </div>
@@ -74,7 +76,8 @@
                     <div>
                         <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Jurisdiction</label>
                         <select x-model="formData.jurisdiction" 
-                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold focus:border-gold">
+                                class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
+                                style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                             <option value="">Select jurisdiction...</option>
                             <optgroup label="Nigeria">
                                 <template x-for="state in nigerianStates" :key="state">
@@ -100,9 +103,10 @@
                                            :value="lang.value"
                                            x-model="formData.language"
                                            class="sr-only peer">
-                                    <div class="p-3 rounded-lg border-2 text-center transition-all peer-checked:border-gold peer-checked:bg-gold/5"
-                                         :class="formData.language === lang.value ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'">
-                                        <span class="font-medium" x-text="lang.label"></span>
+                                    <div class="p-3 rounded-lg border-2 text-center transition-all"
+                                         style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                                         :style="formData.language === lang.value ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
+                                        <span class="font-medium" style="color: var(--text-primary);" x-text="lang.label"></span>
                                     </div>
                                 </label>
                             </template>
@@ -121,8 +125,9 @@
                     <textarea x-model="formData.case_summary"
                               rows="8"
                               placeholder="Describe your dispute in detail. Include key facts, dates, and what you're seeking to resolve..."
-                              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold focus:border-gold resize-none"></textarea>
-                    <p class="text-xs text-gray-500 mt-2">
+                              class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold resize-none"
+                              style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);"></textarea>
+                    <p class="text-xs mt-2" style="color: var(--text-secondary);">
                         <span x-text="formData.case_summary.length"></span> / 2000 characters
                     </p>
                 </div>
@@ -145,12 +150,13 @@
                                            :value="plan.duration"
                                            x-model="formData.duration"
                                            class="sr-only peer">
-                                    <div class="p-5 rounded-lg border-2 transition-all peer-checked:border-gold peer-checked:bg-gold/5"
-                                         :class="formData.duration === plan.duration ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'">
+                                    <div class="p-5 rounded-lg border-2 transition-all"
+                                         style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                                         :style="formData.duration === plan.duration ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                         <div class="text-center">
-                                            <h3 class="font-bold text-lg mb-1" x-text="plan.name"></h3>
-                                            <p class="text-2xl font-bold text-gold mb-2" x-text="'₦' + plan.price.toLocaleString()"></p>
-                                            <p class="text-sm text-gray-600" x-text="plan.duration + ' minutes'"></p>
+                                            <h3 class="font-bold text-lg mb-1" style="color: var(--text-primary);" x-text="plan.name"></h3>
+                                            <p class="text-2xl font-bold mb-2" style="color: var(--gold);" x-text="'₦' + plan.price.toLocaleString()"></p>
+                                            <p class="text-sm" style="color: var(--text-secondary);" x-text="plan.duration + ' minutes'"></p>
                                         </div>
                                     </div>
                                 </label>
@@ -168,11 +174,12 @@
                                        value="full"
                                        x-model="formData.payment_type"
                                        class="sr-only peer">
-                                <div class="p-4 rounded-lg border-2 transition-all peer-checked:border-gold peer-checked:bg-gold/5"
-                                     :class="formData.payment_type === 'full' ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'">
-                                    <h3 class="font-medium mb-1">Pay Full Amount</h3>
-                                    <p class="text-sm text-gray-600">You cover the entire session cost</p>
-                                    <p class="text-lg font-bold text-gold mt-2" x-text="'₦' + getSelectedPlanPrice().toLocaleString()"></p>
+                                <div class="p-4 rounded-lg border-2 transition-all"
+                                     style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                                     :style="formData.payment_type === 'full' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
+                                    <h3 class="font-medium mb-1" style="color: var(--text-primary);">Pay Full Amount</h3>
+                                    <p class="text-sm mb-2" style="color: var(--text-secondary);">You cover the entire session cost</p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'₦' + getSelectedPlanPrice().toLocaleString()"></p>
                                 </div>
                             </label>
                             <label class="relative cursor-pointer">
@@ -181,11 +188,12 @@
                                        value="split"
                                        x-model="formData.payment_type"
                                        class="sr-only peer">
-                                <div class="p-4 rounded-lg border-2 transition-all peer-checked:border-gold peer-checked:bg-gold/5"
-                                     :class="formData.payment_type === 'split' ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'">
-                                    <h3 class="font-medium mb-1">Split Payment</h3>
-                                    <p class="text-sm text-gray-600">Both parties pay half each</p>
-                                    <p class="text-lg font-bold text-gold mt-2" x-text="'₦' + (getSelectedPlanPrice() / 2).toLocaleString() + ' each'"></p>
+                                <div class="p-4 rounded-lg border-2 transition-all"
+                                     style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                                     :style="formData.payment_type === 'split' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
+                                    <h3 class="font-medium mb-1" style="color: var(--text-primary);">Split Payment</h3>
+                                    <p class="text-sm mb-2" style="color: var(--text-secondary);">Both parties pay half each</p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'₦' + (getSelectedPlanPrice() / 2).toLocaleString() + ' each'"></p>
                                 </div>
                             </label>
                         </div>
@@ -197,18 +205,22 @@
                         <input type="email" 
                                x-model="formData.party_b_email"
                                placeholder="other.party@example.com"
-                               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold focus:border-gold">
-                        <p class="text-xs text-gray-500 mt-1">We'll send them an invitation link to join the session</p>
+                               class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
+                               style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
+                        <p class="text-xs mt-1" style="color: var(--text-secondary);">We'll send them an invitation link to join the session</p>
                     </div>
                 </div>
             </div>
 
             <!-- Navigation Buttons -->
-            <div class="flex justify-between mt-8 pt-6 border-t border-gray-200">
+            <div class="flex justify-between mt-8 pt-6 border-t" style="border-color: var(--border-color);">
                 <button type="button"
                         @click="previousStep"
                         x-show="currentStep > 0"
-                        class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                        class="px-6 py-2 rounded-lg border transition-colors"
+                        style="border-color: var(--border-color); color: var(--text-primary); background-color: var(--bg-primary);"
+                        onmouseover="this.style.backgroundColor='var(--bg-secondary)'"
+                        onmouseout="this.style.backgroundColor='var(--bg-primary)'">
                     Previous
                 </button>
                 <div x-show="currentStep === 0"></div>
