@@ -1,59 +1,246 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LexRoom
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**AI-assisted legal dispute mediation SaaS platform**
 
-## About Laravel
+LexRoom is a modern web application that helps resolve legal disputes through AI-assisted mediation, eliminating the need for expensive lawyers and lengthy court processes.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Authentication & Security
+- ✅ Complete user registration and login system
+- ✅ Google OAuth integration
+- ✅ Email and phone OTP verification
+- ✅ Password reset functionality
+- ✅ Nigerian phone number validation (all formats)
+- ✅ Secure session management
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### User Experience
+- ✅ Responsive dashboard with sidebar navigation
+- ✅ Light/dark theme switching
+- ✅ Mobile-first responsive design
+- ✅ Smooth animations and transitions
+- ✅ Professional brand styling
 
-## Learning Laravel
+### Core Platform
+- ✅ Room management system for dispute sessions
+- ✅ User wallet and credits system
+- ✅ Multi-party dispute handling
+- ✅ Status tracking and reporting
+- ✅ Evidence management (planned)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🛠 Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Backend:** Laravel 12
+- **Frontend:** Blade Templates + Alpine.js
+- **Styling:** Tailwind CSS
+- **Database:** MySQL
+- **Cache:** Redis
+- **Authentication:** Laravel Socialite
+- **Build Tool:** Vite
+- **Fonts:** Instrument Serif + DM Sans
 
-## Laravel Sponsors
+## 📱 Phone Number Support
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+LexRoom accepts all Nigerian phone number formats:
+- `08012345678` (Standard format)
+- `+2348012345678` (International with +)
+- `2348012345678` (International without +)
+- `8012345678` (Missing leading 0)
 
-### Premium Partners
+Supports all Nigerian networks: MTN, Airtel, Glo, 9mobile, NTEL, Visafone, and more.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🎨 Design System
 
-## Contributing
+### Colors
+- **Navy:** `#0D1B2A` (Primary)
+- **Gold:** `#C9A84C` (Accent)
+- **Gold Light:** `#E8C96A`
+- **Gold Pale:** `#F5EDD6`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Typography
+- **Display Font:** Instrument Serif (headings, brand)
+- **Body Font:** DM Sans (text, UI elements)
 
-## Code of Conduct
+## 🚀 Getting Started
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Prerequisites
+- PHP 8.2+
+- Composer
+- Node.js & npm
+- MySQL
+- Redis (optional)
 
-## Security Vulnerabilities
+### Installation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ebubelife/lexroom.git
+   cd lexroom
+   ```
 
-## License
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. **Configure your `.env` file**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=lexroom
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+
+   # Google OAuth (optional)
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
+   ```
+
+6. **Run migrations**
+   ```bash
+   php artisan migrate
+   ```
+
+7. **Build assets**
+   ```bash
+   npm run build
+   # or for development
+   npm run dev
+   ```
+
+8. **Start the server**
+   ```bash
+   php artisan serve
+   ```
+
+Visit `http://localhost:8000` to see the application.
+
+## 🔐 Authentication Flow
+
+### Registration
+1. User registers with name, email, phone, and password
+2. Redirected to verification page
+3. Must verify both email and phone before dashboard access
+4. Phone OTP: `111111` (testing mode)
+5. Email OTP: Generated and logged
+
+### Google OAuth
+1. Users can sign up/login with Google
+2. Email is pre-verified for Google users
+3. Still requires phone verification
+4. Seamless account linking for existing users
+
+## 📊 Dashboard Features
+
+- **Stats Overview:** Total sessions, active sessions, resolved disputes, credits balance
+- **Active Sessions:** Quick access to sessions needing attention
+- **Room Management:** Tabbed interface for "My Rooms" and "Invited" sessions
+- **Navigation:** Sidebar with Dashboard, Rooms, Reports, Wallet, LexRefer, Settings
+- **Theme Toggle:** Light/dark mode with persistent preference
+
+## 🏗 Project Structure
+
+```
+app/
+├── Helpers/
+│   └── PhoneHelper.php          # Nigerian phone validation
+├── Http/Controllers/
+│   ├── AuthController.php       # Authentication logic
+│   ├── DashboardController.php  # Dashboard data
+│   └── OtpController.php        # OTP verification
+├── Models/
+│   ├── User.php                 # User model with verification
+│   ├── Room.php                 # Dispute room model
+│   ├── Wallet.php               # User wallet system
+│   └── Otp.php                  # OTP verification codes
+└── Rules/
+    └── NigerianPhone.php        # Phone validation rule
+
+resources/views/
+├── auth/                        # Authentication pages
+├── dashboard/                   # Dashboard views
+└── layouts/                     # Layout templates
+```
+
+## 🧪 Testing
+
+### Phone Validation Testing
+The system includes comprehensive testing for Nigerian phone numbers:
+
+```bash
+php artisan tinker
+```
+
+```php
+use App\Helpers\PhoneHelper;
+
+// Test various formats
+$numbers = ['08012345678', '+2348012345678', '2348012345678', '8012345678'];
+foreach ($numbers as $number) {
+    echo $number . ' -> ' . PhoneHelper::validateAndNormalize($number) . PHP_EOL;
+}
+```
+
+## 🔒 Security Features
+
+- CSRF protection on all forms
+- Rate limiting on login attempts
+- Secure password hashing
+- Email verification
+- Phone number verification
+- Session management
+- Input validation and sanitization
+
+## 🌟 Upcoming Features
+
+- [ ] AI-powered dispute resolution
+- [ ] Real-time chat system
+- [ ] Evidence file uploads
+- [ ] PDF report generation
+- [ ] Payment integration
+- [ ] SMS notifications via Termii
+- [ ] Email notifications
+- [ ] Advanced reporting
+- [ ] Multi-language support
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Ebube Emeka**
+- GitHub: [@ebubelife](https://github.com/ebubelife)
+- Email: ebubeemeka19@gmail.com
+
+## 🙏 Acknowledgments
+
+- Laravel team for the amazing framework
+- Tailwind CSS for the utility-first CSS framework
+- Alpine.js for lightweight JavaScript functionality
+- Google Fonts for Instrument Serif and DM Sans
+
+---
+
+**LexRoom** - Resolving disputes the smart way. No lawyers needed. 🏛️⚖️
