@@ -742,25 +742,20 @@ footer {
       </svg>
       -->
       
-      <!-- FM Icon -->
-      <img 
-        src="{{ asset('assets/images/logos/FM_Icon.svg') }}" 
-        alt="LexRoom Icon" 
-        class="logo-icon"
-        style="width: 32px; height: 32px;"
-      >
+     
+     
       
       <!-- FM Logo Text -->
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
         alt="LexRoom" 
-        class="logo-text logo-light"
+        class="logo-text logo-dark"
         style="height: 24px; display: var(--logo-light-display, block);"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
         alt="LexRoom" 
-        class="logo-text logo-dark"
+        class="logo-text logo-light"
         style="height: 24px; display: var(--logo-dark-display, none);"
       >
     </a>
