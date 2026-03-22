@@ -181,6 +181,7 @@ h3 { font-size: 22px; font-weight: 400; }
 p { color: var(--text-secondary); line-height: 1.7; }
 
 
+
 /* ── HERO ── */
 #hero {
   padding-top: 160px;
