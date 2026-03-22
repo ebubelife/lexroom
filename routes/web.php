@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LogViewerController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PasswordResetLinkController;
@@ -10,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Log Viewer (for debugging)
+Route::get('/logs', [LogViewerController::class, 'index'])->name('logs.index');
+Route::get('/logs/clear', [LogViewerController::class, 'clear'])->name('logs.clear');
 
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
