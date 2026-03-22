@@ -165,6 +165,7 @@ nav {
 .theme-toggle:hover { background: var(--gray-200); }
 [data-theme="dark"] .theme-toggle:hover { background: rgba(255,255,255,0.12); }
 
+
 /* ── SECTIONS ── */
 section { padding: 100px 24px; }
 .container { max-width: 1160px; margin: 0 auto; }
