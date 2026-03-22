@@ -294,9 +294,9 @@
     </div>
 
     <!-- Main Content -->
-    <div class="lg:pl-60">
+    <div class="lg:pl-60 flex flex-col min-h-screen">
         <!-- Top Bar -->
-        <header class="h-16 flex items-center justify-between px-4 lg:px-6" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+        <header class="h-16 flex items-center justify-between px-4 lg:px-6 flex-shrink-0" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
             <!-- Left: Mobile menu + Page title -->
             <div class="flex items-center">
                 <button 
@@ -352,7 +352,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="px-4 lg:px-6 py-2">
+        <main class="flex-1 px-4 lg:px-6 pt-4 pb-6">
             @yield('content')
         </main>
     </div>
