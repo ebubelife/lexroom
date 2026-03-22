@@ -83,6 +83,11 @@ class OtpController extends Controller
             ->first();
 
         if (!$otp) {
+            // For debugging - log what OTPs exist for this user
+            \Log::info("OTP verification failed for user {$user->id}, type: {$type}, code: {$code}");
+            $existingOtps = Otp::where('user_id', $user->id)->where('type', $type)->get();
+            \Log::info("Existing OTPs:", $existingOtps->toArray());
+            
             return back()->withErrors(['code' => 'Invalid or expired OTP code.']);
         }
 

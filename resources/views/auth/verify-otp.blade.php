@@ -162,13 +162,6 @@
                     We'll send a 6-digit code to {{ auth()->user()->phone }}
                 </p>
 
-                <!-- Testing Notice -->
-                <div class="mb-4 p-3 rounded-lg" style="background-color: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd;">
-                    <p class="text-sm">
-                        <strong>Testing Mode:</strong> Use code <code class="font-mono bg-white px-1 rounded">111111</code> for phone verification.
-                    </p>
-                </div>
-
                 <!-- Send OTP Form -->
                 <form method="POST" action="{{ route('otp.send') }}" class="mb-4">
                     @csrf
