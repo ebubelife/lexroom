@@ -106,7 +106,8 @@ class AuthController extends Controller
                 // User exists with Google ID, check if fully verified
                 Auth::login($user);
                 
-                if (!$user->isFullyVerified()) {
+                // Google users only need phone verification (email is pre-verified)
+                if (!$user->phone_verified_at) {
                     return redirect()->route('verification.notice');
                 }
                 
@@ -117,13 +118,15 @@ class AuthController extends Controller
             $existingUser = User::where('email', $googleUser->email)->first();
             
             if ($existingUser) {
-                // User exists with email, link Google account
+                // User exists with email, link Google account and verify email
                 $existingUser->update([
                     'google_id' => $googleUser->id,
+                    'email_verified_at' => now(), // Verify email since it's from Google
                 ]);
                 Auth::login($existingUser);
                 
-                if (!$existingUser->isFullyVerified()) {
+                // Google users only need phone verification
+                if (!$existingUser->phone_verified_at) {
                     return redirect()->route('verification.notice');
                 }
                 
