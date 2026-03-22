@@ -746,18 +746,9 @@ footer {
      
       
       <!-- FM Logo Text -->
-      <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-        alt="LexRoom" 
-        class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-light-display, block);"
-      >
-      <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-        alt="LexRoom" 
-        class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-dark-display, none);"
-      >
+
+      
+     
     </a>
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
@@ -1141,15 +1132,15 @@ footer {
       <!-- FM Logo Text -->
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-        alt="LexRoom" 
-        class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display, block);"
+        alt="FirstMediator" 
+        class="logo-text logo-dark"
+        style="height: 24px; display: var(--logo-dark-display, none);"
       >
       <img 
         src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-        alt="LexRoom" 
-        class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display, none);"
+        alt="FirstMediator" 
+        class="logo-text logo-light"
+        style="height: 24px; display: var(--logo-light-display, block);"
       >
     </a>
     <ul class="footer-links">
