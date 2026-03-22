@@ -1,69 +1,53 @@
 #!/bin/bash
 
-# LexRoom Deployment Script for cPanel
-# Run this script on your server for manual deployment
+# LexRoom Deployment Script
+# Run this on your live server to deploy latest changes
 
-echo "🚀 Setting up LexRoom on cPanel..."
+echo "🚀 Starting LexRoom deployment..."
 
-# Navigate to project directory
-cd /home/kodebloo/aidev.kodeblooded.com.ng
+# Pull latest changes
+echo "📥 Pulling latest code from GitHub..."
+git pull origin main
 
-# Copy production environment file if it exists
-if [ -f ".env.production" ]; then
-    echo "📝 Setting up production environment..."
-    cp .env.production .env
-fi
-
-# Check if composer exists
-if ! command -v composer &> /dev/null; then
-    echo "❌ Composer not found. Please install Composer first."
-    echo "💡 You can download it from: https://getcomposer.org/download/"
-    exit 1
-fi
-
-# Install/Update Composer dependencies (production only)
+# Install/Update Composer dependencies
 echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
+composer install --no-dev --optimize-autoloader
 
-# Check if .env exists
-if [ ! -f ".env" ]; then
-    echo "⚠️  .env file not found. Copying from .env.example..."
-    cp .env.example .env
-    echo "📝 Please update .env with your production settings!"
-fi
-
-# Generate application key if not exists
-echo "🔑 Generating application key..."
-php artisan key:generate --force
+# Install/Update NPM dependencies and build assets
+echo "🎨 Building frontend assets..."
+npm install
+npm run build
 
 # Run database migrations
 echo "🗄️ Running database migrations..."
 php artisan migrate --force
 
-# Cache configuration for production performance
-echo "⚡ Caching configuration for production..."
+# Clear all caches
+echo "🧹 Clearing caches..."
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+# Optimize for production
+echo "⚡ Optimizing for production..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Create symbolic link for storage (if needed)
-echo "🔗 Creating storage link..."
+# Create storage symlink if not exists
+echo "🔗 Creating storage symlink..."
 php artisan storage:link
 
-# Set proper file permissions
-echo "📁 Setting file permissions..."
-find . -type f -exec chmod 644 {} \;
-find . -type d -exec chmod 755 {} \;
-chmod -R 755 storage
-chmod -R 755 bootstrap/cache
-chmod 600 .env
+# Set proper permissions
+echo "🔐 Setting permissions..."
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
 
 echo "✅ Deployment completed successfully!"
-echo "🌐 Your site should now be available at: https://aidev.kodeblooded.com.ng"
 echo ""
-echo "📋 Next steps:"
-echo "   1. Update .env with your database credentials"
-echo "   2. Update .env with your Google OAuth credentials:"
-echo "      GOOGLE_REDIRECT_URI=https://aidev.kodeblooded.com.ng/auth/google/callback"
-echo "   3. Test the site functionality"
-echo "   4. Set up your domain to point to the public folder"
+echo "📋 Post-deployment checklist:"
+echo "   - Test all pages (Dashboard, Reports, Wallet, LexRefer, Settings)"
+echo "   - Upload a profile image to test storage"
+echo "   - Create a test room"
+echo "   - Check error logs if any issues"
