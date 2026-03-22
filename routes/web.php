@@ -67,3 +67,9 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
 
 // Room access (guest or authenticated)
 Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
+
+// Evidence routes (guest or authenticated)
+Route::post('/rooms/{uuid}/evidence', [\App\Http\Controllers\EvidenceController::class, 'upload'])->name('evidence.upload');
+Route::get('/rooms/{uuid}/evidence', [\App\Http\Controllers\EvidenceController::class, 'index'])->name('evidence.index');
+Route::get('/rooms/{uuid}/evidence/{file}', [\App\Http\Controllers\EvidenceController::class, 'download'])->name('evidence.download');
+Route::delete('/rooms/{uuid}/evidence/{file}', [\App\Http\Controllers\EvidenceController::class, 'delete'])->name('evidence.delete');

@@ -4,7 +4,7 @@
 @section('page-title', 'Live Session')
 
 @section('content')
-<div class="max-w-7xl mx-auto" x-data="liveRoom()">
+<div class="max-w-7xl mx-auto" x-data="liveRoom('{{ $room->uuid }}', '{{ request('token') }}')" x-init="init()">
     <!-- Session Header -->
     <div class="rounded-xl shadow-sm border p-4 mb-4"
          style="background-color: var(--bg-secondary); border-color: var(--border-color);">
@@ -141,40 +141,40 @@
                 <input type="file" x-ref="fileInput" class="hidden" @change="uploadFile">
 
                 <!-- Uploaded Files -->
-                <div class="space-y-2">
-                    <div class="p-3 rounded-lg border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start flex-1">
-                                <svg class="w-5 h-5 mr-2 flex-shrink-0" style="color: #DC2626;" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium truncate" style="color: var(--text-primary);">contract.pdf</p>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Party A • 2.3 MB</p>
+                <div class="space-y-2" x-show="files.length > 0">
+                    <template x-for="file in files" :key="file.id">
+                        <div class="p-3 rounded-lg border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start flex-1">
+                                    <svg class="w-5 h-5 mr-2 flex-shrink-0" :style="`color: ${file.icon.color};`" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate" style="color: var(--text-primary);" x-text="file.filename"></p>
+                                        <p class="text-xs" style="color: var(--text-secondary);" x-text="file.party + ' • ' + file.size"></p>
+                                    </div>
                                 </div>
+                                <button @click="deleteFile(file.id)" 
+                                        x-show="!file.is_locked"
+                                        class="ml-2 p-1 rounded hover:bg-red-100 transition-colors"
+                                        title="Delete file">
+                                    <svg class="w-4 h-4" style="color: #DC2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </template>
+                </div>
 
-                    <div class="p-3 rounded-lg border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start flex-1">
-                                <svg class="w-5 h-5 mr-2 flex-shrink-0" style="color: #2563EB;" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium truncate" style="color: var(--text-primary);">invoice.docx</p>
-                                    <p class="text-xs" style="color: var(--text-secondary);">Party B • 1.1 MB</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div x-show="files.length === 0" class="text-center py-8">
+                    <p class="text-sm" style="color: var(--text-secondary);">No files uploaded yet</p>
                 </div>
 
                 <!-- File Limit Info -->
                 <div class="mt-4 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
                     <p class="text-xs" style="color: var(--text-secondary);">
-                        <strong style="color: var(--text-primary);">2 of 20</strong> files uploaded<br>
+                        <strong style="color: var(--text-primary);" x-text="files.length + ' of 20'"></strong> files uploaded<br>
                         Max 20MB per file
                     </p>
                 </div>
@@ -184,18 +184,37 @@
 </div>
 
 <script>
-function liveRoom() {
+function liveRoom(roomUuid, token) {
     return {
+        roomUuid: roomUuid,
+        token: token,
         messageInput: '',
-        timeRemaining: 3600, // 60 minutes in seconds
+        timeRemaining: 3600,
+        files: [],
+        uploading: false,
         
         init() {
-            // Start countdown timer
+            this.loadFiles();
+            
             setInterval(() => {
                 if (this.timeRemaining > 0) {
                     this.timeRemaining--;
                 }
             }, 1000);
+        },
+        
+        async loadFiles() {
+            try {
+                const url = `/rooms/${this.roomUuid}/evidence${this.token ? '?token=' + this.token : ''}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.files = data.files;
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
         },
         
         formatTime(seconds) {
@@ -206,17 +225,82 @@ function liveRoom() {
         
         sendMessage() {
             if (this.messageInput.trim()) {
-                // TODO: Send message via WebSocket
                 console.log('Sending:', this.messageInput);
                 this.messageInput = '';
             }
         },
         
-        uploadFile(event) {
+        async uploadFile(event) {
             const file = event.target.files[0];
-            if (file) {
-                // TODO: Upload file
-                console.log('Uploading:', file.name);
+            if (!file) return;
+            
+            if (file.size > 20 * 1024 * 1024) {
+                alert('File size must be less than 20MB');
+                return;
+            }
+            
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/png', 'image/jpeg', 'video/mp4'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Invalid file type. Allowed: PDF, DOCX, PNG, JPG, MP4');
+                return;
+            }
+            
+            this.uploading = true;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            if (this.token) {
+                formData.append('token', this.token);
+            }
+            
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/evidence`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.files.push(data.file);
+                    event.target.value = '';
+                } else {
+                    alert(data.message || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Upload failed. Please try again.');
+            } finally {
+                this.uploading = false;
+            }
+        },
+        
+        async deleteFile(fileId) {
+            if (!confirm('Are you sure you want to delete this file?')) return;
+            
+            try {
+                const url = `/rooms/${this.roomUuid}/evidence/${fileId}${this.token ? '?token=' + this.token : ''}`;
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.files = this.files.filter(f => f.id !== fileId);
+                } else {
+                    alert(data.message || 'Delete failed');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('Delete failed. Please try again.');
             }
         }
     }
