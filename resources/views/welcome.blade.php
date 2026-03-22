@@ -743,8 +743,8 @@ footer {
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <span id="theme-icon">🌙</span>
       </button>
-      <a href="#" class="btn-ghost">Log in</a>
-      <a href="#" class="btn-primary">Create a Room</a>
+      <a href="{{ route('login') }}" class="btn-ghost">Log in</a>
+      <a href="{{ route('register') }}" class="btn-primary">Create a Room</a>
     </div>
   </div>
 </nav>
@@ -765,7 +765,7 @@ footer {
       Two parties. One room. An impartial AI mediator. A formal resolution report — in under 90 minutes.
     </p>
     <div class="hero-cta-group reveal reveal-delay-3">
-      <a href="#" class="btn-primary btn-primary-lg">
+      <a href="{{ route('register') }}" class="btn-primary btn-primary-lg">
         Create a Room
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -973,7 +973,7 @@ footer {
           <li>Mediation report PDF</li>
           <li>Split payment option</li>
         </ul>
-        <a href="#" class="pricing-cta pricing-cta-outline">Create a Room</a>
+        <a href="{{ route('register') }}" class="pricing-cta pricing-cta-outline">Create a Room</a>
       </div>
       <div class="pricing-card featured reveal reveal-delay-2">
         <div class="pricing-badge">Most popular</div>
@@ -988,7 +988,7 @@ footer {
           <li>Split payment option</li>
           <li>Lawyer escalation access</li>
         </ul>
-        <a href="#" class="pricing-cta pricing-cta-filled">Create a Room</a>
+        <a href="{{ route('register') }}" class="pricing-cta pricing-cta-filled">Create a Room</a>
       </div>
       <div class="pricing-card reveal reveal-delay-3">
         <div class="pricing-name">Extended</div>
@@ -1003,7 +1003,7 @@ footer {
           <li>Lawyer escalation access</li>
           <li>Priority Lex processing</li>
         </ul>
-        <a href="#" class="pricing-cta pricing-cta-outline">Create a Room</a>
+        <a href="{{ route('register') }}" class="pricing-cta pricing-cta-outline">Create a Room</a>
       </div>
     </div>
     <p class="split-note reveal">
@@ -1078,7 +1078,7 @@ footer {
       <div class="cta-divider reveal reveal-delay-2"></div>
       <p class="cta-sub reveal reveal-delay-2">Stop going back and forth. Get a room, present your case, and walk away with a formal report — today.</p>
       <div class="reveal reveal-delay-3">
-        <a href="#" class="btn-primary btn-primary-lg">
+        <a href="{{ route('register') }}" class="btn-primary btn-primary-lg">
           Create a Room
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
