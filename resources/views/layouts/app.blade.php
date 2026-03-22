@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard — LexRoom')</title>
-    <meta name="description" content="@yield('description', 'LexRoom dashboard - manage your dispute sessions and mediation reports')">
+    <title>@yield('title', 'Dashboard — FirstMediator')</title>
+    <meta name="description" content="@yield('description', 'FirstMediator dashboard - manage your dispute sessions and mediation reports')">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/FM_Icon.svg') }}">
@@ -280,14 +280,14 @@
         <div class="flex items-center justify-center h-16 px-6 flex-shrink-0" style="border-bottom: 1px solid var(--border-color);">
             <a href="{{ route('dashboard') }}" class="flex items-center">
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-                    alt="LexRoom" 
+                    src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+                    alt="FirstMediator" 
                     class="h-8 logo-light"
                     style="display: var(--logo-light-display, block);"
                 >
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-                    alt="LexRoom" 
+                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+                    alt="FirstMediator" 
                     class="h-8 logo-dark"
                     style="display: var(--logo-dark-display, none);"
                 >

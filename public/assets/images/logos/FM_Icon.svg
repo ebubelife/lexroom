@@ -1,4 +1,18 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#C9A84C"/>
-  <text x="16" y="20" text-anchor="middle" fill="white" font-family="serif" font-size="14" font-weight="bold">L</text>
+<svg width="48" height="56" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Center post -->
+  <line x1="24" y1="6" x2="24" y2="50" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/>
+  <!-- Base -->
+  <line x1="12" y1="50" x2="36" y2="50" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/>
+  <!-- Crossbar -->
+  <line x1="4" y1="17" x2="44" y2="17" stroke="#C9A84C" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- Left chain -->
+  <line x1="4" y1="17" x2="3" y2="31" stroke="#C9A84C" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <!-- Right chain -->
+  <line x1="44" y1="17" x2="43" y2="27" stroke="#C9A84C" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <!-- Left pan -->
+  <path d="M0 33 Q3 40 6 33" stroke="#C9A84C" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <!-- Right pan (higher — slightly unbalanced, natural tension) -->
+  <path d="M39 29 Q43 36 47 29" stroke="#C9A84C" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <!-- Pivot dot -->
+  <circle cx="24" cy="6" r="2.5" fill="#C9A84C"/>
 </svg>
