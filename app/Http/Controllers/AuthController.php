@@ -138,6 +138,7 @@ class AuthController extends Controller
                 'google_user_id' => $googleUser->id,
                 'google_user_name' => $googleUser->name,
                 'google_user_email' => $googleUser->email,
+                'google_user_avatar' => $googleUser->avatar,
             ]);
             
             // Redirect to completion form
@@ -181,12 +182,13 @@ class AuthController extends Controller
             'email' => session('google_user_email'),
             'phone' => $normalizedPhone,
             'google_id' => session('google_user_id'),
+            'google_avatar' => session('google_user_avatar'),
             'email_verified_at' => now(), // Google accounts are pre-verified
             'password' => Hash::make(Str::random(24)), // Random password for security
         ]);
         
         // Clear session data
-        session()->forget(['google_user_id', 'google_user_name', 'google_user_email']);
+        session()->forget(['google_user_id', 'google_user_name', 'google_user_email', 'google_user_avatar']);
         
         Auth::login($newUser);
         

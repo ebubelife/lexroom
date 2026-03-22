@@ -352,9 +352,13 @@
         <!-- User Info -->
         <div class="flex-shrink-0 p-4" style="border-top: 1px solid var(--border-color);">
             <div class="flex items-center">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background-color: var(--gold);">
-                    {{ auth()->user()->initials }}
-                </div>
+                @if(auth()->user()->profile_image_url)
+                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                @else
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background-color: var(--gold);">
+                        {{ auth()->user()->initials }}
+                    </div>
+                @endif
                 <div class="ml-3 flex-1 min-w-0">
                     <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ auth()->user()->name }}</p>
                     <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth()->user()->email }}</p>
@@ -423,9 +427,13 @@
                 </button>
 
                 <!-- User Avatar -->
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
-                    {{ auth()->user()->initials }}
-                </div>
+                @if(auth()->user()->profile_image_url)
+                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                @else
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
+                        {{ auth()->user()->initials }}
+                    </div>
+                @endif
             </div>
         </header>
 

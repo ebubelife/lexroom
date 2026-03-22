@@ -31,6 +31,8 @@ class User extends Authenticatable
         'phone_verified_at',
         'bvn',
         'nin',
+        'profile_image',
+        'google_avatar',
     ];
 
     /**
@@ -105,6 +107,17 @@ class User extends Authenticatable
             $initials .= strtoupper(substr($name, 0, 1));
         }
         return substr($initials, 0, 2);
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        }
+        if ($this->google_avatar) {
+            return $this->google_avatar;
+        }
+        return null;
     }
 
     public function otps()
