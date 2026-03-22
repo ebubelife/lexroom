@@ -145,6 +145,23 @@
             background-color: rgba(255, 255, 255, 0.05);
         }
 
+        .stats-card-gold {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--gold);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stats-card-gold:hover {
+            border-color: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
         <!-- Stats cards improvements */
         .stats-card {
             background-color: var(--bg-secondary);

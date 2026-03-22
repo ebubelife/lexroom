@@ -4,16 +4,49 @@
 @section('page-title', 'Reports')
 
 @section('content')
-<div class="max-w-4xl mx-auto text-center py-16">
-    <div class="animate-float mb-8">
-        <svg class="w-16 h-16 mx-auto" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
+<div class="max-w-7xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl lg:text-3xl font-serif mb-2" style="color: var(--text-primary);">
+            Mediation Reports
+        </h1>
+        <p class="text-base" style="color: var(--text-secondary);">
+            Download and view your completed mediation session reports
+        </p>
     </div>
-    <h1 class="text-2xl font-serif mb-4" style="color: var(--text-primary);">Reports</h1>
-    <p class="text-lg mb-8" style="color: var(--text-secondary);">Coming soon! This page will show your mediation reports and case summaries.</p>
-    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
-        Back to Dashboard
-    </a>
+
+    <div class="grid grid-cols-1 gap-4">
+        @foreach($reports as $report)
+        <div class="p-6 rounded-xl hover-lift" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center mb-3">
+                        <span class="px-3 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $report['badge_color'] }}; color: white;">
+                            {{ $report['category'] }}
+                        </span>
+                        <span class="text-sm" style="color: var(--text-secondary);">
+                            {{ $report['date'] }}
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-medium mb-2" style="color: var(--text-primary);">
+                        {{ $report['title'] }}
+                    </h3>
+                    <p class="text-sm mb-4" style="color: var(--text-secondary);">
+                        {{ $report['summary'] }}
+                    </p>
+                    <div class="flex items-center space-x-4 text-sm" style="color: var(--text-secondary);">
+                        <span>Duration: {{ $report['duration'] }} mins</span>
+                        <span>•</span>
+                        <span>Outcome: <strong style="color: var(--gold);">{{ $report['outcome'] }}</strong></span>
+                    </div>
+                </div>
+                <div class="ml-6">
+                    <button class="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
 </div>
 @endsection

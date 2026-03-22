@@ -8,6 +8,11 @@ use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
+    public function index()
+    {
+        return view('settings.index');
+    }
+
     public function update(Request $request)
     {
         $validated = $request->validate([

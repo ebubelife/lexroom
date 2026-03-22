@@ -55,14 +55,14 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::post('/rooms', [\App\Http\Controllers\RoomController::class, 'store'])->name('rooms.store');
     
     // Settings routes
-    Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
+    Route::get('/settings', [\App\Http\Controllers\ProfileController::class, 'index'])->name('settings.index');
     Route::put('/settings', [\App\Http\Controllers\ProfileController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('settings.password');
     
-    // Stub routes for sidebar links
-    Route::get('/reports', fn() => view('reports.index'))->name('reports.index');
-    Route::get('/wallet', fn() => view('wallet.index'))->name('wallet.index');
-    Route::get('/lexrefer', fn() => view('lexrefer.index'))->name('lexrefer.index');
+    // Reports, Wallet, LexRefer routes
+    Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
+    Route::get('/lexrefer', [\App\Http\Controllers\LexReferController::class, 'index'])->name('lexrefer.index');
 });
 
 // Room access (guest or authenticated)

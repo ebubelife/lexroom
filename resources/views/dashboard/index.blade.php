@@ -18,7 +18,7 @@
     <!-- Stats Row -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4">
         <!-- Total Sessions -->
-        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-1">
+        <div class="stats-card-gold animate-fade-up animate-fade-up-delay-1">
             <div class="flex items-start justify-between mb-2">
                 <div class="p-2 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
                     <svg class="w-5 h-5" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Active Sessions -->
-        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-2">
+        <div class="stats-card-gold animate-fade-up animate-fade-up-delay-2">
             <div class="flex items-start justify-between mb-2">
                 <div class="p-2 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Resolved -->
-        <div class="stats-card hover-lift animate-fade-up animate-fade-up-delay-3">
+        <div class="stats-card-gold animate-fade-up animate-fade-up-delay-3">
             <div class="flex items-start justify-between mb-2">
                 <div class="p-2 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1);">
                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Credits Balance -->
-        <div class="stats-card hover-lift animate-fade-up" style="animation-delay: 0.4s;">
+        <div class="stats-card-gold animate-fade-up" style="animation-delay: 0.4s;">
             <div class="flex items-start justify-between mb-2">
                 <div class="p-2 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1);">
                     <svg class="w-5 h-5" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
