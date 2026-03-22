@@ -280,13 +280,13 @@
         <div class="flex items-center justify-center h-16 px-6 flex-shrink-0" style="border-bottom: 1px solid var(--border-color);">
             <a href="{{ route('dashboard') }}" class="flex items-center">
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
                     alt="FirstMediator" 
                     class="h-8 logo-light"
                     style="display: var(--logo-light-display, block);"
                 >
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+                    src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
                     alt="FirstMediator" 
                     class="h-8 logo-dark"
                     style="display: var(--logo-dark-display, none);"
