@@ -190,7 +190,11 @@ class AuthController extends Controller
         
         Auth::login($newUser);
         
-        // Google users still need phone verification
-        return redirect()->route('verification.notice');
+        // Google users only need phone verification
+        if (!$newUser->phone_verified_at) {
+            return redirect()->route('verification.notice');
+        }
+        
+        return redirect()->intended('/dashboard');
     }
 }
