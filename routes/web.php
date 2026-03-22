@@ -49,8 +49,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Room routes
+    Route::get('/rooms', [\App\Http\Controllers\RoomController::class, 'index'])->name('rooms.index');
+    Route::get('/rooms/create', [\App\Http\Controllers\RoomController::class, 'create'])->name('rooms.create');
+    Route::post('/rooms', [\App\Http\Controllers\RoomController::class, 'store'])->name('rooms.store');
+    Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
+    
     // Stub routes for sidebar links
-    Route::get('/rooms', fn() => view('rooms.index'))->name('rooms.index');
     Route::get('/reports', fn() => view('reports.index'))->name('reports.index');
     Route::get('/wallet', fn() => view('wallet.index'))->name('wallet.index');
     Route::get('/lexrefer', fn() => view('lexrefer.index'))->name('lexrefer.index');

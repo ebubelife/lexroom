@@ -194,7 +194,7 @@
 
     <!-- Sidebar -->
     <div 
-        class="fixed inset-y-0 left-0 z-50 w-60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col"
+        class="fixed inset-y-0 left-0 z-50 w-60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col"
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
         style="background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);"
     >
@@ -217,10 +217,10 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 mt-6 px-3 overflow-y-auto">
-            <div class="space-y-1">
+        <nav class="flex-1 mt-6 px-3 overflow-y-auto pb-4">
+            <div class="space-y-4">
                 <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
@@ -229,7 +229,7 @@
                 </a>
 
                 <!-- My Rooms -->
-                <a href="{{ route('rooms.index') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('rooms.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('rooms.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('rooms.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M10.5 3L12 2l1.5 1H21v6H3V3h7.5z"></path>
                     </svg>
@@ -237,7 +237,7 @@
                 </a>
 
                 <!-- Reports -->
-                <a href="{{ route('reports.index') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('reports.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
@@ -245,7 +245,7 @@
                 </a>
 
                 <!-- Wallet & Credits -->
-                <a href="{{ route('wallet.index') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('wallet.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('wallet.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('wallet.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
@@ -253,7 +253,7 @@
                 </a>
 
                 <!-- LexRefer -->
-                <a href="{{ route('lexrefer.index') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('lexrefer.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('lexrefer.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('lexrefer.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1"></path>
                     </svg>
@@ -261,7 +261,7 @@
                 </a>
 
                 <!-- Settings -->
-                <a href="{{ route('settings.index') }}" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('settings.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('settings.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('settings.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -294,7 +294,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="lg:pl-60 flex flex-col min-h-screen">
+    <div class="lg:pl-60 flex-1 flex flex-col min-h-screen">
         <!-- Top Bar -->
         <header class="h-16 flex items-center justify-between px-4 lg:px-6 flex-shrink-0" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
             <!-- Left: Mobile menu + Page title -->
@@ -318,12 +318,12 @@
                 </a>
 
                 <!-- Create Room Button -->
-                <a href="#" class="hidden sm:flex px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                <a href="{{ route('rooms.create') }}" class="hidden sm:flex px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                     Create a Room
                 </a>
 
                 <!-- Mobile Create Room Button -->
-                <a href="#" class="sm:hidden p-2 rounded-lg transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);" title="Create Room">
+                <a href="{{ route('rooms.create') }}" class="sm:hidden p-2 rounded-lg transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);" title="Create Room">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
