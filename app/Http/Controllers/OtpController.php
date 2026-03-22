@@ -108,7 +108,15 @@ class OtpController extends Controller
         }
 
         // Check if user is now fully verified
-        if ($user->fresh()->isFullyVerified()) {
+        $user = $user->fresh();
+        if ($user->isFullyVerified()) {
+            // Send welcome email
+            try {
+                Mail::to($user->email)->queue(new \App\Mail\WelcomeEmail($user));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send welcome email: ' . $e->getMessage());
+            }
+            
             return redirect()->route('dashboard')->with('success', $message . ' Welcome to LexRoom!');
         }
 

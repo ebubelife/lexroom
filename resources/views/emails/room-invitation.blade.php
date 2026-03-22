@@ -184,7 +184,7 @@
 
             <p class="message" style="font-size: 14px; color: #718096;">
                 If you believe you received this email in error, please ignore it or contact us at 
-                <a href="mailto:support@lexroom.com" style="color: #C9A84C;">support@lexroom.com</a>
+                <a href="mailto:info@kodeblooded.com.ng" style="color: #C9A84C;">info@kodeblooded.com.ng</a>
             </p>
         </div>
 
