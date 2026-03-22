@@ -748,14 +748,14 @@ footer {
       <!-- FM Logo Text -->
 
        <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-        alt="LexRoom" 
+        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+        alt="FirstMediator" 
         class="logo-text logo-dark"
         style="height: 24px; display: var(--logo-dark-display, none);"
       >
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-        alt="LexRoom" 
+        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+        alt="FirstMediator" 
         class="logo-text logo-light"
         style="height: 24px; display: var(--logo-light-display, block);"
       >
@@ -1142,14 +1142,14 @@ footer {
       
       <!-- FM Logo Text -->
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-        alt="LexRoom" 
+        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+        alt="FirstMediator" 
         class="logo-text logo-light"
         style="height: 24px; display: var(--logo-light-display, block);"
       >
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-        alt="LexRoom" 
+        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+        alt="FirstMediator" 
         class="logo-text logo-dark"
         style="height: 24px; display: var(--logo-dark-display, none);"
       >
