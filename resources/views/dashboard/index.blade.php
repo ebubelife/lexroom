@@ -154,7 +154,55 @@
         <!-- My Rooms Tab Content -->
         <div x-show="activeTab === 'my-rooms'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
             @if($myRooms->count() > 0)
-            <div class="overflow-hidden rounded-xl" style="border: 1px solid var(--border-color);">
+            
+            <!-- Mobile Card View -->
+            <div class="block md:hidden space-y-3">
+                @foreach($myRooms as $room)
+                <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
+                            {{ ucfirst($room->category) }}
+                        </span>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $room->status_badge_color['bg'] }}; color: {{ $room->status_badge_color['text'] }};">
+                            {{ ucfirst(str_replace('_', ' ', $room->status)) }}
+                        </span>
+                    </div>
+                    <p class="text-sm font-medium mb-2" style="color: var(--text-primary);">
+                        {{ $room->case_summary ? Str::limit($room->case_summary, 60) : ucfirst($room->category) . ' Dispute' }}
+                    </p>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <p class="text-xs" style="color: var(--text-secondary);">Other Party</p>
+                            <p class="text-sm" style="color: var(--text-primary);">{{ $room->partyB?->name ?? 'Pending' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs" style="color: var(--text-secondary);">Date</p>
+                            <p class="text-sm" style="color: var(--text-primary);">{{ $room->created_at->format('M j, Y') }}</p>
+                        </div>
+                    </div>
+                    @if($room->status === 'active')
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                        Enter Room
+                    </a>
+                    @elseif($room->status === 'pending')
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                        Complete Payment
+                    </a>
+                    @elseif($room->status === 'completed')
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                        Download Report
+                    </a>
+                    @else
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                        View Case
+                    </a>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Desktop Table View -->
+            <div class="hidden md:block overflow-hidden rounded-xl" style="border: 1px solid var(--border-color);">
                 <table class="min-w-full">
                     <thead style="background-color: var(--bg-secondary);">
                         <tr>
@@ -232,7 +280,47 @@
         <!-- Invited Tab Content -->
         <div x-show="activeTab === 'invited'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
             @if($invitedRooms->count() > 0)
-            <div class="overflow-hidden rounded-xl" style="border: 1px solid var(--border-color);">
+            
+            <!-- Mobile Card View -->
+            <div class="block md:hidden space-y-3">
+                @foreach($invitedRooms as $room)
+                <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
+                            {{ ucfirst($room->category) }}
+                        </span>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $room->status_badge_color['bg'] }}; color: {{ $room->status_badge_color['text'] }};">
+                            {{ ucfirst(str_replace('_', ' ', $room->status)) }}
+                        </span>
+                    </div>
+                    <p class="text-sm font-medium mb-2" style="color: var(--text-primary);">
+                        {{ $room->case_summary ? Str::limit($room->case_summary, 60) : ucfirst($room->category) . ' Dispute' }}
+                    </p>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <p class="text-xs" style="color: var(--text-secondary);">Created By</p>
+                            <p class="text-sm" style="color: var(--text-primary);">{{ $room->partyA->name }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs" style="color: var(--text-secondary);">Date</p>
+                            <p class="text-sm" style="color: var(--text-primary);">{{ $room->created_at->format('M j, Y') }}</p>
+                        </div>
+                    </div>
+                    @if($room->status === 'active')
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                        Enter Room
+                    </a>
+                    @else
+                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                        View Details
+                    </a>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Desktop Table View -->
+            <div class="hidden md:block overflow-hidden rounded-xl" style="border: 1px solid var(--border-color);">
                 <table class="min-w-full">
                     <thead style="background-color: var(--bg-secondary);">
                         <tr>

@@ -42,7 +42,29 @@
 
     <div>
         <h2 class="text-xl font-serif mb-4" style="color: var(--text-primary);">Referral History</h2>
-        <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--border-color);">
+        
+        <!-- Mobile Card View -->
+        <div class="block md:hidden space-y-3">
+            @foreach($referrals as $referral)
+            <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">{{ $referral['name'] }}</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">{{ $referral['date'] }}</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $referral['status_color'] }}; color: white;">
+                        {{ $referral['status'] }}
+                    </span>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-bold" style="color: var(--gold);">{{ $referral['reward'] }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="hidden md:block rounded-xl overflow-hidden" style="border: 1px solid var(--border-color);">
             <table class="min-w-full">
                 <thead style="background-color: var(--bg-secondary);">
                     <tr>

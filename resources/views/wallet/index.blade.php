@@ -26,7 +26,29 @@
 
     <div class="mb-6">
         <h2 class="text-xl font-serif mb-4" style="color: var(--text-primary);">Transaction History</h2>
-        <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--border-color);">
+        
+        <!-- Mobile Card View -->
+        <div class="block md:hidden space-y-3">
+            @foreach($transactions as $transaction)
+            <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">{{ $transaction['description'] }}</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">{{ $transaction['date'] }}</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $transaction['type_color'] }}; color: white;">
+                        {{ $transaction['type'] }}
+                    </span>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-bold" style="color: {{ $transaction['amount_color'] }};">{{ $transaction['amount'] }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="hidden md:block rounded-xl overflow-hidden" style="border: 1px solid var(--border-color);">
             <table class="min-w-full">
                 <thead style="background-color: var(--bg-secondary);">
                     <tr>
