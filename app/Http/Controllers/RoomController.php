@@ -125,14 +125,28 @@ class RoomController extends Controller
     public function show($uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        
-        // Check if user has access to this room
         $user = auth()->user();
-        if ($user && ($room->party_a_id === $user->id || $room->party_b_id === $user->id)) {
+        
+        // Check if user is Party A (creator)
+        if ($user && $room->party_a_id === $user->id) {
             return view('rooms.show', compact('room'));
         }
         
-        // Check for valid invite token for Party B
+        // Check if user is Party B (already assigned)
+        if ($user && $room->party_b_id === $user->id) {
+            return view('rooms.show', compact('room'));
+        }
+        
+        // Check if user's email matches Party B email (invited but not assigned yet)
+        if ($user && $room->party_b_email && $user->email === $room->party_b_email) {
+            // Auto-assign Party B if not already assigned
+            if (!$room->party_b_id) {
+                $room->update(['party_b_id' => $user->id]);
+            }
+            return view('rooms.show', compact('room'));
+        }
+        
+        // Check for valid invite token (for non-logged-in users)
         if (request()->has('token') && request('token') === $room->invite_token) {
             return view('rooms.show', compact('room'));
         }
