@@ -1,4 +1,4 @@
-# LexRoom Demo Setup Guide
+# FirstMediator Demo Setup Guide
 
 ## ✅ What's Been Implemented
 
@@ -39,8 +39,8 @@ MAIL_PORT=587
 MAIL_USERNAME=your_mailgun_smtp_username
 MAIL_PASSWORD=your_mailgun_smtp_password
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS="noreply@lexroom.com"
-MAIL_FROM_NAME="LexRoom"
+MAIL_FROM_ADDRESS="noreply@firstmediator.com"
+MAIL_FROM_NAME="FirstMediator"
 
 MAILGUN_DOMAIN=your_mailgun_domain
 MAILGUN_SECRET=your_mailgun_api_key
@@ -59,7 +59,7 @@ php artisan tinker
 
 Then run:
 ```php
-Mail::raw('Test email from LexRoom', function($message) {
+Mail::raw('Test email from FirstMediator', function($message) {
     $message->to('your-email@example.com')->subject('Test');
 });
 ```
@@ -227,4 +227,4 @@ These will be replaced with real data once WebSocket integration is complete.
 
 ---
 
-**LexRoom** - Resolving disputes the smart way. No lawyers needed. 🏛️⚖️
+**FirstMediator** - Resolving disputes the smart way. No lawyers needed. 🏛️⚖️

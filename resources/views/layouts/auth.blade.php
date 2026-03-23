@@ -94,7 +94,7 @@
     <!-- Theme persistence script - runs before page renders -->
     <script>
         (function() {
-            const theme = localStorage.getItem('lexroom_theme') || 
+            const theme = localStorage.getItem('firstmediator_theme') || 
                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
             
@@ -179,7 +179,7 @@
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
                 html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('lexroom_theme', newTheme);
+                localStorage.setItem('firstmediator_theme', newTheme);
                 updateTheme();
             });
 

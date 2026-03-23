@@ -117,7 +117,7 @@ class OtpController extends Controller
                 \Log::error('Failed to send welcome email: ' . $e->getMessage());
             }
             
-            return redirect()->route('dashboard')->with('success', $message . ' Welcome to LexRoom!');
+            return redirect()->route('dashboard')->with('success', $message . ' Welcome to FirstMediator!');
         }
 
         return back()->with('success', $message);

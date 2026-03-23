@@ -23,7 +23,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to LexRoom - Your Account is Ready!',
+            subject: 'Welcome to FirstMediator - Your Account is Ready!',
         );
     }
 

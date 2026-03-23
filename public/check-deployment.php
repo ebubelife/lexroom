@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LexRoom - Deployment Check</title>
+    <title>FirstMediator - Deployment Check</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 40px; background: #f5f5f5; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔍 LexRoom Deployment Status Check</h1>
+        <h1>🔍 FirstMediator Deployment Status Check</h1>
         
         <?php
         $checks = [];

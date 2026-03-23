@@ -815,7 +815,7 @@ footer {
             <div class="mockup-dot"></div>
             <div class="mockup-dot"></div>
           </div>
-          <div class="mockup-url">app.lexroom.ng/room/inv-2024-0847</div>
+          <div class="mockup-url">app.firstmediator.ng/room/inv-2024-0847</div>
         </div>
         <div class="mockup-content">
           <div class="mockup-chat">

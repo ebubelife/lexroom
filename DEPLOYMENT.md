@@ -1,4 +1,4 @@
-# LexRoom Deployment Guide
+# FirstMediator Deployment Guide
 
 ## Quick Deploy to Live Server
 
@@ -11,7 +11,7 @@
 
 2. Navigate to your project directory:
    ```bash
-   cd /path/to/lexroom
+   cd /path/to/firstmediator
    ```
 
 3. Run the deployment script:

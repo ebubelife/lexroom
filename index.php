@@ -1,6 +1,6 @@
 <?php
 /**
- * LexRoom - Root Index
+ * FirstMediator - Root Index
  * This file redirects to the public folder for Laravel
  */
 
@@ -11,7 +11,7 @@ if (file_exists('public/index.php')) {
     exit;
 } else {
     // Show debug info if Laravel isn't set up yet
-    echo "<h1>LexRoom Setup</h1>";
+    echo "<h1>FirstMediator Setup</h1>";
     echo "<p>Current directory: " . __DIR__ . "</p>";
     echo "<p>Looking for: public/index.php</p>";
     echo "<h3>Files in current directory:</h3>";

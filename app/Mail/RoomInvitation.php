@@ -29,7 +29,7 @@ class RoomInvitation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You\'ve been invited to a LexRoom mediation session',
+            subject: 'You\'ve been invited to a FirstMediator mediation session',
         );
     }
 

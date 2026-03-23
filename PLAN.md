@@ -1,4 +1,4 @@
-# LexRoom — Project Build Plan
+# FirstMediator — Project Build Plan
 **Stack:** Laravel 12 · Blade · Alpine.js · Tailwind CSS · Laravel Reverb · Laravel Horizon · MySQL · Redis · Claude API · Paystack  
 **Client:** Symbi Technologies Ltd  
 **Version:** 1.0 — March 2026  
@@ -8,7 +8,7 @@
 ## AI Prompt Template
 Use this when passing tasks to Claude / Gemini / Cursor / Windsurf:
 
-> "I'm building LexRoom — an AI-assisted legal mediation SaaS platform. Stack: Laravel 12, Blade, Alpine.js, Tailwind CSS, Laravel Reverb (WebSockets), Laravel Horizon (queues), MySQL, Redis, Claude API (claude-sonnet-4-20250514), Paystack. Brand colors: deep navy #0D1B2A, antique gold #C9A84C, white. Build me [specific task]."
+> "I'm building FirstMediator — an AI-assisted legal mediation SaaS platform. Stack: Laravel 12, Blade, Alpine.js, Tailwind CSS, Laravel Reverb (WebSockets), Laravel Horizon (queues), MySQL, Redis, Claude API (claude-sonnet-4-20250514), Paystack. Brand colors: deep navy #0D1B2A, antique gold #C9A84C, white. Build me [specific task]."
 
 ---
 
@@ -143,7 +143,7 @@ Use this when passing tasks to Claude / Gemini / Cursor / Windsurf:
 - Stored in `lex_prompts` DB table — editable from LexConsole admin
 - Base prompt structure:
   ```
-  You are Lex, an impartial AI mediator for LexRoom...
+  You are Lex, an impartial AI mediator for FirstMediator...
   Dispute category: {category}
   Jurisdiction: {jurisdiction}
   Session language: {language}
@@ -288,5 +288,5 @@ lex_prompts         — id, category, jurisdiction, system_prompt, updated_at
 
 ---
 
-*LexRoom — Affordable first-line dispute resolution, before it becomes litigation.*  
+*FirstMediator — Affordable first-line dispute resolution, before it becomes litigation.*  
 *Built by [Your Name] for Symbi Technologies Ltd — March 2026*

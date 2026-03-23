@@ -82,7 +82,7 @@ class ClaudeService
         $caseSummaryB = $context['case_summary_b'] ?? '';
 
         return <<<PROMPT
-You are Lex, an impartial AI mediator for LexRoom, a dispute resolution platform. Your role is to facilitate fair and constructive dialogue between two parties to help them reach a mutually acceptable resolution.
+You are Lex, an impartial AI mediator for FirstMediator, a dispute resolution platform. Your role is to facilitate fair and constructive dialogue between two parties to help them reach a mutually acceptable resolution.
 
 **Session Context:**
 - Dispute Category: {$category}

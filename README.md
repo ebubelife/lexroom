@@ -1,8 +1,8 @@
-# LexRoom
+# FirstMediator
 
 **AI-assisted legal dispute mediation SaaS platform**
 
-LexRoom is a modern web application that helps resolve legal disputes through AI-assisted mediation, eliminating the need for expensive lawyers and lengthy court processes.
+FirstMediator is a modern web application that helps resolve legal disputes through AI-assisted mediation, eliminating the need for expensive lawyers and lengthy court processes.
 
 ## 🚀 Features
 
@@ -41,7 +41,7 @@ LexRoom is a modern web application that helps resolve legal disputes through AI
 
 ## 📱 Phone Number Support
 
-LexRoom accepts all Nigerian phone number formats:
+FirstMediator accepts all Nigerian phone number formats:
 - `08012345678` (Standard format)
 - `+2348012345678` (International with +)
 - `2348012345678` (International without +)
@@ -74,8 +74,8 @@ Supports all Nigerian networks: MTN, Airtel, Glo, 9mobile, NTEL, Visafone, and m
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/ebubelife/lexroom.git
-   cd lexroom
+   git clone https://github.com/ebubelife/firstmediator.git
+   cd firstmediator
    ```
 
 2. **Install PHP dependencies**
@@ -99,7 +99,7 @@ Supports all Nigerian networks: MTN, Airtel, Glo, 9mobile, NTEL, Visafone, and m
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=lexroom
+   DB_DATABASE=firstmediator
    DB_USERNAME=your_username
    DB_PASSWORD=your_password
 
@@ -243,4 +243,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**LexRoom** - Resolving disputes the smart way. No lawyers needed. 🏛️⚖️
+**FirstMediator** - Resolving disputes the smart way. No lawyers needed. 🏛️⚖️
