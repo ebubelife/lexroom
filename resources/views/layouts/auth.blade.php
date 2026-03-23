@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'LexRoom')</title>
+    <title>@yield('title', 'FirstMediator')</title>
     <meta name="description" content="@yield('description', 'AI-assisted legal dispute mediation platform')">
 
     <!-- Favicon -->
@@ -103,13 +103,13 @@
             <a href="/" class="flex items-center">
                 <img 
                     src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-                    alt="LexRoom" 
+                    alt="FirstMediator" 
                     class="h-8 logo-light"
                     style="display: var(--logo-light-display, block);"
                 >
                 <img 
                     src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-                    alt="LexRoom" 
+                    alt="FirstMediator" 
                     class="h-8 logo-dark"
                     style="display: var(--logo-dark-display, none);"
                 >
@@ -141,7 +141,7 @@
 
     <!-- Footer -->
     <footer class="py-6 px-6 text-center text-sm" style="color: var(--text-secondary); border-top: 1px solid var(--border-color);">
-        <p>&copy; 2026 LexRoom &middot; Not legal advice &middot; <a href="#" class="hover:underline">Terms</a> &middot; <a href="#" class="hover:underline">Privacy</a></p>
+        <p>&copy; 2026 FirstMediator &middot; Not legal advice &middot; <a href="#" class="hover:underline">Terms</a> &middot; <a href="#" class="hover:underline">Privacy</a></p>
     </footer>
 
     <!-- Theme Toggle Script -->
