@@ -37,6 +37,11 @@
             --gray-800: #2E2E2C;
         }
 
+        html {
+            --logo-light-display: block;
+            --logo-dark-display: none;
+        }
+
         * {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
@@ -92,6 +97,10 @@
             const theme = localStorage.getItem('lexroom_theme') || 
                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
+            
+            const isDark = theme === 'dark';
+            document.documentElement.style.setProperty('--logo-light-display', isDark ? 'none' : 'block');
+            document.documentElement.style.setProperty('--logo-dark-display', isDark ? 'block' : 'none');
         })();
     </script>
 </head>
@@ -102,16 +111,16 @@
             <!-- Logo -->
             <a href="/" class="flex items-center">
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-                    alt="FirstMediator" 
-                    class="h-8 logo-light"
-                    style="display: var(--logo-light-display, block);"
-                >
-                <img 
                     src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
                     alt="FirstMediator" 
-                    class="h-8 logo-dark"
-                    style="display: var(--logo-dark-display, none);"
+                    class="h-8"
+                    style="display: var(--logo-light-display) !important;"
+                >
+                <img 
+                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+                    alt="FirstMediator" 
+                    class="h-8"
+                    style="display: var(--logo-dark-display) !important;"
                 >
             </a>
 

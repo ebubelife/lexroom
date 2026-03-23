@@ -8,16 +8,16 @@
     <!-- Logo -->
     <div class="text-center mb-8">
         <img 
-            src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="FirstMediator" 
-            class="h-10 mx-auto logo-light"
-            style="display: var(--logo-light-display, block);"
-        >
-        <img 
             src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
             alt="FirstMediator" 
-            class="h-10 mx-auto logo-dark"
-            style="display: var(--logo-dark-display, none);"
+            class="h-10 mx-auto"
+            style="display: var(--logo-light-display) !important;"
+        >
+        <img 
+            src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+            alt="FirstMediator" 
+            class="h-10 mx-auto"
+            style="display: var(--logo-dark-display) !important;"
         >
     </div>
 
