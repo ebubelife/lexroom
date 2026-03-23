@@ -1136,12 +1136,7 @@ footer {
       -->
       
       <!-- FM Icon -->
-      <img 
-        src="{{ asset('assets/images/logos/FM_Icon.svg') }}" 
-        alt="LexRoom Icon" 
-        class="logo-icon"
-        style="width: 32px; height: 32px;"
-      >
+     
       
       <!-- FM Logo Text -->
       <img 
@@ -1164,7 +1159,7 @@ footer {
       <li><a href="#">Terms of Service</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
-    <p class="footer-copy">© 2026 FirstMediator · Symbi Technologies Ltd</p>
+    <p class="footer-copy">© 2026 FirstMediator</p>
   </div>
 </footer>
 
