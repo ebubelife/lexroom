@@ -55,18 +55,26 @@
         </span>
     </div>
 
-    {{-- ====== MY CASES ====== --}}
-    <section class="mb-10">
-        <h2 class="text-base font-semibold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
-            <svg class="w-4 h-4" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    {{-- Tabs Navigation --}}
+    <div class="flex overflow-x-auto border-b mb-6 no-scrollbar" style="border-color: var(--border-color);">
+        <button onclick="switchTab('my-cases')" id="tab-btn-my-cases" class="whitespace-nowrap flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors" style="color: var(--gold); border-color: var(--gold);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
             Cases I Created
-            <span class="ml-1 px-2 py-0.5 rounded-full text-xs" style="background-color: var(--bg-secondary); color: var(--text-secondary);">{{ $totalMy }}</span>
-        </h2>
+        </button>
+        <button onclick="switchTab('invited-cases')" id="tab-btn-invited-cases" class="whitespace-nowrap flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 border-transparent transition-colors" style="color: var(--text-secondary);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Cases I Was Invited To
+        </button>
+    </div>
 
+    {{-- ====== MY CASES ====== --}}
+    <section id="tab-my-cases" class="tab-content block pb-10">
         @if($myRooms->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
             @foreach($myRooms as $room)
             @include('rooms._case_card', ['room' => $room, 'role' => 'creator'])
             @endforeach
@@ -87,17 +95,9 @@
     </section>
 
     {{-- ====== INVITED CASES ====== --}}
-    <section>
-        <h2 class="text-base font-semibold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
-            <svg class="w-4 h-4" style="color: #3B82F6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-            Cases I Was Invited To
-            <span class="ml-1 px-2 py-0.5 rounded-full text-xs" style="background-color: var(--bg-secondary); color: var(--text-secondary);">{{ $totalInvite }}</span>
-        </h2>
-
+    <section id="tab-invited-cases" class="tab-content hidden pb-10">
         @if($invitedRooms->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
             @foreach($invitedRooms as $room)
             @include('rooms._case_card', ['room' => $room, 'role' => 'invited'])
             @endforeach
@@ -113,6 +113,40 @@
         </div>
         @endif
     </section>
+
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show targeted tab
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('block');
+
+            // Reset buttons
+            document.querySelectorAll('[id^=tab-btn-]').forEach(btn => {
+                btn.style.color = 'var(--text-secondary)';
+                btn.style.borderColor = 'transparent';
+            });
+
+            // Activate button
+            const activeColor = tabId === 'my-cases' ? 'var(--gold)' : '#3B82F6';
+            document.getElementById('tab-btn-' + tabId).style.color = activeColor;
+            document.getElementById('tab-btn-' + tabId).style.borderColor = activeColor;
+        }
+
+        // Init based on url query for pagination
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('invited_rooms')) {
+                switchTab('invited-cases');
+            } else {
+                switchTab('my-cases');
+            }
+        });
+    </script>
 
 </div>
 @endsection
