@@ -12,7 +12,7 @@
 
         <div style="background: #F5EDD6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h2 style="color: #0D1B2A; margin-top: 0;">Mediation Session Complete</h2>
-            <p>Your mediation session has concluded, and Lex has generated a comprehensive report analyzing the discussion and providing recommendations.</p>
+            <p>Your mediation session has concluded, and First Mediator has generated a comprehensive report analyzing the discussion and providing recommendations.</p>
         </div>
 
         <div style="margin-bottom: 20px;">

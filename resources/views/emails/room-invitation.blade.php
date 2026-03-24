@@ -165,7 +165,7 @@
             <ul class="message" style="padding-left: 20px;">
                 <li>Click the button below to join the session</li>
                 <li>You can join as a guest (no account required)</li>
-                <li>Present your side of the dispute to Lex, our AI mediator</li>
+                <li>Present your side of the dispute to First Mediator, our AI mediator</li>
                 <li>Upload any supporting evidence or documents</li>
                 <li>Receive a detailed mediation report at the end</li>
             </ul>
@@ -178,7 +178,7 @@
             <div class="divider"></div>
 
             <p class="message" style="font-size: 14px; color: #718096;">
-                <strong>Note:</strong> This session is confidential. All communications and evidence shared will only be accessible to you, the other party, and Lex AI. 
+                <strong>Note:</strong> This session is confidential. All communications and evidence shared will only be accessible to you, the other party, and First Mediator AI. 
                 The session will be recorded for transcript purposes only.
             </p>
 

@@ -9,31 +9,19 @@ class FmReferController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Lawyer::where('active', true)
-            ->where('verified', true);
+        $user = auth()->user();
 
-        // Filter by jurisdiction
-        if ($request->filled('jurisdiction')) {
-            $query->where('jurisdiction', $request->jurisdiction);
-        }
+        // Mock data for the Refer & Earn dashboard
+        $stats = [
+            'total' => 0,
+            'successful' => 0,
+            'earned' => 0,
+        ];
 
-        // Filter by speciality
-        if ($request->filled('speciality')) {
-            $query->where('speciality', $request->speciality);
-        }
+        $referralLink = route('register') . '?ref=' . ($user->invite_token ?? 'fm_12345');
+        $referrals = [];
 
-        // Search by name
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        $lawyers = $query->orderBy('years_experience', 'desc')
-            ->paginate(12);
-
-        $jurisdictions = ['Nigeria', 'UK', 'South Africa', 'Ghana'];
-        $specialities = ['Tenancy', 'Freelance', 'Business', 'E-commerce', 'Debt', 'Employment'];
-
-        return view('fmrefer.index', compact('lawyers', 'jurisdictions', 'specialities'));
+        return view('fmrefer.index', compact('stats', 'referralLink', 'referrals'));
     }
 
     public function show(Lawyer $lawyer)

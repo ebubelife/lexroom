@@ -93,7 +93,7 @@ class RoomController extends Controller
         $fields = [
             'email' => auth()->user()->email,
             'amount' => $amount * 100, // Paystack expects amount in kobo
-            'reference' => 'LEXROOM_' . $room->uuid . '_' . time(),
+            'reference' => 'FIRSTMEDIATOR_' . $room->uuid . '_' . time(),
             'callback_url' => route('payment.callback'),
             'metadata' => [
                 'room_id' => $room->id,
@@ -155,6 +155,6 @@ class RoomController extends Controller
             return view('rooms.show', compact('room'));
         }
         
-        abort(403, 'Unauthorized access to this room');
+        return redirect()->route('login')->with('error', 'Please log in to access this room.');
     }
 }
