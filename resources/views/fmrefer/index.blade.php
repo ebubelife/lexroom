@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'LexRefer — FirstMediator')
-@section('page-title', 'LexRefer')
+@section('title', 'FMRefer — FirstMediator')
+@section('page-title', 'FMRefer')
 
 @section('content')
 <div class="max-w-7xl mx-auto">

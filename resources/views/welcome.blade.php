@@ -1093,7 +1093,7 @@ footer {
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          <p>Yes — this is LexRefer. At the end of any session you can escalate to a verified lawyer from our directory, filtered by jurisdiction and speciality. Your full case file (transcript, evidence, First Mediator report) is packaged and sent to the lawyer automatically. They respond within 48–72 hours.</p>
+          <p>Yes — this is FMRefer. At the end of any session you can escalate to a verified lawyer from our directory, filtered by jurisdiction and speciality. Your full case file (transcript, evidence, First Mediator report) is packaged and sent to the lawyer automatically. They respond within 48–72 hours.</p>
         </div>
       </div>
     </div>
