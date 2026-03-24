@@ -124,7 +124,7 @@
                     <div class="feature-icon">✓</div>
                     <div>
                         <strong>AI-Powered Mediation</strong><br>
-                        <span style="color: #777; font-size: 14px;">Lex AI guides both parties toward fair resolutions</span>
+                        <span style="color: #777; font-size: 14px;">First Mediator AI guides both parties toward fair resolutions</span>
                     </div>
                 </div>
                 <div class="feature">

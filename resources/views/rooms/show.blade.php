@@ -60,7 +60,7 @@
                                     <div class="flex items-center mb-2">
                                         <div class="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-bold mr-2"
                                              style="background-color: var(--gold);">L</div>
-                                        <span class="text-sm md:text-base font-medium" style="color: var(--gold);">Lex AI Mediator</span>
+                                        <span class="text-sm md:text-base font-medium" style="color: var(--gold);">First Mediator AI</span>
                                     </div>
                                     <p class="text-sm md:text-base whitespace-pre-wrap" style="color: var(--text-primary);" x-text="message.content"></p>
                                     <span class="text-xs mt-2 block" style="color: var(--text-secondary);" x-text="formatTimestamp(message.created_at)"></span>
@@ -104,7 +104,7 @@
                         <div class="p-3 rounded-lg flex items-center space-x-2" style="background-color: rgba(201, 168, 76, 0.05);">
                             <div class="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
                                  style="background-color: var(--gold);">L</div>
-                            <span class="text-sm" style="color: var(--text-secondary);">Lex is analyzing...</span>
+                            <span class="text-sm" style="color: var(--text-secondary);">First Mediator is analyzing...</span>
                             <div class="flex space-x-1">
                                 <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0ms;"></div>
                                 <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 150ms;"></div>

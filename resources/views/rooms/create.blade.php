@@ -167,7 +167,7 @@
             <!-- Step 3: Case Summary -->
             <div x-show="currentStep === 2" x-transition>
                 <h2 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Case Summary</h2>
-                <p class="text-sm mb-6" style="color: var(--text-secondary);">Provide a brief summary to help Lex understand your dispute before the session</p>
+                <p class="text-sm mb-6" style="color: var(--text-secondary);">Provide a brief summary to help First Mediator understand your dispute before the session</p>
                 
                 <div>
                     <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Your Case Summary</label>

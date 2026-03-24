@@ -832,7 +832,7 @@ footer {
               <div class="msg-bubble">The deliverables were incomplete. The final logo variants were never submitted.</div>
             </div>
             <div class="msg-lex" style="animation-delay:0.5s">
-              <span class="msg-lex-label">⚖ Lex · AI Mediator</span>
+              <span class="msg-lex-label">⚖ First Mediator</span>
               Party A — your invoice (Exhibit 1) references 3 logo variants. Party B — can you confirm which specific variants were not delivered? This will help establish the scope of completion.
             </div>
             <div class="msg msg-a" style="animation-delay:0.7s">
@@ -902,12 +902,12 @@ footer {
       <div class="step-card reveal reveal-delay-2">
         <span class="step-num">02</span>
         <div class="step-title">Present your case</div>
-        <p class="step-desc">Both parties join the room and present their position. Upload contracts, invoices, screenshots. Lex reads everything, asks targeted questions, and keeps the session fair.</p>
+        <p class="step-desc">Both parties join the room and present their position. Upload contracts, invoices, screenshots. First Mediator reads everything, asks targeted questions, and keeps the session fair.</p>
       </div>
       <div class="step-card reveal reveal-delay-3">
         <span class="step-num">03</span>
         <div class="step-title">Receive your report</div>
-        <p class="step-desc">Lex delivers a formal, timestamped PDF report — findings, resolution recommendation, and confidence score. Usable as documentation if the matter proceeds to court.</p>
+        <p class="step-desc">First Mediator delivers a formal, timestamped PDF report — findings, resolution recommendation, and confidence score. Usable as documentation if the matter proceeds to court.</p>
       </div>
     </div>
   </div>
@@ -974,7 +974,7 @@ footer {
       </div>
       <div class="trust-item reveal reveal-delay-3">
         <div class="trust-stat"><span>100%</span></div>
-        <div class="trust-label">AI-impartial — Lex has no side, no bias, no agenda</div>
+        <div class="trust-label">AI-impartial — First Mediator has no side, no bias, no agenda</div>
       </div>
       <div class="trust-item reveal reveal-delay-4">
         <div class="trust-stat"><span>PDF</span></div>
@@ -1032,7 +1032,7 @@ footer {
           <li>Mediation report PDF</li>
           <li>Split payment option</li>
           <li>Lawyer escalation access</li>
-          <li>Priority Lex processing</li>
+          <li>Priority First Mediator processing</li>
         </ul>
         <a href="{{ route('register') }}" class="pricing-cta pricing-cta-outline">Create a Room</a>
       </div>
@@ -1053,7 +1053,7 @@ footer {
     <div class="faq-grid reveal">
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
-          <span class="faq-question-text">Is the Lex report legally binding?</span>
+          <span class="faq-question-text">Is the First Mediator report legally binding?</span>
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
@@ -1071,11 +1071,11 @@ footer {
       </div>
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
-          <span class="faq-question-text">How does Lex stay impartial?</span>
+          <span class="faq-question-text">How does First Mediator stay impartial?</span>
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          <p>Lex has no relationship with either party and no financial stake in the outcome. It analyses both positions, the uploaded evidence, and the applicable legal framework for your jurisdiction. Every finding comes with a confidence score so you can see how certain the analysis is.</p>
+          <p>First Mediator has no relationship with either party and no financial stake in the outcome. It analyses both positions, the uploaded evidence, and the applicable legal framework for your jurisdiction. Every finding comes with a confidence score so you can see how certain the analysis is.</p>
         </div>
       </div>
       <div class="faq-item">
@@ -1093,7 +1093,7 @@ footer {
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          <p>Yes — this is LexRefer. At the end of any session you can escalate to a verified lawyer from our directory, filtered by jurisdiction and speciality. Your full case file (transcript, evidence, Lex report) is packaged and sent to the lawyer automatically. They respond within 48–72 hours.</p>
+          <p>Yes — this is LexRefer. At the end of any session you can escalate to a verified lawyer from our directory, filtered by jurisdiction and speciality. Your full case file (transcript, evidence, First Mediator report) is packaged and sent to the lawyer automatically. They respond within 48–72 hours.</p>
         </div>
       </div>
     </div>
