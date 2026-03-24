@@ -58,7 +58,7 @@ class Room extends Model
         return $this->hasMany(SessionMessage::class);
     }
 
-    public function evidence()
+    public function evidenceFiles()
     {
         return $this->hasMany(EvidenceFile::class);
     }
