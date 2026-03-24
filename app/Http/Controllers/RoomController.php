@@ -10,20 +10,24 @@ use App\Mail\RoomInvitation;
 
 class RoomController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        
-        // Rooms created by user
-        $myRooms = Room::where('party_a_id', $user->id)
-            ->latest()
-            ->paginate(10, ['*'], 'my_rooms');
-        
-        // Rooms user was invited to
-        $invitedRooms = Room::where('party_b_id', $user->id)
-            ->latest()
-            ->paginate(10, ['*'], 'invited_rooms');
-        
+        $search = $request->get('q');
+        $status = $request->get('status');
+
+        $baseQuery = fn($userId, $col) => Room::with('evidenceFiles')
+            ->where($col, $userId)
+            ->when($search, fn($q) => $q->where(function ($q) use ($search) {
+                $q->where('case_summary', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            }))
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->latest();
+
+        $myRooms      = $baseQuery($user->id, 'party_a_id')->paginate(9, ['*'], 'my_rooms');
+        $invitedRooms = $baseQuery($user->id, 'party_b_id')->paginate(9, ['*'], 'invited_rooms');
+
         return view('rooms.index', compact('myRooms', 'invitedRooms'));
     }
 

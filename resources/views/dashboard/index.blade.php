@@ -84,7 +84,7 @@
         <h2 class="text-lg lg:text-xl font-serif mb-3" style="color: var(--text-primary);">Needs your attention</h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             @foreach($activeSessions as $session)
-            <div class="p-6 rounded-xl hover-lift" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="p-6 rounded-xl hover-lift overflow-hidden" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
                 <!-- Category Badge -->
                 <div class="flex items-center justify-between mb-4">
                     <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: {{ $session->category_badge_color['bg'] }}; color: {{ $session->category_badge_color['text'] }};">
@@ -101,27 +101,30 @@
                     @endif
                 </div>
 
-                <h3 class="font-medium mb-2" style="color: var(--text-primary);">
-                    {{ $session->case_summary ? Str::limit($session->case_summary, 60) : ucfirst($session->category) . ' Dispute' }}
+                <h3 class="font-medium mb-2 truncate" title="{{ $session->case_summary ?? ucfirst($session->category) . ' Dispute' }}" style="color: var(--text-primary);">
+                    {{ $session->case_summary ? Str::limit($session->case_summary, 50) : ucfirst($session->category) . ' Dispute' }}
                 </h3>
 
-                <p class="text-sm mb-4" style="color: var(--text-secondary);">
+                <p class="text-sm mb-4 truncate" style="color: var(--text-secondary);">
                     Other party: {{ $session->partyB?->name ?? 'Waiting for Party B' }}
                 </p>
 
                 @if($session->status === 'active')
-                <a href="#" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                     Continue Session
                 </a>
                 @elseif($session->status === 'pending')
-                <a href="#" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #f59e0b; color: var(--white);">
                     Complete Payment
                 </a>
                 @else
-                <a href="#" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500 mb-2" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                     Resend Invite
                 </a>
                 @endif
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium mt-2 transition-colors hover:opacity-80" style="color: var(--gold);">
+                    View Details →
+                </a>
             </div>
             @endforeach
         </div>
@@ -181,19 +184,19 @@
                         </div>
                     </div>
                     @if($room->status === 'active')
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                         Enter Room
                     </a>
                     @elseif($room->status === 'pending')
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
                         Complete Payment
                     </a>
                     @elseif($room->status === 'completed')
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                         Download Report
                     </a>
                     @else
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                         View Case
                     </a>
                     @endif
@@ -239,21 +242,21 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($room->status === 'active')
-                                <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                                     Enter Room
                                 </a>
                                 @elseif($room->status === 'pending')
-                                <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
                                     Complete Payment
                                 </a>
                                 @elseif($room->status === 'completed')
                                 <div class="flex space-x-2">
-                                    <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                                    <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                                         Download Report
                                     </a>
                                 </div>
                                 @else
-                                <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                                     View Case
                                 </a>
                                 @endif
@@ -307,11 +310,11 @@
                         </div>
                     </div>
                     @if($room->status === 'active')
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                         Enter Room
                     </a>
                     @else
-                    <a href="#" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                         View Details
                     </a>
                     @endif
@@ -357,11 +360,11 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($room->status === 'active')
-                                <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                                     Enter Room
                                 </a>
                                 @else
-                                <a href="#" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                                     View Details
                                 </a>
                                 @endif

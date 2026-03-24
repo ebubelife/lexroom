@@ -6,6 +6,7 @@ use App\Http\Controllers\LogViewerController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PasswordResetLinkController;
+use App\Http\Controllers\VaultController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -69,6 +70,10 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/fmrefer', [\App\Http\Controllers\FmReferController::class, 'index'])->name('fmrefer.index');
     Route::get('/fmrefer/{lawyer}', [\App\Http\Controllers\FmReferController::class, 'show'])->name('fmrefer.show');
     Route::post('/fmrefer/{lawyer}/contact', [\App\Http\Controllers\FmReferController::class, 'contact'])->name('fmrefer.contact');
+
+    // Vault routes
+    Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
+    Route::get('/vault/download/{file}', [VaultController::class, 'download'])->name('vault.download');
 });
 
 // Room access (guest or authenticated)

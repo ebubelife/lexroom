@@ -306,12 +306,20 @@
                     Dashboard
                 </a>
 
-                <!-- My Rooms -->
+                <!-- Cases (formerly My Rooms) -->
                 <a href="{{ route('rooms.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('rooms.*') ? 'nav-link-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M10.5 3L12 2l1.5 1H21v6H3V3h7.5z"></path>
                     </svg>
-                    My Rooms
+                    Cases
+                </a>
+
+                <!-- Vaults -->
+                <a href="{{ route('vault.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('vault.*') ? 'nav-link-active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                    </svg>
+                    Vaults
                 </a>
 
                 <!-- Reports -->
