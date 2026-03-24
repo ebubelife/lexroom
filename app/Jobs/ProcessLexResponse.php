@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Models\Room;
+use App\Models\SessionMessage;
+use App\Services\ClaudeService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+class ProcessLexResponse implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $roomId;
+    public $triggeredByMessageId;
+
+    public function __construct($roomId, $triggeredByMessageId)
+    {
+        $this->roomId = $roomId;
+        $this->triggeredByMessageId = $triggeredByMessageId;
+    }
+
+    public function handle(ClaudeService $claudeService): void
+    {
+        $room = Room::find($this->roomId);
+        
+        if (!$room) {
+            Log::error("Room not found: {$this->roomId}");
+            return;
+        }
+
+        // Get conversation history
+        $messages = SessionMessage::where('room_id', $room->id)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($msg) {
+                return [
+                    'sender' => $msg->sender_type,
+                    'content' => $msg->content,
+                    'phase' => $msg->phase,
+                ];
+            })
+            ->toArray();
+
+        // Build context
+        $context = [
+            'category' => $room->category,
+            'jurisdiction' => $room->jurisdiction,
+            'language' => $room->language,
+            'case_summary_a' => $room->case_summary ?? '',
+            'case_summary_b' => '', // TODO: Get from Party B if provided
+        ];
+
+        // Get Lex response
+        $response = $claudeService->generateResponse($messages, $context);
+
+        if ($response['success']) {
+            // Save Lex response
+            $currentPhase = Cache::get("room:{$room->id}:phase", 'opening');
+            
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => $response['message'],
+                'phase' => $currentPhase,
+            ]);
+        } else {
+            Log::error('Lex response failed', [
+                'room_id' => $room->id,
+                'error' => $response['error'] ?? 'Unknown error',
+            ]);
+
+            // Send error message
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => 'I apologize, but I encountered a technical issue. Please continue your discussion, and I will rejoin shortly.',
+                'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+            ]);
+        }
+
+        // Clear processing flag
+        Cache::forget("room:{$room->id}:lex_processing");
+    }
+}

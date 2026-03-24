@@ -59,14 +59,26 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::put('/settings', [\App\Http\Controllers\ProfileController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('settings.password');
     
-    // Reports, Wallet, LexRefer routes
+    // Reports, Wallet, FM Refer routes
     Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{report}', [\App\Http\Controllers\ReportsController::class, 'show'])->name('reports.show');
+    Route::get('/reports/{report}/download', [\App\Http\Controllers\ReportsController::class, 'download'])->name('reports.download');
+    Route::post('/rooms/{room}/generate-report', [\App\Http\Controllers\ReportsController::class, 'generate'])->name('rooms.generate-report');
+    
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
-    Route::get('/lexrefer', [\App\Http\Controllers\LexReferController::class, 'index'])->name('lexrefer.index');
+    Route::get('/fmrefer', [\App\Http\Controllers\FmReferController::class, 'index'])->name('fmrefer.index');
+    Route::get('/fmrefer/{lawyer}', [\App\Http\Controllers\FmReferController::class, 'show'])->name('fmrefer.show');
+    Route::post('/fmrefer/{lawyer}/contact', [\App\Http\Controllers\FmReferController::class, 'contact'])->name('fmrefer.contact');
 });
 
 // Room access (guest or authenticated)
 Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
+
+// Chat polling endpoints (guest or authenticated)
+Route::get('/rooms/{uuid}/poll', [\App\Http\Controllers\ChatController::class, 'poll'])->name('chat.poll');
+Route::post('/rooms/{uuid}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+Route::post('/rooms/{uuid}/start', [\App\Http\Controllers\ChatController::class, 'startSession'])->name('chat.start');
+Route::post('/rooms/{uuid}/phase', [\App\Http\Controllers\ChatController::class, 'changePhase'])->name('chat.phase');
 
 // Evidence routes (guest or authenticated)
 Route::post('/rooms/{uuid}/evidence', [\App\Http\Controllers\EvidenceController::class, 'upload'])->name('evidence.upload');
