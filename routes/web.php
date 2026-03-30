@@ -13,6 +13,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Test Email Dispatch
+Route::get('/test-email', function () {
+    if (!auth()->check()) {
+        return "Please log in first to test emails.";
+    }
+    try {
+        \Illuminate\Support\Facades\Mail::raw('This is a test email from First Mediator to verify your Mail/SMTP configurations.', function ($message) {
+            $message->to(auth()->user()->email)
+                    ->subject('First Mediator - Test Email Support');
+        });
+        return "Test email successfully sent to: " . auth()->user()->email . "! Check your inbox/spam folder.";
+    } catch (\Exception $e) {
+        return "Failed to send email. Error: " . $e->getMessage();
+    }
+})->name('test.email');
+
 // Log Viewer (for debugging)
 Route::get('/logs', [LogViewerController::class, 'index'])->name('logs.index');
 Route::get('/logs/clear', [LogViewerController::class, 'clear'])->name('logs.clear');

@@ -110,9 +110,10 @@ class OtpController extends Controller
         // Check if user is now fully verified
         $user = $user->fresh();
         if ($user->isFullyVerified()) {
-            // Send welcome email
+            // Send welcome email (Sync instead of queue for shared hosting)
             try {
-                Mail::to($user->email)->queue(new \App\Mail\WelcomeEmail($user));
+                Mail::to($user->email)->send(new \App\Mail\WelcomeEmail($user));
+                \Log::info("Successfully sent welcome email to " . $user->email);
             } catch (\Exception $e) {
                 \Log::error('Failed to send welcome email: ' . $e->getMessage());
             }

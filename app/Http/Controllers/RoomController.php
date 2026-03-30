@@ -58,18 +58,19 @@ class RoomController extends Controller
             'case_summary' => $validated['case_summary'],
             'duration' => $validated['duration'],
             'payment_type' => $validated['payment_type'],
-            'status' => 'pending',
+            'status' => 'active', // Bypassed payment wall for now
             'invite_token' => Str::random(64),
         ]);
 
         // Store Party B email temporarily (we'll create user account later if they sign up)
         $room->update(['party_b_email' => $validated['party_b_email']]);
 
-        // Send invitation email to Party B
+        // Send invitation email to Party B (Sync instead of queue for shared hosting)
         try {
-            Mail::to($validated['party_b_email'])->queue(new RoomInvitation($room));
+            Mail::to($validated['party_b_email'])->send(new RoomInvitation($room));
+            \Log::info("Successfully sent invitation email to Party B: " . $validated['party_b_email']);
         } catch (\Exception $e) {
-            // Continue even if email fails (for demo)
+            \Log::error('Failed to send Room Invitation to Party B: ' . $e->getMessage());
         }
 
         // For demo: bypass payment and go directly to room
