@@ -13,7 +13,6 @@ $appRoot = is_dir(__DIR__ . '/../firstmediator.com')
     : __DIR__ . '/..';
 
 
-
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = $appRoot . '/storage/framework/maintenance.php')) {
     require $maintenance;
