@@ -17,9 +17,17 @@ class EvidenceController extends Controller
     {
         $room = Room::where('uuid', $roomUuid)->firstOrFail();
 
+        // Block uploads if session is finalized
+        if ($room->status === 'completed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot upload evidence after the session has ended',
+            ], 403);
+        }
+
         // Validate file
         $request->validate([
-            'file' => 'required|file|max:20480|mimes:pdf,doc,docx,png,jpg,jpeg,mp4', // 20MB max
+            'file' => 'required|file|max:20480|mimes:pdf,txt,csv,md,doc,docx,png,jpg,jpeg,mp4', // 20MB max
         ]);
 
         // Check file count limit (20 files per session)
@@ -64,8 +72,8 @@ class EvidenceController extends Controller
             'size' => $file->getSize(),
         ]);
 
-        // Extract text from PDF/DOCX (optional - can be done in background job)
-        // $this->extractText($evidence);
+        // Dispatch text extraction for pdf/txt
+        \App\Jobs\ProcessEvidenceFile::dispatch($evidence->id);
 
         return response()->json([
             'success' => true,
@@ -109,8 +117,8 @@ class EvidenceController extends Controller
             ->where('id', $fileId)
             ->firstOrFail();
 
-        // Check if file is locked (session ended)
-        if ($evidence->is_locked) {
+        // Check if file is locked or session ended
+        if ($evidence->is_locked || $room->status === 'completed') {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete evidence after session has ended',

@@ -48,6 +48,17 @@ class ProcessLexResponse implements ShouldQueue
             })
             ->toArray();
 
+        // Get parsed evidence texts
+        $evidenceRecords = \App\Models\EvidenceFile::where('room_id', $room->id)
+            ->whereNotNull('extracted_text')
+            ->get();
+        
+        $evidenceTexts = [];
+        foreach ($evidenceRecords as $e) {
+            $party = $e->party === 'party_a' ? 'Party A' : 'Party B';
+            $evidenceTexts[] = "Document Name: {$e->original_filename}\nUploaded by: {$party}\nContent:\n{$e->extracted_text}";
+        }
+
         // Build context
         $context = [
             'category' => $room->category,
@@ -55,6 +66,7 @@ class ProcessLexResponse implements ShouldQueue
             'language' => $room->language,
             'case_summary_a' => $room->case_summary ?? '',
             'case_summary_b' => '', // TODO: Get from Party B if provided
+            'evidence_texts' => empty($evidenceTexts) ? '' : implode("\n\n---\n\n", $evidenceTexts),
         ];
 
         // Get Lex response

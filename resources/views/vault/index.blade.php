@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Evidence Vault — FirstMediator')
+@section('title', 'Evidence Vault — First Mediator')
 @section('page-title', 'Vaults')
 
 @section('content')

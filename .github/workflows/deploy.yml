@@ -1,50 +1,86 @@
-name: Deploy to cPanel
+name: Deploy to firstmediator.com
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Clean install Node.js dependencies
-      run: |
-        rm -rf node_modules package-lock.json
-        npm install --legacy-peer-deps
-      
-    - name: Build assets
-      run: npm run build
-      
-    - name: Deploy to cPanel via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
-        server-dir: ./
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/vendor/**
-          .env.example
-          .env
-          README.md
-          package-lock.json
-          vite.config.js
-          tests/**
-          .github/**
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, ctype, fileinfo, openssl, pdo, tokenizer, xml
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Composer dependencies (production, no dev)
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Install Node.js dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build frontend assets (Vite)
+        run: npm run build
+
+      # ─────────────────────────────────────────────────────────────────────
+      # STEP 1: Deploy full Laravel app above the web root (safe)
+      # Local ./  →  Server /firstmediator.com/
+      # i.e. /home/firswomm/firstmediator.com/ on the server
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Deploy app files to firstmediator.com/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: ./
+          server-dir: /firstmediator.com/
+          exclude: |
+            **/.git/**
+            **/.gitignore
+            **/node_modules/**
+            .env
+            .env.*
+            !.env.example
+            README.md
+            package-lock.json
+            tests/**
+            .github/**
+            deploy-helper.php
+            storage/logs/**
+            storage/framework/cache/**
+            storage/framework/sessions/**
+            storage/framework/views/**
+
+      # ─────────────────────────────────────────────────────────────────────
+      # STEP 2: Deploy only public/ contents to public_html/ (web-accessible)
+      # Local ./public/  →  Server /public_html/
+      # i.e. /home/firswomm/public_html/ on the server
+      # This means: index.php, .htaccess, build/, favicon.ico etc.
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Deploy public assets to public_html/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: ./public/
+          server-dir: /public_html/
+          exclude: |
+            **/.git/**
+            storage/**

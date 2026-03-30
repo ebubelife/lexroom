@@ -120,7 +120,7 @@
     <div class="email-container">
         <!-- Header -->
         <div class="header">
-            <div class="logo">FirstMediator</div>
+            <div class="logo">First Mediator</div>
             <div class="header-subtitle">AI-Assisted Legal Mediation</div>
         </div>
 
@@ -133,7 +133,7 @@
             </p>
             
             <p class="message">
-                <strong>{{ $room->partyA->name }}</strong> has invited you to participate in a mediation session on FirstMediator. 
+                <strong>{{ $room->partyA->name }}</strong> has invited you to participate in a mediation session on First Mediator. 
                 This is an AI-assisted dispute resolution platform designed to help both parties reach a fair resolution without expensive lawyers or lengthy court processes.
             </p>
 
@@ -190,7 +190,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>© {{ date('Y') }} FirstMediator. All rights reserved.</p>
+            <p>© {{ date('Y') }} First Mediator. All rights reserved.</p>
             <p style="margin-top: 10px;">Resolving disputes the smart way. No lawyers needed.</p>
             <div class="footer-links">
                 <a href="#" class="footer-link">Privacy Policy</a>

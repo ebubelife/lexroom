@@ -150,9 +150,11 @@ class RoomController extends Controller
             return view('rooms.show', compact('room'));
         }
         
-        // Check for valid invite token (for non-logged-in users)
-        if (request()->has('token') && request('token') === $room->invite_token) {
+        // Check for valid signed invite link (for non-logged-in users)
+        if (request()->hasValidSignature() && request('token') === $room->invite_token) {
             return view('rooms.show', compact('room'));
+        } elseif (request()->has('signature') && !request()->hasValidSignature()) {
+            return redirect()->route('login')->with('error', 'Your invitation link is invalid or has expired.');
         }
         
         return redirect()->route('login')->with('error', 'Please log in to access this room.');

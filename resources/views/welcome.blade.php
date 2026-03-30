@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FirstMediator — Dispute Resolution, Without the Legal Bill</title>
+<title>First Mediator — Dispute Resolution, Without the Legal Bill</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
@@ -751,16 +751,16 @@ footer {
       <!-- FM Logo Text -->
 
        <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
+        src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display) !important;"
+        style="height: 72px; display: var(--logo-dark-display) !important;"
       >
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-        alt="FirstMediator" 
+        src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
+        alt="First Mediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display) !important;"
+        style="height: 72px; display: var(--logo-light-display) !important;"
       >
      
     </a>
@@ -815,7 +815,7 @@ footer {
             <div class="mockup-dot"></div>
             <div class="mockup-dot"></div>
           </div>
-          <div class="mockup-url">app.firstmediator.ng/room/inv-2024-0847</div>
+          <div class="mockup-url">firstmediator.com/room/inv-2024-0847</div>
         </div>
         <div class="mockup-content">
           <div class="mockup-chat">
@@ -1140,16 +1140,16 @@ footer {
       
       <!-- FM Logo Text -->
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
+        src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
         alt="FirstMediator" 
         class="logo-text logo-light"
-        style="height: 24px; display: var(--logo-light-display) !important;"
+        style="height: 72px; display: var(--logo-light-display) !important;"
       >
       <img 
-        src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-        alt="FirstMediator" 
+        src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
+        alt="First Mediator" 
         class="logo-text logo-dark"
-        style="height: 24px; display: var(--logo-dark-display) !important;"
+        style="height: 72px; display: var(--logo-dark-display) !important;"
       >
     </a>
     <ul class="footer-links">

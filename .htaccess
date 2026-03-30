@@ -1,27 +1,12 @@
-# Laravel Root .htaccess
-# Redirect all requests to public folder
+# Laravel App Root — Security Only
+# (This directory is NOT web-accessible — just an extra safety net)
 
-RewriteEngine On
+# Block all direct HTTP access to PHP files
+<Files "*.php">
+    Order allow,deny
+    Deny from all
+</Files>
 
-# Handle Angular and Vue.js client-side routing
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/public/
-RewriteRule ^(.*)$ /public/$1 [L,QSA]
-
-# If request is for root, redirect to public
-RewriteCond %{REQUEST_URI} ^/$
-RewriteRule ^(.*)$ /public/ [L,QSA]
-
-# Security headers
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
-
-# Hide sensitive files
 <Files ".env">
     Order allow,deny
     Deny from all
@@ -32,17 +17,7 @@ RewriteRule ^(.*)$ /public/ [L,QSA]
     Deny from all
 </Files>
 
-<Files "composer.lock">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Files "package.json">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Files "*.log">
+<Files "artisan">
     Order allow,deny
     Deny from all
 </Files>

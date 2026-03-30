@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Wallet & Credits — FirstMediator')
+@section('title', 'Wallet & Credits — First Mediator')
 @section('page-title', 'Wallet & Credits')
 
 @section('content')

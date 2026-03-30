@@ -20,10 +20,10 @@ class RoomInvitation extends Mailable
     public function __construct(Room $room)
     {
         $this->room = $room;
-        $this->roomLink = route('rooms.show', [
+        $this->roomLink = URL::signedRoute('rooms.show', [
             'uuid' => $room->uuid,
             'token' => $room->invite_token
-        ]);
+        ], now()->addDays(7));
     }
 
     public function envelope(): Envelope

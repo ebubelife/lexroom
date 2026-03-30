@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'FirstMediator')</title>
+    <title>@yield('title', 'First Mediator')</title>
     <meta name="description" content="@yield('description', 'AI-assisted legal dispute mediation platform')">
 
     <!-- Favicon -->
@@ -111,15 +111,15 @@
             <!-- Logo -->
             <a href="/" class="flex items-center">
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-                    alt="FirstMediator" 
-                    class="h-8"
+                    src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
+                    alt="First Mediator" 
+                    class="h-24"
                     style="display: var(--logo-light-display) !important;"
                 >
                 <img 
-                    src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-                    alt="FirstMediator" 
-                    class="h-8"
+                    src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
+                    alt="First Mediator" 
+                    class="h-24"
                     style="display: var(--logo-dark-display) !important;"
                 >
             </a>
@@ -150,7 +150,7 @@
 
     <!-- Footer -->
     <footer class="py-6 px-6 text-center text-sm" style="color: var(--text-secondary); border-top: 1px solid var(--border-color);">
-        <p>&copy; 2026 FirstMediator &middot; Not legal advice &middot; <a href="#" class="hover:underline">Terms</a> &middot; <a href="#" class="hover:underline">Privacy</a></p>
+        <p>&copy; 2026 First Mediator &middot; Not legal advice &middot; <a href="#" class="hover:underline">Terms</a> &middot; <a href="#" class="hover:underline">Privacy</a></p>
     </footer>
 
     <!-- Theme Toggle Script -->

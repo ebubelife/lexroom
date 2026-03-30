@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create a Room — FirstMediator')
+@section('title', 'Create a Room — First Mediator')
 @section('page-title', 'Create a Room')
 
 @section('content')
@@ -66,34 +66,8 @@
                     </template>
                 </div>
 
-                <!-- Custom Category Option -->
-                <div class="p-4 rounded-lg border-2 transition-all"
-                     style="background-color: var(--bg-primary); border-color: var(--border-color);"
-                     :style="formData.category === 'custom' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
-                    <label class="flex items-center cursor-pointer mb-3">
-                        <input type="radio" 
-                               name="category" 
-                               value="custom"
-                               x-model="formData.category"
-                               class="sr-only peer">
-                        <div class="p-2 rounded-lg mr-3" style="background-color: rgba(201, 168, 76, 0.1);">
-                            <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-medium" style="color: var(--text-primary);">Custom Category</h3>
-                            <p class="text-xs" style="color: var(--text-secondary);">Create your own dispute category</p>
-                        </div>
-                    </label>
-                    <div x-show="formData.category === 'custom'" x-transition class="mt-3">
-                        <input type="text" 
-                               x-model="formData.custom_category"
-                               placeholder="e.g., Intellectual Property, Insurance Claim, etc."
-                               class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
-                               style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
-                    </div>
-                </div>
+                <!-- Custom Category removed per spec -->
+
             </div>
 
             <!-- Step 2: Jurisdiction & Language -->
@@ -109,34 +83,22 @@
                                 class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
                                 style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                             <option value="">Select jurisdiction...</option>
+                            <optgroup label="Nigeria">
+                                <option value="Nigeria (Federal)">Nigeria (Federal)</option>
+                                <option value="Lagos State">Lagos State</option>
+                                <option value="FCT Abuja">FCT Abuja</option>
+                                <option value="Rivers State">Rivers State</option>
+                                <option value="Kano State">Kano State</option>
+                                <option value="Oyo State">Oyo State</option>
+                            </optgroup>
                             <optgroup label="United Kingdom">
                                 <option value="England & Wales">England & Wales</option>
                                 <option value="Scotland">Scotland</option>
                                 <option value="Northern Ireland">Northern Ireland</option>
                             </optgroup>
-                            <optgroup label="Europe">
-                                <option value="Ireland">Ireland</option>
-                                <option value="France">France</option>
-                                <option value="Germany">Germany</option>
-                                <option value="Spain">Spain</option>
-                                <option value="Italy">Italy</option>
-                                <option value="Netherlands">Netherlands</option>
-                            </optgroup>
-                            <optgroup label="North America">
-                                <option value="United States">United States</option>
-                                <option value="Canada">Canada</option>
-                            </optgroup>
                             <optgroup label="Africa">
                                 <option value="South Africa">South Africa</option>
-                                <option value="Nigeria">Nigeria</option>
                                 <option value="Ghana">Ghana</option>
-                                <option value="Kenya">Kenya</option>
-                            </optgroup>
-                            <optgroup label="Asia Pacific">
-                                <option value="Australia">Australia</option>
-                                <option value="New Zealand">New Zealand</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="India">India</option>
                             </optgroup>
                         </select>
                     </div>
@@ -323,13 +285,10 @@ function roomCreation() {
         nigerianStates: [],
         languages: [
             { value: 'english', label: 'English' },
-            { value: 'french', label: 'French' },
-            { value: 'spanish', label: 'Spanish' },
-            { value: 'german', label: 'German' },
-            { value: 'italian', label: 'Italian' },
-            { value: 'portuguese', label: 'Portuguese' },
-            { value: 'arabic', label: 'Arabic' },
-            { value: 'mandarin', label: 'Mandarin' }
+            { value: 'pidgin', label: 'Pidgin' },
+            { value: 'yoruba', label: 'Yoruba' },
+            { value: 'igbo', label: 'Igbo' },
+            { value: 'hausa', label: 'Hausa' }
         ],
         plans: [
             { name: 'Starter', duration: '30', price: 45 },
@@ -354,9 +313,6 @@ function roomCreation() {
         canProceed() {
             switch(this.currentStep) {
                 case 0:
-                    if (this.formData.category === 'custom') {
-                        return this.formData.custom_category.trim().length >= 3;
-                    }
                     return this.formData.category !== '';
                 case 1:
                     return this.formData.jurisdiction !== '' && this.formData.language !== '';

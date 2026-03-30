@@ -1,22 +1,22 @@
 @extends('layouts.auth')
 
-@section('title', 'Create your FirstMediator account — Resolve disputes without a lawyer')
-@section('description', 'Sign up to FirstMediator and start resolving disputes with AI-assisted mediation. No lawyer needed. Setup in 15 minutes.')
+@section('title', 'Create your First Mediator account — Resolve disputes without a lawyer')
+@section('description', 'Sign up to First Mediator and start resolving disputes with AI-assisted mediation. No lawyer needed. Setup in 15 minutes.')
 
 @section('content')
 <div class="p-8 rounded-xl shadow-lg" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
     <!-- Logo -->
     <div class="text-center mb-8">
         <img 
-            src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-            alt="FirstMediator" 
-            class="h-10 mx-auto"
+            src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
+            alt="First Mediator" 
+            class="h-32 mx-auto"
             style="display: var(--logo-light-display) !important;"
         >
         <img 
-            src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="FirstMediator" 
-            class="h-10 mx-auto"
+            src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
+            alt="First Mediator" 
+            class="h-32 mx-auto"
             style="display: var(--logo-dark-display) !important;"
         >
     </div>

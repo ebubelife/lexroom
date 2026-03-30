@@ -6,7 +6,7 @@
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #0D1B2A; margin-bottom: 5px;">FirstMediator</h1>
+            <h1 style="color: #0D1B2A; margin-bottom: 5px;">First Mediator</h1>
             <p style="color: #666; font-size: 14px;">Your Mediation Report is Ready</p>
         </div>
 
@@ -44,7 +44,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-            <p>© {{ now()->year }} FirstMediator. All rights reserved.</p>
+            <p>© {{ now()->year }} First Mediator. All rights reserved.</p>
             <p>Resolving disputes the smart way.</p>
         </div>
     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to FirstMediator</title>
+    <title>Welcome to First Mediator</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -99,17 +99,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="logo">FirstMediator</h1>
+            <h1 class="logo">First Mediator</h1>
         </div>
         
         <div class="content">
-            <h1>Welcome to FirstMediator, {{ $user->first_name }}! 🎉</h1>
+            <h1>Welcome to First Mediator, {{ $user->first_name }}! 🎉</h1>
             
             <p>Your account has been successfully verified and you're all set to start resolving disputes the smart way.</p>
             
             <div class="highlight">
-                <strong>What is FirstMediator?</strong><br>
-                FirstMediator is an AI-assisted legal dispute mediation platform that helps you resolve conflicts without expensive lawyers or lengthy court processes.
+                <strong>What is First Mediator?</strong><br>
+                First Mediator is an AI-assisted legal dispute mediation platform that helps you resolve conflicts without expensive lawyers or lengthy court processes.
             </div>
             
             <div class="features">
@@ -155,13 +155,13 @@
         </div>
         
         <div class="footer">
-            <p><strong>FirstMediator</strong> - Resolving disputes the smart way</p>
+            <p><strong>First Mediator</strong> - Resolving disputes the smart way</p>
             <p>
                 <a href="{{ config('app.url') }}">Visit Website</a> • 
                 <a href="mailto:info@kodeblooded.com.ng">Contact Support</a>
             </p>
             <p style="margin-top: 15px; font-size: 12px;">
-                © {{ date('Y') }} FirstMediator. All rights reserved.
+                © {{ date('Y') }} First Mediator. All rights reserved.
             </p>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'FMRefer — FirstMediator')
+@section('title', 'FMRefer — First Mediator')
 @section('page-title', 'FMRefer')
 
 @section('content')

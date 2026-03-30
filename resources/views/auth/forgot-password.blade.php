@@ -1,22 +1,22 @@
 @extends('layouts.auth')
 
-@section('title', 'Reset your password — FirstMediator')
-@section('description', 'Enter your email to receive a password reset link for your FirstMediator account.')
+@section('title', 'Reset your password — First Mediator')
+@section('description', 'Enter your email to receive a password reset link for your First Mediator account.')
 
 @section('content')
 <div class="p-8 rounded-xl shadow-lg" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
     <!-- Logo -->
     <div class="text-center mb-8">
         <img 
-            src="{{ asset('assets/images/logos/FM_Logo_Dark.svg') }}" 
-            alt="FirstMediator" 
-            class="h-10 mx-auto logo-light"
+            src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
+            alt="First Mediator" 
+            class="h-32 mx-auto logo-light"
             style="display: var(--logo-light-display, block);"
         >
         <img 
-            src="{{ asset('assets/images/logos/FM_Logo_Light.svg') }}" 
-            alt="FirstMediator" 
-            class="h-10 mx-auto logo-dark"
+            src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
+            alt="First Mediator" 
+            class="h-32 mx-auto logo-dark"
             style="display: var(--logo-dark-display, none);"
         >
     </div>

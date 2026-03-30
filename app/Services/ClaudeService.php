@@ -80,6 +80,11 @@ class ClaudeService
         $language = $context['language'] ?? 'English';
         $caseSummaryA = $context['case_summary_a'] ?? '';
         $caseSummaryB = $context['case_summary_b'] ?? '';
+        
+        $evidenceSection = "";
+        if (!empty($context['evidence_texts'])) {
+            $evidenceSection = "\n**Documentary Evidence (Extracted Text):**\n" . $context['evidence_texts'] . "\n\nCRITICAL INSTRUCTION: You MUST cross-reference user statements against this documentary evidence. If a user contradicts the evidence, flag it respectfully.";
+        }
 
         return <<<PROMPT
 You are Lex, an impartial AI mediator for FirstMediator, a dispute resolution platform. Your role is to facilitate fair and constructive dialogue between two parties to help them reach a mutually acceptable resolution.
@@ -94,6 +99,7 @@ You are Lex, an impartial AI mediator for FirstMediator, a dispute resolution pl
 
 **Party B's Case Summary:**
 {$caseSummaryB}
+{$evidenceSection}
 
 **Your Responsibilities:**
 1. Remain completely neutral and impartial at all times

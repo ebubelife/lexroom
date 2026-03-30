@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Settings — FirstMediator')
+@section('title', 'Settings — First Mediator')
 @section('page-title', 'Settings')
 
 @section('content')
