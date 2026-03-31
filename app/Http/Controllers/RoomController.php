@@ -133,12 +133,12 @@ class RoomController extends Controller
         $user = auth()->user();
         
         // Check if user is Party A (creator)
-        if ($user && $room->party_a_id === $user->id) {
+        if ($user && $room->party_a_id == $user->id) {
             return view('rooms.show', compact('room'));
         }
         
         // Check if user is Party B (already assigned)
-        if ($user && $room->party_b_id === $user->id) {
+        if ($user && $room->party_b_id == $user->id) {
             return view('rooms.show', compact('room'));
         }
         

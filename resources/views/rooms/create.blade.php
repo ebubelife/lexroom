@@ -83,14 +83,7 @@
                                 class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
                                 style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                             <option value="">Select jurisdiction...</option>
-                            <optgroup label="Nigeria">
-                                <option value="Nigeria (Federal)">Nigeria (Federal)</option>
-                                <option value="Lagos State">Lagos State</option>
-                                <option value="FCT Abuja">FCT Abuja</option>
-                                <option value="Rivers State">Rivers State</option>
-                                <option value="Kano State">Kano State</option>
-                                <option value="Oyo State">Oyo State</option>
-                            </optgroup>
+                          
                             <optgroup label="United States">
                                 <option value="New York">New York</option>
                                 <option value="California">California</option>
