@@ -91,14 +91,35 @@
                                 <option value="Kano State">Kano State</option>
                                 <option value="Oyo State">Oyo State</option>
                             </optgroup>
-                            <optgroup label="United Kingdom">
+                            <optgroup label="United States">
+                                <option value="New York">New York</option>
+                                <option value="California">California</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Other US State">Other US State</option>
+                            </optgroup>
+                            <optgroup label="Canada">
+                                <option value="Ontario">Ontario</option>
+                                <option value="British Columbia">British Columbia</option>
+                                <option value="Quebec">Quebec</option>
+                                <option value="Alberta">Alberta</option>
+                                <option value="Other Canadian Province">Other Canadian Province</option>
+                            </optgroup>
+                            <optgroup label="Europe">
                                 <option value="England & Wales">England & Wales</option>
                                 <option value="Scotland">Scotland</option>
-                                <option value="Northern Ireland">Northern Ireland</option>
+                                <option value="Ireland">Ireland</option>
+                                <option value="Germany">Germany</option>
+                                <option value="France">France</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Other European Country">Other European Country</option>
                             </optgroup>
-                            <optgroup label="Africa">
+                            <optgroup label="Other Regions">
                                 <option value="South Africa">South Africa</option>
-                                <option value="Ghana">Ghana</option>
+                                <option value="Australia">Australia</option>
+                                <option value="New Zealand">New Zealand</option>
+                                <option value="Other">Other Global Jurisdiction</option>
                             </optgroup>
                         </select>
                     </div>
@@ -282,7 +303,6 @@ function roomCreation() {
             { value: 'employment', label: 'Employment', description: 'Workplace & termination disputes', color: '#BE123C', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
             { value: 'debt', label: 'Debt', description: 'Money owed & loan disputes', color: '#0F766E', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
         ],
-        nigerianStates: [],
         languages: [
             { value: 'english', label: 'English' },
             { value: 'pidgin', label: 'Pidgin' },
