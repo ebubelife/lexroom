@@ -402,7 +402,7 @@
         <p class="text-lg mb-8" style="color: var(--text-secondary);">
             When you create a room, your dispute sessions will appear here.
         </p>
-        <a href="#" class="inline-flex items-center px-6 py-3 rounded-lg text-lg font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+        <a href="{{ route('rooms.create') }}" class="inline-flex items-center px-6 py-3 rounded-lg text-lg font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
             Create your first Room
         </a>
         <p class="mt-4 text-sm" style="color: var(--text-secondary);">

@@ -404,7 +404,7 @@
             <!-- Right: Wallet + Create Room + Theme + User -->
             <div class="flex items-center space-x-2 lg:space-x-4">
                 <!-- Wallet Credits -->
-                <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-full text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                     ${{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
                 </a>
 
