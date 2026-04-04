@@ -717,13 +717,20 @@ footer {
   .nav-links { display: none; }
   .mockup-content { grid-template-columns: 1fr; }
   .mockup-sidebar { display: none; }
-  .footer-inner { flex-direction: column; align-items: flex-start; }
-  
-  /* Hide login button on mobile, show only Create a Room */
-  .btn-ghost { display: none !important; }
-  
-  /* Ensure logo images display on mobile */
-  .logo img { display: block !important; max-width: 150px; height: auto; }
+  .footer-inner { 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center;
+    gap: 48px;
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  .footer-copy {
+    margin-top: 16px;
+  }
 }
 </style>
 </head>
@@ -1153,11 +1160,13 @@ footer {
       >
     </a>
     <ul class="footer-links">
-      <li><a href="#">How it works</a></li>
-      <li><a href="#">Pricing</a></li>
-      <li><a href="#">Privacy Policy</a></li>
-      <li><a href="#">Terms of Service</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="{{ route('about') }}">About Us</a></li>
+      <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
+      <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
+      <li><a href="{{ route('terms') }}">Terms of Service</a></li>
+      <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
+      <li><a href="mailto:info@firstmediator.com">Contact</a></li>
     </ul>
     <p class="footer-copy">© 2026 FirstMediator</p>
   </div>

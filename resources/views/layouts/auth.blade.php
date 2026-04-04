@@ -149,8 +149,18 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-6 px-6 text-center text-sm" style="color: var(--text-secondary); border-top: 1px solid var(--border-color);">
-        <p>&copy; 2026 First Mediator &middot; Not legal advice &middot; <a href="#" class="hover:underline">Terms</a> &middot; <a href="#" class="hover:underline">Privacy</a></p>
+    <footer class="py-12 px-6" style="border-top: 1px solid var(--border-color); background-color: var(--bg-primary);">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm" style="color: var(--text-secondary);">
+            <p>&copy; 2026 FirstMediator &middot; Not legal advice</p>
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3">
+                <a href="{{ route('about') }}" class="hover:text-[var(--gold)] transition-colors">About Us</a>
+                <a href="{{ route('privacy') }}" class="hover:text-[var(--gold)] transition-colors">Privacy Policy</a>
+                <a href="{{ route('gdpr') }}" class="hover:text-[var(--gold)] transition-colors">GDPR Policy</a>
+                <a href="{{ route('terms') }}" class="hover:text-[var(--gold)] transition-colors">Terms of Service</a>
+                <a href="{{ route('disclaimer') }}" class="hover:text-[var(--gold)] transition-colors">Disclaimer</a>
+                <a href="mailto:info@firstmediator.com" class="hover:text-[var(--gold)] transition-colors">Contact</a>
+            </div>
+        </div>
     </footer>
 
     <!-- Theme Toggle Script -->

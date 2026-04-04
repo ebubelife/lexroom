@@ -13,6 +13,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/privacy', 'privacy')->name('privacy');
+Route::view('/about', 'about')->name('about');
+Route::view('/gdpr', 'gdpr')->name('gdpr');
+Route::view('/terms', 'terms')->name('terms');
+Route::view('/disclaimer', 'disclaimer')->name('disclaimer');
+
 // Test Email Dispatch
 Route::get('/test-email', function () {
     if (!auth()->check()) {
