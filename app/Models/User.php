@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -33,7 +35,29 @@ class User extends Authenticatable
         'nin',
         'profile_image',
         'google_avatar',
+        'referral_code',
+        'referred_by_id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (!$user->referral_code) {
+                $user->referral_code = self::generateUniqueReferralCode();
+            }
+        });
+    }
+
+    public static function generateUniqueReferralCode()
+    {
+        do {
+            $code = 'LEX-' . strtoupper(Str::random(6));
+        } while (self::where('referral_code', $code)->exists());
+
+        return $code;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,9 +72,9 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return HasOne
      */
-    public function wallet()
+    public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class);
     }
@@ -123,5 +147,15 @@ class User extends Authenticatable
     public function otps()
     {
         return $this->hasMany(Otp::class);
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by_id');
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by_id');
     }
 }

@@ -9,63 +9,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
-
-        // Demo data: Create sample rooms if none exist
-        $totalRooms = Room::where('party_a_id', $user->id)->orWhere('party_b_id', $user->id)->count();
-        
-        if ($totalRooms === 0) {
-            // Create demo rooms
-            $demoRooms = [
-                [
-                    'category' => 'tenancy',
-                    'jurisdiction' => 'Lagos',
-                    'language' => 'english',
-                    'case_summary' => 'Landlord refusing to return security deposit after lease ended. Property was left in good condition but landlord claims damages.',
-                    'duration' => '60',
-                    'payment_type' => 'split',
-                    'status' => 'completed',
-                    'party_b_email' => 'landlord@example.com',
-                ],
-                [
-                    'category' => 'freelance',
-                    'jurisdiction' => 'FCT',
-                    'language' => 'english',
-                    'case_summary' => 'Client has not paid for completed web development project. All deliverables were submitted on time and approved.',
-                    'duration' => '90',
-                    'payment_type' => 'full',
-                    'status' => 'active',
-                    'party_b_email' => 'client@example.com',
-                ],
-                [
-                    'category' => 'ecommerce',
-                    'jurisdiction' => 'Lagos',
-                    'language' => 'english',
-                    'case_summary' => 'Ordered electronics online but received damaged goods. Seller refusing to process refund or replacement.',
-                    'duration' => '30',
-                    'payment_type' => 'split',
-                    'status' => 'pending',
-                    'party_b_email' => 'seller@example.com',
-                ],
-            ];
-
-            foreach ($demoRooms as $index => $roomData) {
-                Room::create([
-                    'uuid' => \Str::uuid(),
-                    'party_a_id' => $user->id,
-                    'category' => $roomData['category'],
-                    'jurisdiction' => $roomData['jurisdiction'],
-                    'language' => $roomData['language'],
-                    'case_summary' => $roomData['case_summary'],
-                    'duration' => $roomData['duration'],
-                    'payment_type' => $roomData['payment_type'],
-                    'status' => $roomData['status'],
-                    'party_b_email' => $roomData['party_b_email'],
-                    'invite_token' => \Str::random(64),
-                    'created_at' => now()->subDays(10 - ($index * 3)),
-                ]);
-            }
-        }
 
         // Rooms where user is Party A
         $myRooms = Room::where('party_a_id', $user->id)
@@ -90,7 +35,7 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // Stats with demo data
+        // Real Stats
         $stats = [
             'total'    => Room::where('party_a_id', $user->id)->orWhere('party_b_id', $user->id)->count(),
             'active'   => Room::where(function($q) use ($user) {
@@ -99,7 +44,7 @@ class DashboardController extends Controller
             'resolved' => Room::where(function($q) use ($user) {
                               $q->where('party_a_id', $user->id)->orWhere('party_b_id', $user->id);
                           })->where('status', 'completed')->count(),
-            'credits'  => 15000, // Demo credits
+            'credits'  => $user->wallet?->credits_balance ?? 0,
         ];
 
         return view('dashboard.index', compact('myRooms', 'invitedRooms', 'activeSessions', 'stats'));

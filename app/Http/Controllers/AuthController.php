@@ -15,8 +15,11 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function showRegister()
+    public function showRegister(Request $request)
     {
+        if ($request->has('ref')) {
+            session(['referred_by_code' => $request->ref]);
+        }
         return view('auth.register');
     }
 
@@ -35,12 +38,25 @@ class AuthController extends Controller
         // Normalize phone number
         $normalizedPhone = PhoneHelper::validateAndNormalize($request->phone);
 
+        // Check for referral
+        $referredById = null;
+        if (session()->has('referred_by_code')) {
+            $referrer = User::where('referral_code', session('referred_by_code'))->first();
+            if ($referrer) {
+                $referredById = $referrer->id;
+            }
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $normalizedPhone,
             'password' => Hash::make($request->password),
+            'referred_by_id' => $referredById,
         ]);
+
+        // Clear session
+        session()->forget('referred_by_code');
 
         event(new Registered($user));
 
@@ -176,6 +192,15 @@ class AuthController extends Controller
         // Normalize phone number
         $normalizedPhone = PhoneHelper::validateAndNormalize($request->phone);
         
+        // Check for referral
+        $referredById = null;
+        if (session()->has('referred_by_code')) {
+            $referrer = User::where('referral_code', session('referred_by_code'))->first();
+            if ($referrer) {
+                $referredById = $referrer->id;
+            }
+        }
+
         // Create new user with Google data
         $newUser = User::create([
             'name' => session('google_user_name'),
@@ -185,18 +210,19 @@ class AuthController extends Controller
             'google_avatar' => session('google_user_avatar'),
             'email_verified_at' => now(), // Google accounts are pre-verified
             'password' => Hash::make(Str::random(24)), // Random password for security
+            'referred_by_id' => $referredById,
         ]);
-        
+
         // Clear session data
-        session()->forget(['google_user_id', 'google_user_name', 'google_user_email', 'google_user_avatar']);
-        
+        session()->forget(['google_user_id', 'google_user_name', 'google_user_email', 'google_user_avatar', 'referred_by_code']);
+
         Auth::login($newUser);
-        
+
         // Google users only need phone verification
         if (!$newUser->phone_verified_at) {
             return redirect()->route('verification.notice');
         }
-        
+
         return redirect()->intended('/dashboard');
     }
 }

@@ -6,46 +6,78 @@
 @section('content')
 <div class="max-w-7xl mx-auto" x-data="liveRoom('{{ $room->uuid }}', '{{ request('token') }}')" x-init="init()">
     <!-- Session Header -->
-    <div class="rounded-xl shadow-sm border p-3 md:p-4 mb-4"
-         style="background-color: var(--bg-secondary); border-color: var(--border-color);">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            <div class="flex-1">
-                <h2 class="text-base md:text-lg font-serif" style="color: var(--text-primary);">{{ ucfirst($room->category) }} Dispute</h2>
-                <p class="text-xs md:text-sm mb-2" style="color: var(--text-secondary);">{{ $room->jurisdiction }} • {{ ucfirst($room->language) }}</p>
-                <div class="space-y-1">
-                    <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Case ID:</span> {{ $room->case_id }}</p>
-                    <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Initiator:</span> {{ optional($room->partyA)->name ?? 'Unknown' }}</p>
-                    <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Invited:</span> {{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
+    <div class="rounded-2xl shadow-lg border p-4 md:p-6 mb-6 transition-all duration-300 hover:shadow-xl"
+         style="background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(201, 168, 76, 0.05) 100%); 
+                border: 1px solid var(--border-color);
+                backdrop-filter: blur(10px);">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div class="flex-1 space-y-3">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-lg bg-opacity-10" style="background-color: var(--gold);">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg md:text-2xl font-serif leading-tight" style="color: var(--text-primary);">{{ $room->case_summary ?: ucfirst($room->category) . ' Dispute' }}</h2>
+                        <p class="text-xs md:text-sm font-medium opacity-80" style="color: var(--gold);">{{ $room->jurisdiction }} &bull; {{ ucfirst($room->language) }}</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div class="flex items-center gap-2 p-2 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
+                        <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16"></path></svg>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Case ID</p>
+                            <p class="text-xs font-mono font-bold" style="color: var(--text-primary);">{{ $room->case_id }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 p-2 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
+                        <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Initiator</p>
+                            <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyA)->name ?? 'Unknown' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 p-2 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
+                        <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Invited Party</p>
+                            <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Timer -->
-            <div class="text-center">
-                <div class="text-2xl md:text-3xl font-bold font-mono" style="color: var(--gold);" x-text="formatTime(timer.remaining_seconds)"></div>
-                <p class="text-xs" style="color: var(--text-secondary);">Time Remaining</p>
+            <div class="flex flex-row lg:flex-col items-center lg:items-end gap-6 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-opacity-10 border-white">
+                <!-- Status & Phase -->
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Current Phase</p>
+                        <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--gold);">{{ str_replace('_', ' ', $room->current_phase ?: 'Opening') }}</span>
+                    </div>
+                    <div class="h-8 w-px bg-white bg-opacity-10 hidden sm:block"></div>
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm" 
+                          :style="getStatusStyle(status)">
+                        <span x-text="status"></span>
+                    </span>
+                </div>
+
+                <!-- Timer & Action -->
+                <div class="flex items-center gap-4 ml-auto lg:ml-0">
+                    <div class="text-right">
+                        <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(timer.remaining_seconds)"></div>
+                        <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
+                    </div>
+                    
+                    <button x-show="status === 'pending'" 
+                            @click="startSession"
+                            class="px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all hover:scale-105 active:scale-95"
+                            style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                        Start Session
+                    </button>
+                </div>
             </div>
-            
-            <div class="flex items-center space-x-3">
-                <span class="px-3 py-1 rounded-full text-xs font-medium" 
-                      :style="getStatusStyle(status)">
-                    <span x-text="status"></span>
-                </span>
-                
-                <button x-show="status === 'pending'" 
-                        @click="startSession"
-                        class="px-4 py-2 rounded-lg text-white text-sm font-medium"
-                        style="background-color: var(--gold);">
-                    Start Session
-                </button>
-            </div>
-        </div>
-        
-        <!-- Phase Indicator -->
-        <div class="mt-3 flex items-center space-x-2">
-            <span class="text-xs font-medium" style="color: var(--text-secondary);">Phase:</span>
-            <span class="px-2 py-1 rounded text-xs font-medium" 
-                  style="background-color: rgba(201, 168, 76, 0.1); color: var(--gold);"
-                  x-text="phase.replace('_', ' ').toUpperCase()"></span>
         </div>
     </div>
 
