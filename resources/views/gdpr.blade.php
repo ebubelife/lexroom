@@ -292,24 +292,24 @@ footer {
 
       <!-- Col 2: Legal -->
       <div class="footer-col">
-          <h4>Legal</h4>
-          <ul class="footer-links">
-              <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
-              <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
-              <li><a href="{{ route('terms') }}">Terms of Service</a></li>
-              <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
-          </ul>
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
+          <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
+          <li><a href="{{ route('terms') }}">Terms of Service</a></li>
+          <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
+        </ul>
       </div>
 
       <!-- Col 3: Company -->
       <div class="footer-col">
-          <h4>Company</h4>
-          <ul class="footer-links">
-              <li><a href="/">Home</a></li>
-              <li><a href="{{ route('about') }}">About Us</a></li>
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Sign Up</a></li>
-          </ul>
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="{{ route('about') }}">About Us</a></li>
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Sign Up</a></li>
+        </ul>
       </div>
     </div>
 

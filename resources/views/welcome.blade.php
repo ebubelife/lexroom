@@ -1131,8 +1131,6 @@ footer {
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <a href="#" class="logo">
-      <!-- Original SVG Logo (commented out for potential future use)
     <div class="footer-grid">
       <!-- Col 1: Logo -->
       <div class="footer-col">
