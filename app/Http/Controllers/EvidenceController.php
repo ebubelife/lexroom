@@ -108,7 +108,7 @@ class EvidenceController extends Controller
     }
 
     /**
-     * Delete evidence file (only before session ends)
+     * Delete evidence file (only before session starts)
      */
     public function delete($roomUuid, $fileId)
     {
@@ -117,11 +117,11 @@ class EvidenceController extends Controller
             ->where('id', $fileId)
             ->firstOrFail();
 
-        // Check if file is locked or session ended
-        if ($evidence->is_locked || $room->status === 'completed') {
+        // Check if session has started or ended
+        if ($room->status === 'active' || $room->status === 'completed' || $evidence->is_locked) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete evidence after session has ended',
+                'message' => 'Evidence cannot be removed once the session has started or finalized',
             ], 403);
         }
 
@@ -142,7 +142,7 @@ class EvidenceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'File deleted successfully',
+            'message' => 'Evidence removed successfully',
         ]);
     }
 

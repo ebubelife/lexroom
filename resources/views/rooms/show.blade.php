@@ -71,7 +71,7 @@
                     </div>
                     
                     <button x-show="status === 'pending'" 
-                            @click="startSession"
+                            @click="openStartModal"
                             class="px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all hover:scale-105 active:scale-95"
                             style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
                         Start Session
@@ -192,20 +192,40 @@
                 </button>
                 <input type="file" x-ref="fileInput" class="hidden" @change="uploadFile">
 
+                <!-- Upload Progress -->
+                <div x-show="uploading" class="mb-4 p-3 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] uppercase tracking-wider font-bold" style="color: var(--gold);">Uploading...</span>
+                        <span class="text-[10px] font-mono" style="color: var(--text-primary);" x-text="uploadProgress + '%'"></span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                        <div class="h-full transition-all duration-300" 
+                             style="background-color: var(--gold);" 
+                             :style="{ width: uploadProgress + '%' }"></div>
+                    </div>
+                </div>
+
                 <!-- Uploaded Files -->
                 <div class="space-y-2" x-show="files.length > 0">
                     <template x-for="file in files" :key="file.id">
-                        <div class="p-2 md:p-3 rounded-lg border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                        <div class="p-2 md:p-3 rounded-lg border group transition-all" style="background-color: var(--bg-primary); border-color: var(--border-color);">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-start flex-1 min-w-0">
-                                    <svg class="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                    <svg class="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" style="color: var(--gold);" x-html="file.icon" fill="currentColor" viewBox="0 0 20 20">
                                     </svg>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-xs md:text-sm font-medium truncate" style="color: var(--text-primary);" x-text="file.filename"></p>
-                                        <p class="text-xs" style="color: var(--text-secondary);" x-text="file.party"></p>
+                                        <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);" x-text="file.party"></p>
                                     </div>
                                 </div>
+                                <button x-show="status === 'pending'" 
+                                        @click="removeFile(file.id)"
+                                        class="p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:bg-opacity-10 text-red-500"
+                                        title="Remove Evidence">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </template>
@@ -213,6 +233,54 @@
 
                 <div x-show="files.length === 0" class="text-center py-6 md:py-8">
                     <p class="text-xs md:text-sm" style="color: var(--text-secondary);">No files uploaded yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Session Confirmation Modal -->
+    <div x-show="showStartModal" 
+         x-cloak
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95">
+        
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showStartModal = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative w-full max-w-md p-8 rounded-2xl shadow-2xl border"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            
+            <div class="text-center">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+                     style="background-color: rgba(201, 168, 76, 0.1);">
+                    <svg class="w-8 h-8" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                
+                <h3 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Begin Mediation Session?</h3>
+                <p class="text-sm opacity-70 mb-8" style="color: var(--text-secondary);">
+                    The official countdown will begin, and First Mediator AI will initiate the opening statements. 
+                    <span class="block mt-2 font-bold text-red-500">Note: Evidence removal will be disabled once started.</span>
+                </p>
+                
+                <div class="flex flex-col gap-3">
+                    <button @click="startSession"
+                            class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg hover:scale-105 transition-transform"
+                            style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                        Yes, Start Session
+                    </button>
+                    <button @click="showStartModal = false"
+                            class="w-full py-3 text-sm font-medium opacity-60 hover:opacity-100 transition-opacity"
+                            style="color: var(--text-secondary);">
+                        Wait, Go Back
+                    </button>
                 </div>
             </div>
         </div>
@@ -233,6 +301,11 @@ function liveRoom(roomUuid, token) {
         lexProcessing: false,
         files: [],
         pollInterval: null,
+        
+        // Progress & Modal State
+        uploading: false,
+        uploadProgress: 0,
+        showStartModal: false,
         
         init() {
             this.startPolling();
@@ -294,7 +367,13 @@ function liveRoom(roomUuid, token) {
             }
         },
         
+        openStartModal() {
+            if (this.status !== 'pending') return;
+            this.showStartModal = true;
+        },
+
         async startSession() {
+            this.showStartModal = false;
             try {
                 const response = await fetch(`/rooms/${this.roomUuid}/start`, {
                     method: 'POST',
@@ -305,10 +384,12 @@ function liveRoom(roomUuid, token) {
                 
                 const data = await response.json();
                 if (data.success) {
+                    window.showToast('Session started successfully');
                     this.poll();
                 }
             } catch (error) {
                 console.error('Start error:', error);
+                window.showToast('Failed to start session', 'error');
             }
         },
         
@@ -326,35 +407,77 @@ function liveRoom(roomUuid, token) {
             }
         },
         
-        async uploadFile(event) {
+        uploadFile(event) {
             const file = event.target.files[0];
             if (!file) return;
             
             if (file.size > 20 * 1024 * 1024) {
-                alert('File size must be less than 20MB');
+                window.showToast('File size must be less than 20MB', 'error');
                 return;
             }
+            
+            this.uploading = true;
+            this.uploadProgress = 0;
             
             const formData = new FormData();
             formData.append('file', file);
             if (this.token) formData.append('token', this.token);
             
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `/rooms/${this.roomUuid}/evidence`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+            
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    this.uploadProgress = Math.round((e.loaded / e.total) * 100);
+                }
+            };
+            
+            xhr.onload = () => {
+                this.uploading = false;
+                const data = JSON.parse(xhr.responseText);
+                if (xhr.status >= 200 && xhr.status < 300 && data.success) {
+                    window.showToast('Evidence uploaded successfully');
+                    this.loadFiles();
+                    event.target.value = '';
+                } else {
+                    window.showToast(data.message || 'Upload failed', 'error');
+                }
+            };
+            
+            xhr.onerror = () => {
+                this.uploading = false;
+                window.showToast('Upload failed due to network error', 'error');
+            };
+            
+            xhr.send(formData);
+        },
+
+        async removeFile(fileId) {
+            if (!confirm('Are you sure you want to remove this evidence?')) return;
+            
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/evidence`, {
-                    method: 'POST',
+                const response = await fetch(`/rooms/${this.roomUuid}/evidence/${fileId}`, {
+                    method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
                     },
-                    body: formData
+                    body: JSON.stringify({
+                        token: this.token
+                    })
                 });
                 
                 const data = await response.json();
                 if (data.success) {
+                    window.showToast('Evidence removed');
                     this.loadFiles();
-                    event.target.value = '';
+                } else {
+                    window.showToast(data.message || 'Failed to remove evidence', 'error');
                 }
             } catch (error) {
-                console.error('Upload error:', error);
+                console.error('Remove error:', error);
+                window.showToast('Error removing evidence', 'error');
             }
         },
         
@@ -369,7 +492,11 @@ function liveRoom(roomUuid, token) {
         },
         
         scrollToBottom() {
-            this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+            this.$nextTick(() => {
+                if (this.$refs.chatContainer) {
+                    this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+                }
+            });
         },
         
         getStatusStyle(status) {
