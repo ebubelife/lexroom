@@ -129,35 +129,51 @@ li::marker { color: var(--gold); }
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 60px 24px;
+  padding: 80px 24px 40px;
   background: var(--bg);
 }
 .footer-inner {
   max-width: 900px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 32px;
 }
-.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-col h4 {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+}
 .footer-links a {
   font-size: 14px; color: var(--text-muted);
   text-decoration: none;
   transition: color 0.2s;
 }
 .footer-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 40px;
+  text-align: center;
+}
 .footer-copy { font-size: 13px; color: var(--text-muted); }
 
-@media (max-width: 600px) {
-  .footer-inner { 
-    flex-direction: column; 
-    align-items: center; 
-    text-align: center; 
-    gap: 48px; 
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
   }
-  .footer-links { 
-    flex-direction: column; 
-    gap: 20px; 
-    align-items: center; 
-  }
+  .footer-links { align-items: center; }
   h1 { font-size: 42px; }
 }
 </style>
@@ -235,20 +251,41 @@ footer {
 
 <footer>
   <div class="footer-inner">
-    <a href="/" class="logo">
-      <img src="{{ asset('assets/images/logos/fm-lightmode.png') }}" alt="First Mediator" style="height: 48px; display: var(--logo-light-display) !important;">
-      <img src="{{ asset('assets/images/logos/fm-darkmode.png') }}" alt="First Mediator" style="height: 48px; display: var(--logo-dark-display) !important;">
-    </a>
-    <ul class="footer-links">
-      <li><a href="/#how">How it works</a></li>
-      <li><a href="{{ route('about') }}">About Us</a></li>
-      <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
-      <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
-      <li><a href="{{ route('terms') }}">Terms of Service</a></li>
-      <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
-      <li><a href="mailto:info@firstmediator.com">Contact</a></li>
-    </ul>
-    <p class="footer-copy">© 2026 FirstMediator</p>
+    <div class="footer-grid">
+      <!-- Col 1: Logo -->
+      <div class="footer-col">
+        <a href="/" class="logo">
+          <img src="{{ asset('assets/images/logos/fm-lightmode.png') }}" alt="First Mediator" style="height: 60px; display: var(--logo-light-display) !important;">
+          <img src="{{ asset('assets/images/logos/fm-darkmode.png') }}" alt="First Mediator" style="height: 60px; display: var(--logo-dark-display) !important;">
+        </a>
+      </div>
+
+      <!-- Col 2: Legal -->
+      <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+              <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
+              <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
+              <li><a href="{{ route('terms') }}">Terms of Service</a></li>
+              <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
+          </ul>
+      </div>
+
+      <!-- Col 3: Company -->
+      <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="{{ route('about') }}">About Us</a></li>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/register">Sign Up</a></li>
+          </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 FirstMediator &middot; Dispute Resolution, Without the Legal Bill.</p>
+    </div>
   </div>
 </footer>
 

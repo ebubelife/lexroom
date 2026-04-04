@@ -150,16 +150,40 @@
 
     <!-- Footer -->
     <footer class="py-12 px-6" style="border-top: 1px solid var(--border-color); background-color: var(--bg-primary);">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm" style="color: var(--text-secondary);">
-            <p>&copy; 2026 FirstMediator &middot; Not legal advice</p>
-            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3">
-                <a href="{{ route('about') }}" class="hover:text-[var(--gold)] transition-colors">About Us</a>
-                <a href="{{ route('privacy') }}" class="hover:text-[var(--gold)] transition-colors">Privacy Policy</a>
-                <a href="{{ route('gdpr') }}" class="hover:text-[var(--gold)] transition-colors">GDPR Policy</a>
-                <a href="{{ route('terms') }}" class="hover:text-[var(--gold)] transition-colors">Terms of Service</a>
-                <a href="{{ route('disclaimer') }}" class="hover:text-[var(--gold)] transition-colors">Disclaimer</a>
-                <a href="mailto:info@firstmediator.com" class="hover:text-[var(--gold)] transition-colors">Contact</a>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left mb-10">
+            <!-- Col 1: Logo -->
+            <div class="flex justify-center md:justify-start">
+                <a href="/">
+                    <img src="{{ asset('assets/images/logos/fm-lightmode.png') }}" class="h-12 w-auto block dark:hidden" alt="LexRoom">
+                    <img src="{{ asset('assets/images/logos/fm-darkmode.png') }}" class="h-12 w-auto hidden dark:block" alt="LexRoom">
+                </a>
             </div>
+
+            <!-- Col 2: Legal -->
+            <div>
+                <h4 class="font-serif text-lg mb-4 text-[var(--gold)]">Legal</h4>
+                <div class="flex flex-col space-y-2">
+                    <a href="{{ route('privacy') }}" class="hover:text-[var(--gold)] transition-colors">Privacy Policy</a>
+                    <a href="{{ route('gdpr') }}" class="hover:text-[var(--gold)] transition-colors">GDPR Policy</a>
+                    <a href="{{ route('terms') }}" class="hover:text-[var(--gold)] transition-colors">Terms of Service</a>
+                    <a href="{{ route('disclaimer') }}" class="hover:text-[var(--gold)] transition-colors">Disclaimer</a>
+                </div>
+            </div>
+
+            <!-- Col 3: Company -->
+            <div>
+                <h4 class="font-serif text-lg mb-4 text-[var(--gold)]">Company</h4>
+                <div class="flex flex-col space-y-2">
+                    <a href="/" class="hover:text-[var(--gold)] transition-colors">Home</a>
+                    <a href="{{ route('about') }}" class="hover:text-[var(--gold)] transition-colors">About Us</a>
+                    <a href="/login" class="hover:text-[var(--gold)] transition-colors">Login</a>
+                    <a href="/register" class="hover:text-[var(--gold)] transition-colors">Sign Up</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+            <p class="text-sm opacity-60">© 2026 FirstMediator &middot; Dispute Resolution, Without the Legal Bill.</p>
         </div>
     </footer>
 

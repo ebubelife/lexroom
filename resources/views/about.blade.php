@@ -144,35 +144,51 @@ li::marker { color: var(--gold); }
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 60px 24px;
+  padding: 80px 24px 40px;
   background: var(--bg);
 }
 .footer-inner {
   max-width: 900px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 32px;
 }
-.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-col h4 {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+}
 .footer-links a {
   font-size: 14px; color: var(--text-muted);
   text-decoration: none;
   transition: color 0.2s;
 }
 .footer-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 40px;
+  text-align: center;
+}
 .footer-copy { font-size: 13px; color: var(--text-muted); }
 
-@media (max-width: 600px) {
-  .footer-inner { 
-    flex-direction: column; 
-    align-items: center; 
-    text-align: center; 
-    gap: 48px; 
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
   }
-  .footer-links { 
-    flex-direction: column; 
-    gap: 20px; 
-    align-items: center; 
-  }
+  .footer-links { align-items: center; }
   h1 { font-size: 42px; }
 }
 </style>
@@ -193,27 +209,25 @@ footer {
 
 <main class="page-container">
   <h1>About Us</h1>
-  <p>First Mediator LTD is a UK-based innovative mediation platform that leverages artificial intelligence to assist individuals and organizations in resolving disputes efficiently, fairly, and transparently. Our AI acts as a neutral third-party facilitator, helping both sides communicate effectively, identify solutions, and reach amicable outcomes.</p>
-
-  <div class="mission-box">
-    <h2>Our Mission</h2>
-    <p>To make dispute resolution faster, more accessible, and impartial, empowering people to find common ground without the stress, cost, or delay of traditional legal proceedings.</p>
-    
-    <h2>Our Vision</h2>
-    <p>To redefine mediation by integrating cutting-edge AI technology with human understanding, creating a trusted platform where disputes can be resolved respectfully and constructively.</p>
+  
+  <div class="intro-banner">
+    First Mediator LTD is a UK-based innovative mediation platform that leverages artificial intelligence to assist individuals and organizations in resolving disputes efficiently, fairly, and transparently. Our AI acts as a neutral third-party facilitator, helping both sides communicate effectively, identify solutions, and reach amicable outcomes.
   </div>
+
+  <h2>Our Mission</h2>
+  <p>To make dispute resolution faster, more accessible, and impartial, empowering people to find common ground without the stress, cost, or delay of traditional legal proceedings.</p>
+
+  <h2>Our Vision</h2>
+  <p>To redefine mediation by integrating cutting-edge AI technology with human understanding, creating a trusted platform where disputes can be resolved respectfully and constructively.</p>
 
   <h2>What We Offer</h2>
   <ul>
     <li><strong>AI-Assisted Mediation:</strong> Neutral AI support to guide discussions and propose fair and amicable resolutions.</li>
     <li><strong>Secure & Confidential Platform:</strong> User data is protected under GDPR and UK data privacy laws.</li>
-    <li><strong>Accessible & Inclusive:</strong> Designed for individuals, families, and businesses across the UK.</li>
-    <li><strong>Transparent Process:</strong> Clear steps and real-time assistance to help parties reach agreements efficiently.</li>
+    <li><strong>Accessible & Affordable:</strong> High-quality mediation services at a fraction of the cost of traditional legal services.</li>
+    <li><strong>Fast Resolution:</strong> AI helps streamline the process, leading to quicker outcomes for both parties.</li>
   </ul>
 
-  <h2>Why Choose First Mediator LTD?</h2>
-  <div class="highlight-section">
-    <div class="highlight-card">
       <h3>Innovative Approach</h3>
       <p>Combining AI technology with human empathy for smarter mediation.</p>
     </div>
