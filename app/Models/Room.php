@@ -11,7 +11,7 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uuid', 'party_a_id', 'party_b_id', 'party_b_email', 'category',
+        'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category',
         'jurisdiction', 'language', 'duration', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'started_at', 'ended_at'
@@ -28,9 +28,69 @@ class Room extends Model
         
         static::creating(function ($room) {
             if (!$room->uuid) {
-                $room->uuid = Str::uuid();
+                $room->uuid = (string) Str::uuid();
+            }
+            
+            if (!$room->case_id) {
+                $room->case_id = $room->generateCaseId();
             }
         });
+    }
+
+    /**
+     * Generate a structured Case ID: [CC]-[CAT]-[YY]-[SEQ]
+     * e.g., GB-EMP-26-00001
+     */
+    public function generateCaseId()
+    {
+        // 1. Country Code (CC)
+        $jurisdiction = strtolower($this->jurisdiction);
+        $countryCode = 'INT'; // Default International
+        
+        $mapping = [
+            'united kingdom' => 'GB',
+            'uk'             => 'GB',
+            'england'        => 'GB',
+            'wales'          => 'GB',
+            'scotland'       => 'GB',
+            'nigeria'        => 'NG',
+            'united states'  => 'US',
+            'usa'            => 'US',
+            'america'        => 'US',
+            'germany'        => 'DE',
+            'deutschland'    => 'DE',
+            'france'         => 'FR',
+            'canada'         => 'CA',
+            'australia'      => 'AU',
+        ];
+
+        foreach ($mapping as $key => $code) {
+            if (str_contains($jurisdiction, $key)) {
+                $countryCode = $code;
+                break;
+            }
+        }
+
+        // 2. Category Code (CAT)
+        $catMapping = [
+            'tenancy'    => 'TEN',
+            'freelance'  => 'FRE',
+            'business'   => 'BUS',
+            'ecommerce'  => 'ECO',
+            'employment' => 'EMP',
+            'debt'       => 'DBT',
+        ];
+        $categoryCode = $catMapping[$this->category] ?? 'GEN';
+
+        // 3. Year (YY)
+        $year = date('y');
+
+        // 4. Sequence (SEQ)
+        // Get the count of rooms created this year + 1
+        $count = static::whereYear('created_at', date('Y'))->count() + 1;
+        $sequence = str_pad($count, 5, '0', STR_PAD_LEFT);
+
+        return "{$countryCode}-{$categoryCode}-{$year}-{$sequence}";
     }
 
     public function partyA()

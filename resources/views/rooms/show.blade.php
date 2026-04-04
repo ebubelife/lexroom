@@ -13,7 +13,7 @@
                 <h2 class="text-base md:text-lg font-serif" style="color: var(--text-primary);">{{ ucfirst($room->category) }} Dispute</h2>
                 <p class="text-xs md:text-sm mb-2" style="color: var(--text-secondary);">{{ $room->jurisdiction }} • {{ ucfirst($room->language) }}</p>
                 <div class="space-y-1">
-                    <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Case ID:</span> {{ $room->uuid }}</p>
+                    <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Case ID:</span> {{ $room->case_id }}</p>
                     <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Initiator:</span> {{ optional($room->partyA)->name ?? 'Unknown' }}</p>
                     <p class="text-xs" style="color: var(--text-secondary);"><span class="font-medium" style="color: var(--text-primary);">Invited:</span> {{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
                 </div>

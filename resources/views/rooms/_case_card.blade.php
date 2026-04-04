@@ -19,13 +19,18 @@
 
     <div class="p-5 flex flex-col flex-1">
         {{-- Badges row --}}
-        <div class="flex items-center justify-between mb-3">
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: {{ $catColor['bg'] }}; color: {{ $catColor['text'] }};">
-                {{ ucfirst($room->category) }}
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-mono opacity-60 tracking-wider uppercase" style="color: var(--text-secondary);">
+                #{{ $room->case_id }}
             </span>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: {{ $sc['bg'] }}; color: {{ $sc['text'] }};">
-                {{ ucfirst(str_replace('_', ' ', $room->status)) }}
-            </span>
+            <div class="flex gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium" style="background-color: {{ $catColor['bg'] }}; color: {{ $catColor['text'] }};">
+                    {{ ucfirst($room->category) }}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium" style="background-color: {{ $sc['bg'] }}; color: {{ $sc['text'] }};">
+                    {{ ucfirst(str_replace('_', ' ', $room->status)) }}
+                </span>
+            </div>
         </div>
 
         {{-- Case title --}}
