@@ -19,8 +19,15 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-lg md:text-2xl font-serif leading-tight" style="color: var(--text-primary);">{{ $room->case_summary ?: ucfirst($room->category) . ' Dispute' }}</h2>
-                        <p class="text-xs md:text-sm font-medium opacity-80" style="color: var(--gold);">{{ $room->jurisdiction }} &bull; {{ ucfirst($room->language) }}</p>
+                        <h2 class="text-base md:text-lg font-serif leading-tight truncate max-w-md" style="color: var(--text-primary);" title="{{ $room->case_summary }}">
+                            {{ $room->case_summary ? Str::limit($room->case_summary, 80) : ucfirst($room->category) . ' Dispute' }}
+                        </h2>
+                        <div class="flex items-center gap-3 mt-1">
+                            <p class="text-xs md:text-sm font-medium opacity-80" style="color: var(--gold);">{{ $room->jurisdiction }} &bull; {{ ucfirst($room->language) }}</p>
+                            @if($room->case_summary)
+                            <button onclick="document.getElementById('caseSummaryModal').classList.remove('hidden')" class="text-xs underline underline-offset-2 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--gold);">View full summary</button>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 
@@ -234,6 +241,26 @@
                 <div x-show="files.length === 0" class="text-center py-6 md:py-8">
                     <p class="text-xs md:text-sm" style="color: var(--text-secondary);">No files uploaded yet</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Summary Modal -->
+    <div id="caseSummaryModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="document.getElementById('caseSummaryModal').classList.add('hidden')"></div>
+        <div class="relative w-full max-w-lg p-8 rounded-2xl shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-serif" style="color: var(--text-primary);">Case Summary</h3>
+                <button onclick="document.getElementById('caseSummaryModal').classList.add('hidden')" class="p-2 rounded-lg hover:bg-opacity-10 hover:bg-gray-500 transition-colors" style="color: var(--text-secondary);">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 rounded-xl text-sm leading-relaxed max-h-80 overflow-y-auto" style="background-color: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                {{ $room->case_summary }}
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs" style="color: var(--text-secondary);">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Visible only to parties in this room
             </div>
         </div>
     </div>

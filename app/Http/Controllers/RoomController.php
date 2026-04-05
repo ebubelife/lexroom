@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RoomInvitation;
+use App\Mail\RoomConfirmation;
 
 class RoomController extends Controller
 {
@@ -41,7 +42,7 @@ class RoomController extends Controller
         $validated = $request->validate([
             'category' => 'required|in:tenancy,freelance,business,ecommerce,employment,debt',
             'jurisdiction' => 'required|string|max:255',
-            'language' => 'required|in:english,pidgin,yoruba,igbo,hausa',
+            'language' => 'required|in:english',
             'case_summary' => 'required|string|min:50|max:2000',
             'duration' => 'required|in:30,60,90',
             'payment_type' => 'required|in:full,split',
@@ -65,12 +66,20 @@ class RoomController extends Controller
         // Store Party B email temporarily (we'll create user account later if they sign up)
         $room->update(['party_b_email' => $validated['party_b_email']]);
 
-        // Send invitation email to Party B (Sync instead of queue for shared hosting)
+        // Send invitation email to Party B
         try {
             Mail::to($validated['party_b_email'])->send(new RoomInvitation($room));
             \Log::info("Successfully sent invitation email to Party B: " . $validated['party_b_email']);
         } catch (\Exception $e) {
             \Log::error('Failed to send Room Invitation to Party B: ' . $e->getMessage());
+        }
+
+        // Send confirmation email to Party A
+        try {
+            Mail::to(auth()->user()->email)->send(new RoomConfirmation($room));
+            \Log::info("Successfully sent confirmation email to Party A: " . auth()->user()->email);
+        } catch (\Exception $e) {
+            \Log::error('Failed to send Room Confirmation to Party A: ' . $e->getMessage());
         }
 
         // For demo: bypass payment and go directly to room
