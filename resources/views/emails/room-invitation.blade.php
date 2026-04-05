@@ -184,7 +184,7 @@
 
             <p class="message" style="font-size: 14px; color: #718096;">
                 If you believe you received this email in error, please ignore it or contact us at 
-                <a href="mailto:info@kodeblooded.com.ng" style="color: #C9A84C;">info@kodeblooded.com.ng</a>
+                <a href="mailto:hello@firstmediator.com" style="color: #C9A84C;">hello@firstmediator.com</a>
             </p>
         </div>
 
@@ -193,9 +193,9 @@
             <p>© {{ date('Y') }} First Mediator. All rights reserved.</p>
             <p style="margin-top: 10px;">Resolving disputes the smart way. No lawyers needed.</p>
             <div class="footer-links">
-                <a href="#" class="footer-link">Privacy Policy</a>
-                <a href="#" class="footer-link">Terms of Service</a>
-                <a href="#" class="footer-link">Help Center</a>
+                <a href="{{ route('privacy') }}" class="footer-link">Privacy Policy</a>
+                <a href="{{ route('terms') }}" class="footer-link">Terms of Service</a>
+                <a href="mailto:hello@firstmediator.com" class="footer-link">Help Center</a>
             </div>
         </div>
     </div>

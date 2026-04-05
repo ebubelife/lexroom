@@ -156,10 +156,11 @@
         
         <div class="footer">
             <p><strong>First Mediator</strong> - Resolving disputes the smart way</p>
-            <p>
-                <a href="{{ config('app.url') }}">Visit Website</a> • 
-                <a href="mailto:info@kodeblooded.com.ng">Contact Support</a>
-            </p>
+                <p>
+                    <a href="{{ route('privacy') }}">Privacy Policy</a> &bull;
+                    <a href="{{ route('terms') }}">Terms of Service</a> &bull;
+                    <a href="mailto:hello@firstmediator.com">Contact Support</a>
+                </p>
             <p style="margin-top: 15px; font-size: 12px;">
                 © {{ date('Y') }} First Mediator. All rights reserved.
             </p>

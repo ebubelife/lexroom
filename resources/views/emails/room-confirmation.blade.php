@@ -206,7 +206,7 @@
 
             <p class="message" style="font-size: 14px; color: #718096;">
                 If you have any questions, contact us at
-                <a href="mailto:info@kodeblooded.com.ng" style="color: #C9A84C;">info@kodeblooded.com.ng</a>
+                <a href="mailto:hello@firstmediator.com" style="color: #C9A84C;">hello@firstmediator.com</a>
             </p>
         </div>
 
@@ -215,8 +215,11 @@
             <p>© {{ date('Y') }} First Mediator. All rights reserved.</p>
             <p style="margin-top: 8px;">Resolving disputes the smart way. No lawyers needed.</p>
             <div style="margin-top: 15px;">
-                <a href="{{ config('app.url') }}">Visit Website</a>
-                <a href="mailto:info@kodeblooded.com.ng">Contact Support</a>
+                <a href="{{ route('privacy') }}">Privacy Policy</a>
+                &nbsp;•&nbsp;
+                <a href="{{ route('terms') }}">Terms of Service</a>
+                &nbsp;•&nbsp;
+                <a href="mailto:hello@firstmediator.com">Contact Support</a>
             </div>
         </div>
     </div>
