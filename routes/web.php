@@ -19,20 +19,46 @@ Route::view('/gdpr', 'gdpr')->name('gdpr');
 Route::view('/terms', 'terms')->name('terms');
 Route::view('/disclaimer', 'disclaimer')->name('disclaimer');
 
-// Test Email Dispatch
+// Test Email Dispatch — sends both emails to kongonut@gmail.com
 Route::get('/test-email', function () {
-    if (!auth()->check()) {
-        return "Please log in first to test emails.";
+    $testTo = 'kongonut@gmail.com';
+    $results = [];
+
+    // Grab the most recent room to use as sample data
+    $room = \App\Models\Room::with(['partyA', 'partyB'])->latest()->first();
+
+    if (!$room) {
+        return response('<h2 style="font-family:sans-serif;color:#c00">⚠️ No rooms found in the database.<br>Create a room first, then come back here.</h2>', 200);
     }
+
+    // 1. Send Party B invitation email
     try {
-        \Illuminate\Support\Facades\Mail::raw('This is a test email from First Mediator to verify your Mail/SMTP configurations.', function ($message) {
-            $message->to(auth()->user()->email)
-                    ->subject('First Mediator - Test Email Support');
-        });
-        return "Test email successfully sent to: " . auth()->user()->email . "! Check your inbox/spam folder.";
+        \Illuminate\Support\Facades\Mail::to($testTo)->send(new \App\Mail\RoomInvitation($room));
+        $results[] = '✅ <strong>Room Invitation</strong> (Party B) sent to ' . $testTo;
     } catch (\Exception $e) {
-        return "Failed to send email. Error: " . $e->getMessage();
+        $results[] = '❌ <strong>Room Invitation</strong> FAILED: ' . $e->getMessage();
     }
+
+    // 2. Send Party A confirmation email
+    try {
+        \Illuminate\Support\Facades\Mail::to($testTo)->send(new \App\Mail\RoomConfirmation($room));
+        $results[] = '✅ <strong>Room Confirmation</strong> (Party A) sent to ' . $testTo;
+    } catch (\Exception $e) {
+        $results[] = '❌ <strong>Room Confirmation</strong> FAILED: ' . $e->getMessage();
+    }
+
+    $html  = '<div style="font-family:sans-serif;max-width:600px;margin:60px auto;padding:30px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;">';
+    $html .= '<h2 style="color:#0D1B2A;margin-bottom:6px;">📨 Email Test Results</h2>';
+    $html .= '<p style="color:#718096;margin-top:0;">Using room <code style="background:#f5f5f5;padding:2px 6px;border-radius:4px;">' . $room->case_id . '</code> as sample data</p>';
+    $html .= '<ul style="line-height:2.2;padding-left:20px;">';
+    foreach ($results as $r) {
+        $html .= '<li>' . $r . '</li>';
+    }
+    $html .= '</ul>';
+    $html .= '<p style="color:#718096;font-size:14px;margin-top:20px;">Check <strong>' . $testTo . '</strong> inbox (and spam folder).</p>';
+    $html .= '</div>';
+
+    return response($html, 200);
 })->name('test.email');
 
 // Log Viewer (for debugging)
