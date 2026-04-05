@@ -117,26 +117,8 @@
                         </select>
                     </div>
 
-                    <!-- Language -->
-                    <div>
-                        <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Preferred Session Language</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <template x-for="lang in languages" :key="lang.value">
-                                <label class="relative cursor-pointer">
-                                    <input type="radio" 
-                                           name="language" 
-                                           :value="lang.value"
-                                           x-model="formData.language"
-                                           class="sr-only peer">
-                                    <div class="p-3 rounded-lg border-2 text-center transition-all"
-                                         style="background-color: var(--bg-primary); border-color: var(--border-color);"
-                                         :style="formData.language === lang.value ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
-                                        <span class="font-medium" style="color: var(--text-primary);" x-text="lang.label"></span>
-                                    </div>
-                                </label>
-                            </template>
-                        </div>
-                    </div>
+                    <!-- Language: English only, hidden -->
+                    <input type="hidden" x-model="formData.language" value="english">
                 </div>
             </div>
 
@@ -298,11 +280,7 @@ function roomCreation() {
             { value: 'debt', label: 'Debt', description: 'Money owed & loan disputes', color: '#0F766E', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
         ],
         languages: [
-            { value: 'english', label: 'English' },
-            { value: 'pidgin', label: 'Pidgin' },
-            { value: 'yoruba', label: 'Yoruba' },
-            { value: 'igbo', label: 'Igbo' },
-            { value: 'hausa', label: 'Hausa' }
+            { value: 'english', label: 'English' }
         ],
         plans: [
             { name: 'Starter', duration: '30', price: 45 },
