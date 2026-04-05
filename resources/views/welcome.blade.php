@@ -152,6 +152,46 @@ nav {
 }
 .btn-primary:active { transform: none; }
 
+/* ── MOBILE MENU ── */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--text-primary);
+  z-index: 110;
+}
+.mobile-menu-btn svg { width: 24px; height: 24px; }
+
+.mobile-nav {
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  z-index: 90;
+}
+.mobile-nav.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+.mobile-nav .btn-ghost, .mobile-nav .btn-primary {
+  width: 100%;
+  text-align: center;
+  padding: 14px;
+}
+
 .btn-primary-lg {
   font-size: 16px; padding: 14px 32px; border-radius: 10px;
   display: inline-flex; align-items: center; gap: 8px;
@@ -715,6 +755,9 @@ footer {
   .trust-item { border-bottom: 1px solid var(--border); }
   .trust-item:last-child { border-bottom: none; }
   .nav-links { display: none; }
+  .nav-right .btn-ghost, .nav-right .btn-primary { display: none; }
+  .mobile-menu-btn { display: block; }
+  
   .mockup-content { grid-template-columns: 1fr; }
   .mockup-sidebar { display: none; }
   .footer-inner { 
@@ -783,7 +826,31 @@ footer {
       </button>
       <a href="{{ route('login') }}" class="btn-ghost">Log in</a>
       <a href="{{ route('register') }}" class="btn-primary">Create a Room</a>
+      
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <svg id="menu-icon-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg id="menu-icon-close" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
+  </div>
+  
+  <!-- Mobile Nav Dropdown -->
+  <div id="mobile-nav" class="mobile-nav">
+    <a href="{{ route('login') }}" class="btn-ghost" onclick="toggleMobileMenu()">Log in</a>
+    <a href="{{ route('register') }}" class="btn-primary" onclick="toggleMobileMenu()">Create a Room</a>
+    
+    <div style="height: 1px; background: var(--border); margin: 8px 0;"></div>
+    
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">
+      <li><a href="#how" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">How it works</a></li>
+      <li><a href="#categories" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Disputes</a></li>
+      <li><a href="#pricing" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Pricing</a></li>
+      <li><a href="#faq" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">FAQ</a></li>
+    </ul>
   </div>
 </nav>
 
@@ -1188,6 +1255,24 @@ function toggleTheme() {
   // Update logo display
   html.style.setProperty('--logo-light-display', isDark ? 'block' : 'none');
   html.style.setProperty('--logo-dark-display', isDark ? 'none' : 'block');
+}
+
+// Mobile Menu Toggle
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-nav');
+  const openIcon = document.getElementById('menu-icon-open');
+  const closeIcon = document.getElementById('menu-icon-close');
+  const isOpen = menu.classList.contains('open');
+  
+  if (isOpen) {
+    menu.classList.remove('open');
+    openIcon.style.display = 'block';
+    closeIcon.style.display = 'none';
+  } else {
+    menu.classList.add('open');
+    openIcon.style.display = 'none';
+    closeIcon.style.display = 'block';
+  }
 }
 
 // Scroll reveal
