@@ -25,7 +25,7 @@
     <div class="text-center mb-8">
         <h1 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Verify your account</h1>
         <p class="text-sm" style="color: var(--text-secondary);">
-            We need to verify your contact information before you can access your dashboard.
+            A 6-digit verification code has been sent to your email. Please enter it below to activate your account.
         </p>
     </div>
 
@@ -109,21 +109,8 @@
                     We'll send a 6-digit code to {{ auth()->user()->email }}
                 </p>
 
-                <!-- Send OTP Form -->
-                <form method="POST" action="{{ route('otp.send') }}" class="mb-4">
-                    @csrf
-                    <input type="hidden" name="type" value="email">
-                    <button 
-                        type="submit" 
-                        class="w-full py-3 px-4 rounded-lg font-medium transition-colors hover:opacity-90"
-                        style="background-color: var(--gold); color: var(--white);"
-                    >
-                        Send Email OTP
-                    </button>
-                </form>
-
                 <!-- Verify OTP Form -->
-                <form method="POST" action="{{ route('otp.verify') }}">
+                <form method="POST" action="{{ route('otp.verify') }}" class="mb-6">
                     @csrf
                     <input type="hidden" name="type" value="email">
                     
@@ -134,6 +121,8 @@
                             id="email_code" 
                             name="code" 
                             maxlength="6"
+                            required
+                            autofocus
                             class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors text-center text-lg font-mono"
                             style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"
                             placeholder="000000"
@@ -149,6 +138,28 @@
                         style="background-color: var(--gold); color: var(--white);"
                     >
                         Verify Email
+                    </button>
+                </form>
+
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t" style="border-color: var(--border-color);"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2" style="background-color: var(--bg-secondary); color: var(--text-secondary);">Didn't receive a code?</span>
+                    </div>
+                </div>
+
+                <!-- Resend OTP Form -->
+                <form method="POST" action="{{ route('otp.resend') }}">
+                    @csrf
+                    <input type="hidden" name="type" value="email">
+                    <button 
+                        type="submit" 
+                        class="w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 border"
+                        style="border-color: var(--gold); color: var(--gold); background-color: transparent;"
+                    >
+                        Resend Code
                     </button>
                 </form>
             </div>
@@ -211,11 +222,13 @@
         @endif
     </div>
 
-    <!-- Skip for now link -->
-    <div class="mt-6 text-center">
-        <a href="{{ route('dashboard') }}" class="text-sm hover:underline" style="color: var(--text-secondary);">
-            Skip verification for now (not recommended)
-        </a>
+    <div class="mt-8 text-center pt-6 border-t" style="border-color: var(--border-color);">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="text-sm hover:underline" style="color: var(--text-secondary);">
+                Logout and try again
+            </button>
+        </form>
     </div>
 </div>
 @endsection

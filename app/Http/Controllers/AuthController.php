@@ -56,8 +56,9 @@ class AuthController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
-        // Redirect to verification instead of dashboard
+        
+        // Immediately send email OTP
+        \App\Http\Controllers\OtpController::generateAndSendEmailOtp($user);
         return redirect()->route('verification.notice');
     }
 

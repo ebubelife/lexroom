@@ -4,12 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Otp;
 use App\Models\User;
+use App\Mail\EmailOtpMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
+    /**
+     * Generate and send email OTP for a user
+     * 
+     * @param User $user
+     * @return Otp
+     */
+    public static function generateAndSendEmailOtp(User $user)
+    {
+        // Generate OTP
+        $otp = Otp::generateForUser($user->id, 'email');
+
+        // Send email OTP
+        try {
+            Mail::to($user->email)->send(new EmailOtpMail($otp->code));
+            Log::info("Email OTP sent to {$user->email}: {$otp->code}");
+        } catch (\Exception $e) {
+            Log::error("Failed to send email OTP to {$user->email}: " . $e->getMessage());
+            // Fallback: still log it so developers can see it
+            Log::info("FALLBACK: Email OTP for {$user->email}: {$otp->code}");
+        }
+
+        return $otp;
+    }
     public function showVerification(Request $request)
     {
         /** @var \App\Models\User $user */
@@ -45,20 +70,13 @@ class OtpController extends Controller
             return back()->with('error', 'Phone number is already verified.');
         }
 
-        // Generate OTP
-        $otp = Otp::generateForUser($user->id, $type);
-
         if ($type === 'email') {
-            // Send email OTP (for now, just log it)
-            \Log::info("Email OTP for {$user->email}: {$otp->code}");
-            
-            // TODO: Send actual email when mail is configured
-            // Mail::to($user->email)->send(new EmailOtpMail($otp->code));
-            
+            self::generateAndSendEmailOtp($user);
             return back()->with('success', "OTP sent to your email address. Check your email for the 6-digit code.");
         } else {
             // Phone OTP - always 111111 for now
-            \Log::info("Phone OTP for {$user->phone}: {$otp->code}");
+            $otp = Otp::generateForUser($user->id, 'phone');
+            Log::info("Phone OTP for {$user->phone}: {$otp->code}");
             
             // TODO: Send SMS via Termii when account is ready
             
