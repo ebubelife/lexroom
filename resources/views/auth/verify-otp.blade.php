@@ -71,6 +71,7 @@
                 @endif
             </div>
 
+            @if($needsPhoneVerification)
             <!-- Phone Status -->
             <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--bg-primary); border: 1px solid var(--border-color);">
                 <div class="flex items-center">
@@ -96,6 +97,7 @@
                     </button>
                 @endif
             </div>
+            @endif
         </div>
 
         @if($needsEmailVerification)
