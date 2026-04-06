@@ -47,6 +47,15 @@ class User extends Authenticatable
             if (!$user->referral_code) {
                 $user->referral_code = self::generateUniqueReferralCode();
             }
+            if ($user->first_name && $user->last_name) {
+                $user->name = $user->first_name . ' ' . $user->last_name;
+            }
+        });
+
+        static::saving(function ($user) {
+            if ($user->isDirty(['first_name', 'last_name'])) {
+                $user->name = $user->first_name . ' ' . $user->last_name;
+            }
         });
     }
 
@@ -86,7 +95,7 @@ class User extends Authenticatable
 
     public function getFirstNameAttribute()
     {
-        return explode(' ', $this->name)[0];
+        return $this->first_name ?: explode(' ', $this->name ?? '')[0];
     }
 
     protected function casts(): array
@@ -125,12 +134,16 @@ class User extends Authenticatable
 
     public function getInitialsAttribute()
     {
-        $names = explode(' ', $this->name);
+        if ($this->first_name && $this->last_name) {
+            return strtoupper(substr($this->first_name, 0, 1) . substr($this->last_name, 0, 1));
+        }
+        
+        $names = explode(' ', $this->name ?? '');
         $initials = '';
         foreach ($names as $name) {
-            $initials .= strtoupper(substr($name, 0, 1));
+            if ($name) $initials .= strtoupper(substr($name, 0, 1));
         }
-        return substr($initials, 0, 2);
+        return substr($initials, 0, 2) ?: '??';
     }
 
     public function getProfileImageUrlAttribute()

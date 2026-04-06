@@ -106,6 +106,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\ProfileController::class, 'index'])->name('settings.index');
     Route::put('/settings', [\App\Http\Controllers\ProfileController::class, 'update'])->name('settings.update');
+    Route::post('/settings/avatar', [\App\Http\Controllers\ProfileController::class, 'updateAvatar'])->name('settings.avatar');
     Route::put('/settings/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('settings.password');
     
     // Reports, Wallet, FM Refer routes

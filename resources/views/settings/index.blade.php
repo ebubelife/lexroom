@@ -25,41 +25,96 @@
 
     <!-- Profile Tab -->
     <div x-show="activeTab === 'profile'" x-transition>
-        <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" 
-              class="rounded-xl shadow-sm border p-4 md:p-6"
-              style="background-color: var(--bg-secondary); border-color: var(--border-color);"
-              x-data="{ imagePreview: '{{ auth()->user()->profile_image_url }}' }">
-            @csrf
-            @method('PUT')
+        <div class="rounded-xl shadow-sm border p-4 md:p-6 mb-6"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);"
+             x-data="{ 
+                imagePreview: '{{ auth()->user()->profile_image_url }}',
+                isUploading: false,
+                uploadProgress: 0,
+                async uploadImage(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
 
+                    // Show preview immediately
+                    this.imagePreview = URL.createObjectURL(file);
+                    this.isUploading = true;
+                    this.uploadProgress = 0;
+
+                    const formData = new FormData();
+                    formData.append('profile_image', file);
+
+                    try {
+                        const response = await axios.post('{{ route('settings.avatar') }}', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            },
+                            onUploadProgress: (progressEvent) => {
+                                this.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                            }
+                        });
+
+                        if (response.data.success) {
+                            showToast(response.data.message, 'success');
+                            // Update all avatars on the page
+                            const newUrl = response.data.url;
+                            this.imagePreview = newUrl;
+                            document.querySelectorAll('img[alt=\'{{ auth()->user()->name }}\']').forEach(img => img.src = newUrl);
+                        }
+                    } catch (error) {
+                        showToast(error.response?.data?.message || 'oops! could not update', 'error');
+                    } finally {
+                        this.isUploading = false;
+                        this.uploadProgress = 0;
+                    }
+                }
+             }">
+            
             <h2 class="text-lg md:text-xl font-serif mb-4 md:mb-6" style="color: var(--text-primary);">Profile Information</h2>
 
             <!-- Profile Image -->
             <div class="mb-4 md:mb-6">
                 <label class="block text-sm font-medium mb-3" style="color: var(--text-primary);">Profile Image</label>
                 <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-3 sm:space-y-0">
-                    <div class="relative">
+                    <div class="relative group">
                         <template x-if="imagePreview">
-                            <img :src="imagePreview" alt="Profile" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                            <div class="relative w-20 h-20 md:w-24 md:h-24">
+                                <img :src="imagePreview" alt="Profile" class="w-full h-full rounded-full object-cover border-2" :style="isUploading ? 'border-color: var(--gold); opacity: 0.5;' : 'border-color: var(--gold);'">
+                                <!-- Progress Overlay -->
+                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-full">
+                                    <span class="text-white text-xs md:text-sm font-bold" x-text="uploadProgress + '%'"></span>
+                                </div>
+                            </div>
                         </template>
                         <template x-if="!imagePreview">
-                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-white text-xl md:text-2xl font-bold" style="background-color: var(--gold);">
-                                {{ auth()->user()->initials }}
+                            <div class="relative w-20 h-20 md:w-24 md:h-24">
+                                <div class="w-full h-full rounded-full flex items-center justify-center text-white text-xl md:text-2xl font-bold" style="background-color: var(--gold);">
+                                    {{ auth()->user()->initials }}
+                                </div>
+                                <!-- Progress Overlay -->
+                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-full">
+                                    <span class="text-white text-xs md:text-sm font-bold" x-text="uploadProgress + '%'"></span>
+                                </div>
                             </div>
                         </template>
                     </div>
                     <div class="text-center sm:text-left">
                         <input type="file" name="profile_image" id="profile_image" class="hidden" accept="image/*"
-                               @change="imagePreview = URL.createObjectURL($event.target.files[0])">
-                        <button type="button" onclick="document.getElementById('profile_image').click()"
-                                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90"
+                               @change="uploadImage($event)">
+                        <button type="button" @click="document.getElementById('profile_image').click()"
+                                :disabled="isUploading"
+                                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90 disabled:opacity-50"
                                 style="background-color: var(--gold); color: var(--white);">
-                            Change Photo
+                            <span x-show="!isUploading">Change Photo</span>
+                            <span x-show="isUploading">Uploading...</span>
                         </button>
                         <p class="text-xs mt-2" style="color: var(--text-secondary);">JPG, PNG or GIF. Max 2MB</p>
                     </div>
                 </div>
             </div>
+
+            <form action="{{ route('settings.update') }}" method="POST">
+                @csrf
+                @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>

@@ -44,6 +44,36 @@ class ProfileController extends Controller
         return redirect()->route('settings.index')->with('success', 'Profile updated successfully!');
     }
 
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'profile_image' => 'required|image|max:2048',
+        ]);
+
+        $user = auth()->user();
+
+        if ($request->hasFile('profile_image')) {
+            // Delete old image
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $user->update(['profile_image' => $path]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile photo uploaded',
+                'url' => $user->fresh()->profile_image_url
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'oops! could not update'
+        ], 400);
+    }
+
     public function updatePassword(Request $request)
     {
         $validated = $request->validate([

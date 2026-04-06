@@ -67,22 +67,40 @@
     <form method="POST" action="{{ route('register') }}" x-data="{ showPassword: false, showConfirmPassword: false }">
         @csrf
 
-        <!-- Full Name -->
-        <div class="mb-4">
-            <label for="name" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Full Name</label>
-            <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                value="{{ old('name') }}" 
-                required 
-                class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
-                style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"
-                placeholder="Enter your full name"
-            >
-            @error('name')
-                <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
-            @enderror
+        <!-- First & Last Name -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label for="first_name" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">First Name</label>
+                <input 
+                    type="text" 
+                    id="first_name" 
+                    name="first_name" 
+                    value="{{ old('first_name') }}" 
+                    required 
+                    class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
+                    style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);"
+                    placeholder="First Name"
+                >
+                @error('first_name')
+                    <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <label for="last_name" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Last Name</label>
+                <input 
+                    type="text" 
+                    id="last_name" 
+                    name="last_name" 
+                    value="{{ old('last_name') }}" 
+                    required 
+                    class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
+                    style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);"
+                    placeholder="Last Name"
+                >
+                @error('last_name')
+                    <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
 
         <!-- Email -->
