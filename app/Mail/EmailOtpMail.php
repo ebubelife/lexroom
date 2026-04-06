@@ -13,12 +13,14 @@ class EmailOtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $otpCode;
+
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $otpCode)
+    public function __construct(string $otpCode)
     {
-        //
+        $this->otpCode = $otpCode;
     }
 
     /**
@@ -27,7 +29,7 @@ class EmailOtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Verify your LexRoom account',
+            subject: 'Your Verification Code',
         );
     }
 

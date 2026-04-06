@@ -1,98 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Account</title>
+    <title>Verification Code</title>
     <style>
         body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
-            color: #0D1B2A;
             margin: 0;
             padding: 0;
-            background-color: #F8F9FA;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
         }
-        .container {
+        .email-container {
             max-width: 600px;
             margin: 40px auto;
-            background: #ffffff;
+            background-color: #ffffff;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .header {
             background-color: #0D1B2A;
-            padding: 40px 20px;
+            padding: 40px 30px;
             text-align: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #C9A84C;
+            margin-bottom: 10px;
+        }
+        .header-subtitle {
+            color: #ffffff;
+            font-size: 14px;
+            opacity: 0.9;
         }
         .content {
-            padding: 40px;
+            padding: 40px 30px;
             text-align: center;
         }
-        .footer {
-            background-color: #F1F5F9;
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #64748B;
-        }
-        h1 {
-            color: #ffffff;
-            margin: 0;
+        .greeting {
             font-size: 24px;
-            letter-spacing: 1px;
-        }
-        .otp-code {
-            font-size: 48px;
-            font-weight: bold;
-            color: #D4AF37; /* Gold color */
-            letter-spacing: 8px;
-            margin: 30px 0;
-            padding: 20px;
-            background: #FFFDF5;
-            border: 1px dashed #D4AF37;
-            border-radius: 8px;
-            display: inline-block;
+            color: #0D1B2A;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
         .message {
+            color: #4a5568;
+            line-height: 1.6;
             margin-bottom: 20px;
             font-size: 16px;
         }
-        .button {
+        .otp-box {
+            background-color: #F5EDD6;
+            border: 2px dashed #C9A84C;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
             display: inline-block;
-            padding: 14px 28px;
-            background-color: #D4AF37;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 6px;
+            min-width: 200px;
+        }
+        .otp-code {
+            font-size: 42px;
             font-weight: bold;
-            margin-top: 20px;
+            color: #0D1B2A;
+            letter-spacing: 10px;
+            font-family: monospace;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 30px 0;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+        }
+        .footer-link {
+            color: #C9A84C;
+            text-decoration: none;
+            margin: 0 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="email-container">
+        <!-- Header -->
         <div class="header">
-            <h1>LEXROOM</h1>
+            <div class="logo">First Mediator</div>
+            <div class="header-subtitle">AI-Assisted Legal Mediation</div>
         </div>
+
+        <!-- Content -->
         <div class="content">
-            <div class="message">
-                <h2 style="font-family: serif; color: #0D1B2A;">Verify Your Email</h2>
-                <p>Thank you for joining LexRoom. Use the following 6-digit code to verify your account and complete your registration.</p>
+            <div class="greeting">Verify Your Account</div>
+            
+            <p class="message">
+                Hello,
+            </p>
+            
+            <p class="message">
+                Thank you for choosing First Mediator. To complete your registration and activate your account, please use the 6-digit verification code below:
+            </p>
+
+            <!-- OTP Code Display -->
+            <div class="otp-box">
+                <div class="otp-code">{{ $otpCode }}</div>
             </div>
-            
-            <div class="otp-code">
-                {{ $otpCode }}
-            </div>
-            
-            <p style="font-size: 14px; color: #64748B;">This code will expire in 10 minutes.</p>
-            
-            <p>If you didn't request this code, you can safely ignore this email.</p>
+
+            <p class="message" style="font-size: 14px; color: #718096;">
+                This code will expire in 3 hours for security purposes.
+            </p>
+
+            <div class="divider"></div>
+
+            <p class="message" style="font-size: 14px; color: #718096;">
+                If you did not request this code, please ignore this email or contact our support team.
+            </p>
         </div>
+
+        <!-- Footer -->
         <div class="footer">
-            &copy; {{ date('Y') }} LexRoom. All rights reserved.
+            <p>© {{ date('Y') }} First Mediator. All rights reserved.</p>
+            <div style="margin-top: 15px;">
+                <a href="{{ route('privacy') }}" class="footer-link">Privacy Policy</a>
+                <a href="{{ route('terms') }}" class="footer-link">Terms of Service</a>
+            </div>
         </div>
     </div>
 </body>

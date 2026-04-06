@@ -45,7 +45,7 @@ class Otp extends Model
             'user_id' => $userId,
             'type' => $type,
             'code' => $code,
-            'expires_at' => Carbon::now()->addMinutes(10),
+            'expires_at' => \Carbon\Carbon::now()->addHours(3),
         ]);
     }
 }
