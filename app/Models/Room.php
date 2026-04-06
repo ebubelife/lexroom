@@ -14,12 +14,13 @@ class Room extends Model
         'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category',
         'jurisdiction', 'language', 'duration', 'status',
         'payment_type', 'case_summary', 'invite_token',
-        'started_at', 'ended_at'
+        'started_at', 'ended_at', 'party_b_clocked_in_at'
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
+        'party_b_clocked_in_at' => 'datetime',
     ];
 
     protected static function boot()

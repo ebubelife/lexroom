@@ -7,7 +7,6 @@ use App\Models\Room;
 use App\Models\SessionMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class ChatController extends Controller
 {
@@ -34,9 +33,20 @@ class ChatController extends Controller
                 ];
             });
 
-        // Get timer state from Redis
+        // Get timer state from Cache
         $timerKey = "room:{$room->id}:timer";
-        $remainingSeconds = Redis::get($timerKey) ?? ($room->duration * 60);
+        $startedAtKey = "room:{$room->id}:started_at";
+        
+        $totalSeconds = $room->duration * 60;
+        $startedAt = Cache::get($startedAtKey);
+        
+        if ($startedAt) {
+            $elapsed = now()->diffInSeconds($startedAt);
+            $remainingSeconds = max(0, $totalSeconds - $elapsed);
+            Cache::put($timerKey, $remainingSeconds, 7200);
+        } else {
+            $remainingSeconds = Cache::get($timerKey) ?? $totalSeconds;
+        }
 
         // Get current phase
         $currentPhase = Cache::get("room:{$room->id}:phase", 'opening');
@@ -48,11 +58,12 @@ class ChatController extends Controller
             'messages' => $messages,
             'timer' => [
                 'remaining_seconds' => (int) $remainingSeconds,
-                'total_seconds' => $room->duration * 60,
+                'total_seconds' => $totalSeconds,
             ],
             'phase' => $currentPhase,
             'lex_processing' => $lexProcessing,
             'status' => $room->status,
+            'party_b_clocked_in_at' => $room->party_b_clocked_in_at,
         ]);
     }
 
@@ -86,7 +97,13 @@ class ChatController extends Controller
 
         // Trigger Lex response (queued)
         Cache::put("room:{$room->id}:lex_processing", true, 60);
-        ProcessLexResponse::dispatch($room->id, $message->id);
+        // Send message to FM for processing
+        if (config('queue.default') === 'sync') {
+            // If using sync, give the server more time to wait for the AI
+            set_time_limit(120); 
+        }
+        
+        \App\Jobs\ProcessLexResponse::dispatch($room->id, $message->id);
 
         return response()->json([
             'success' => true,
@@ -117,28 +134,72 @@ class ChatController extends Controller
             'started_at' => now(),
         ]);
 
-        // Initialize timer in Redis
-        $timerKey = "room:{$room->id}:timer";
-        Redis::set($timerKey, $room->duration * 60);
+        // Initialize state in Cache
+        Cache::put("room:{$room->id}:phase", 'opening', 7200);
+        Cache::put("room:{$room->id}:lex_processing", false, 7200);
 
         // Set initial phase
         Cache::put("room:{$room->id}:phase", 'opening', 7200);
 
-        // Send Lex welcome message
+        // Send FM welcome message
         $welcomeMessage = SessionMessage::create([
             'room_id' => $room->id,
             'sender_type' => 'lex',
-            'content' => "Welcome to FirstMediator. I'm Lex, your AI mediator. I'm here to facilitate a fair and constructive dialogue between both parties. Let's begin with opening statements. Party A, please share your perspective on this dispute.",
+            'content' => "Welcome to FirstMediator. I'm FM, your AI advisor. I'm here to facilitate a fair and constructive dialogue between both parties. Let's begin with opening statements. Party A, please share your perspective on this dispute.",
             'phase' => 'opening',
         ]);
+
+        $remainingSeconds = $room->duration * 60;
+        if ($room->status === 'active' && $room->started_at) {
+            $remainingSeconds = max(0, ($room->duration * 60) - $room->started_at->diffInSeconds(now()));
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Session started',
             'timer' => [
-                'remaining_seconds' => $room->duration * 60,
-                'total_seconds' => $room->duration * 60,
+                'remaining_seconds' => (int) $remainingSeconds,
+                'total_seconds' => (int) ($room->duration * 60),
             ],
+        ]);
+    }
+
+    /**
+     * Party B Clock-In
+     */
+    public function clockIn(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        
+        // Guest verification if not logged in
+        if (!auth()->check()) {
+            $token = $request->input('token');
+            if (!$token || $token !== $room->invite_token) {
+                return response()->json(['error' => 'Invalid invitation token'], 403);
+            }
+        }
+
+        if ($room->party_b_clocked_in_at) {
+            return response()->json(['success' => true, 'message' => 'Already clocked in']);
+        }
+
+        $room->update([
+            'party_b_clocked_in_at' => now(),
+            'status' => 'pending' // Ensure it's pending so Party A can start
+        ]);
+
+        // Send FM greeting for Party B arrival
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => "Party B has officially joined the mediation room. FM is now aware of both parties' presence. Party A, you may now click the 'Start Session' button to begin our formal dialogue.",
+            'phase' => 'opening',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Clock-in successful',
+            'party_b_clocked_in_at' => $room->party_b_clocked_in_at->toISOString(),
         ]);
     }
 

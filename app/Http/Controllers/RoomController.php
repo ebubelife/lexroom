@@ -6,6 +6,7 @@ use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\RoomInvitation;
 use App\Mail\RoomConfirmation;
 
@@ -59,7 +60,7 @@ class RoomController extends Controller
             'case_summary' => $validated['case_summary'],
             'duration' => $validated['duration'],
             'payment_type' => $validated['payment_type'],
-            'status' => 'active', // Bypassed payment wall for now
+            'status' => 'pending', // Allow Party A to start session manually
             'invite_token' => Str::random(64),
         ]);
 

@@ -1,126 +1,64 @@
-# FirstMediator Deployment Guide
+# FirstMediator (FM) Deployment Guide for cPanel
 
-## Quick Deploy to Live Server
+This guide provides the specific steps and commands needed to deploy FirstMediator to your live server at `/home/firstwomm/firstmediator.com/`.
 
-### Option 1: Using the Deployment Script (Recommended)
+## 1. Environment Configuration (.env)
+Upload your `.env` file to the server and update these critical production settings:
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `APP_URL=https://firstmediator.com`
+- `DB_DATABASE=your_production_db_name`
+- `DB_USERNAME=your_production_db_user`
+- `DB_PASSWORD=your_production_db_password`
+- `CACHE_STORE=database` (Recommended for cPanel)
+- `QUEUE_CONNECTION=sync` (Best for cPanel: FM responds instantly, but 'Send' takes 5-10s)
+- **Alternative**: `QUEUE_CONNECTION=database` (Only if you can run a 1-min cron job)
 
-1. SSH into your live server:
-   ```bash
-   ssh your-user@aidev.kodeblooded.com.ng
-   ```
+## 2. cPanel Cron Jobs
+If you chose `QUEUE_CONNECTION=database`, set up these cron jobs:
 
-2. Navigate to your project directory:
-   ```bash
-   cd /path/to/firstmediator
-   ```
-
-3. Run the deployment script:
-   ```bash
-   ./deploy.sh
-   ```
-
-### Option 2: Manual Deployment
-
-If the script doesn't work, run these commands manually:
-
+### **Job 1: Task Scheduler (The "Heartbeat")**
+**Frequency:** Once Per Minute (`* * * * *`) or Every 5 Minutes (`*/5 * * * *`) if restricted.
+**Command:**
 ```bash
-# Pull latest code
-git pull origin main
-
-# Install dependencies
-composer install --no-dev --optimize-autoloader
-npm install
-npm run build
-
-# Run migrations
-php artisan migrate --force
-
-# Clear and cache
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Create storage symlink
-php artisan storage:link
-
-# Set permissions
-chmod -R 775 storage bootstrap/cache
+/usr/local/bin/php /home/firstwomm/firstmediator.com/artisan schedule:run >> /dev/null 2>&1
 ```
 
-## What's New in This Deployment
+### **Job 2: FM AI Worker (The "Brain")**
+**Note**: Skip this if you used `QUEUE_CONNECTION=sync`.
+**Frequency:** Once Per Minute (`* * * * *`)
+**Command:**
+```bash
+/usr/local/bin/php /home/firstwomm/firstmediator.com/artisan queue:work --stop-when-empty >> /dev/null 2>&1
+```
 
-### Controllers Fixed
-- ✅ ReportsController - Returns demo reports data
-- ✅ WalletController - Returns balance and transactions
-- ✅ LexReferController - Returns referral stats and history
-- ✅ ProfileController - Handles profile updates and image uploads
+## 3. Post-Deployment Commands
+Run these commands via the cPanel **Terminal** or SSH after uploading your code:
 
-### New Features
-- Profile image upload (max 2MB)
-- Google avatar integration
-- Clickable profile links in sidebar and top bar
-- Improved settings page with tabs
-- Toast notifications everywhere
+```bash
+# Move to the project directory
+cd /home/firstwomm/firstmediator.com/
 
-### Database Changes
-- Added `profile_image` column to users table
-- Added `google_avatar` column to users table
+# Install/Update dependencies (if you have composer access)
+composer install --optimize-autoloader --no-dev
 
-## Troubleshooting
+# Run migrations to update the database
+php artisan migrate --force
 
-### If you still see "Undefined variable" errors:
+# Link the storage for evidence files and profile images
+php artisan storage:link
 
-1. Check if controllers exist:
-   ```bash
-   ls -la app/Http/Controllers/ReportsController.php
-   ls -la app/Http/Controllers/WalletController.php
-   ls -la app/Http/Controllers/LexReferController.php
-   ```
+# Clear all caches for a fresh start
+php artisan optimize:clear
+```
 
-2. Clear all caches again:
-   ```bash
-   php artisan optimize:clear
-   ```
+## 4. Verification Checklist
+- [ ] **Login**: Can you log in to your dashboard?
+- [ ] **Create Case**: Can you create a new mediation room?
+- [ ] **Invite**: Does the invite link generated for Party B work?
+- [ ] **FM Awareness**: When Party B "clocks in," does FM send the arrival message?
+- [ ] **Timer**: Does the live countdown timer start and sync correctly?
 
-3. Check file permissions:
-   ```bash
-   ls -la app/Http/Controllers/
-   ```
-
-### If profile images don't work:
-
-1. Check storage symlink:
-   ```bash
-   ls -la public/storage
-   ```
-
-2. Create it manually if missing:
-   ```bash
-   php artisan storage:link
-   ```
-
-3. Set proper permissions:
-   ```bash
-   chmod -R 775 storage
-   chown -R www-data:www-data storage
-   ```
-
-## Testing After Deployment
-
-1. Visit https://aidev.kodeblooded.com.ng/dashboard
-2. Click on Reports, Wallet, LexRefer - should all work
-3. Click your avatar/name - should go to Settings
-4. Upload a profile image - should save and display
-5. Create a test room - should work with toast notifications
-
-## Need Help?
-
-If you encounter any issues:
-1. Check Laravel logs: `tail -f storage/logs/laravel.log`
-2. Check web server logs
-3. Verify all files were pulled: `git status`
-4. Ensure migrations ran: `php artisan migrate:status`
+## Common Issues
+- **PHP Version**: If the `artisan` commands fail, try using the full path to PHP 8.4 (e.g., `/opt/cpanel/ea-php84/root/usr/bin/php`).
+- **File Permissions**: Ensure that `storage` and `bootstrap/cache` folders are writable by the server (usually CHMOD 775).

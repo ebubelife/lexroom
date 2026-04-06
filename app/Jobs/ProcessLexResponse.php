@@ -38,15 +38,15 @@ class ProcessLexResponse implements ShouldQueue
         // Get conversation history
         $messages = SessionMessage::where('room_id', $room->id)
             ->orderBy('created_at', 'asc')
-            ->get()
-            ->map(function ($msg) {
-                return [
-                    'sender' => $msg->sender_type,
-                    'content' => $msg->content,
-                    'phase' => $msg->phase,
-                ];
-            })
-            ->toArray();
+            ->get();
+            
+        $claudeMessages = [];
+        foreach ($messages as $m) {
+            $claudeMessages[] = [
+                'sender_type' => $m->sender_type,
+                'content' => $m->content,
+            ];
+        }
 
         // Get parsed evidence texts
         $evidenceRecords = \App\Models\EvidenceFile::where('room_id', $room->id)
@@ -70,7 +70,7 @@ class ProcessLexResponse implements ShouldQueue
         ];
 
         // Get Lex response
-        $response = $claudeService->generateResponse($messages, $context);
+        $response = $claudeService->generateResponse($claudeMessages, $context);
 
         if ($response['success']) {
             // Save Lex response

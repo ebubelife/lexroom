@@ -297,91 +297,106 @@
         <!-- Navigation -->
         <nav class="flex-1 mt-6 px-3 overflow-y-auto pb-4">
             <div class="space-y-4">
-                <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
-                    </svg>
-                    Dashboard
-                </a>
+                @auth
+                    <!-- Dashboard -->
+                    <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Dashboard
+                    </a>
 
-                <!-- Cases (formerly My Rooms) -->
-                <a href="{{ route('rooms.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('rooms.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M10.5 3L12 2l1.5 1H21v6H3V3h7.5z"></path>
-                    </svg>
-                    Cases
-                </a>
+                    <!-- Cases -->
+                    <a href="{{ route('rooms.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('rooms.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        Cases
+                    </a>
 
-                <!-- Vaults -->
-                <a href="{{ route('vault.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('vault.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                    </svg>
-                    Vaults
-                </a>
+                    <!-- Evidence Vault -->
+                    <a href="{{ route('vault.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('vault.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Evidence Vault
+                    </a>
 
-                <!-- Reports -->
-                <a href="{{ route('reports.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Reports
-                </a>
+                    <!-- Wallet -->
+                    <a href="{{ route('wallet.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('wallet.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                        Wallet
+                    </a>
 
-                <!-- Wallet & Credits -->
-                <a href="{{ route('wallet.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('wallet.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                    </svg>
-                    Wallet & Credits
-                </a>
+                    <!-- Legal Reports -->
+                    <a href="{{ route('reports.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Reports
+                    </a>
 
-                <!-- FM Refer -->
-                <a href="{{ route('fmrefer.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('fmrefer.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1"></path>
-                    </svg>
-                    FM Refer
-                </a>
+                    <!-- FM Refer -->
+                    <a href="{{ route('fmrefer.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('fmrefer.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1"></path>
+                        </svg>
+                        FM Refer
+                    </a>
 
-                <!-- Settings -->
-                <a href="{{ route('settings.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('settings.*') ? 'nav-link-active' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    Settings
-                </a>
+                    <!-- Settings -->
+                    <a href="{{ route('settings.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('settings.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Settings
+                    </a>
+                @endauth
+
+                @guest
+                    <div class="px-3 py-6 mt-4 rounded-xl border border-dashed text-center" style="border-color: var(--gold); background: rgba(201, 168, 76, 0.05);">
+                        <p class="text-xs font-serif mb-3" style="color: var(--text-primary);">New to First Mediator?</p>
+                        <a href="{{ route('register') }}" class="block w-full px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-white transition-all hover:scale-105" style="background: var(--gold);">
+                            Create Account
+                        </a>
+                        <a href="{{ route('login') }}" class="block mt-2 text-xs opacity-60 hover:opacity-100 transition-opacity" style="color: var(--text-primary);">
+                            Already have one? Login
+                        </a>
+                    </div>
+                @endguest
             </div>
         </nav>
 
-        <!-- User Info -->
-        <div class="flex-shrink-0 p-4" style="border-top: 1px solid var(--border-color);">
-            <a href="{{ route('settings.index') }}" class="flex items-center hover:opacity-80 transition-opacity">
-                @if(auth()->user()->profile_image_url)
-                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover border-2" style="border-color: var(--gold);">
-                @else
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background-color: var(--gold);">
-                        {{ auth()->user()->initials }}
+        @auth
+            <!-- User Info -->
+            <div class="flex-shrink-0 p-4" style="border-top: 1px solid var(--border-color);">
+                <a href="{{ route('settings.index') }}" class="flex items-center hover:opacity-80 transition-opacity">
+                    @if(auth()->user()->profile_image_url)
+                        <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                    @else
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background-color: var(--gold);">
+                            {{ auth()->user()->initials }}
+                        </div>
+                    @endif
+                    <div class="ml-3 flex-1 min-w-0">
+                        <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ auth()->user()->name }}</p>
+                        <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth()->user()->email }}</p>
                     </div>
-                @endif
-                <div class="ml-3 flex-1 min-w-0">
-                    <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ auth()->user()->name }}</p>
-                    <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth()->user()->email }}</p>
-                </div>
-            </a>
-            <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                @csrf
-                <button type="submit" class="w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-red-500" style="color: #DC2626; border: 1px solid var(--border-color);">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                    Logout
-                </button>
-            </form>
-        </div>
+                </a>
+                <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                    @csrf
+                    <button type="submit" class="w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-red-500" style="color: #DC2626; border: 1px solid var(--border-color);">
+                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        Logout
+                    </button>
+                </form>
+            </div>
+        @endauth
     </div>
 
     <!-- Main Content -->
@@ -403,22 +418,24 @@
 
             <!-- Right: Wallet + Create Room + Theme + User -->
             <div class="flex items-center space-x-2 lg:space-x-4">
-                <!-- Wallet Credits -->
-                <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
-                    ${{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
-                </a>
+                @auth
+                    <!-- Wallet Credits -->
+                    <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                        ${{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
+                    </a>
 
-                <!-- Create Room Button -->
-                <a href="{{ route('rooms.create') }}" class="hidden sm:flex px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
-                    Create a Room
-                </a>
+                    <!-- Create Room Button -->
+                    <a href="{{ route('rooms.create') }}" class="hidden sm:flex px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                        Create a Room
+                    </a>
 
-                <!-- Mobile Create Room Button -->
-                <a href="{{ route('rooms.create') }}" class="sm:hidden p-2 rounded-lg transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);" title="Create Room">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                </a>
+                    <!-- Mobile Create Room Button -->
+                    <a href="{{ route('rooms.create') }}" class="sm:hidden p-2 rounded-lg transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);" title="Create Room">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </a>
+                @endauth
 
                 <!-- Theme Toggle -->
                 <button 
@@ -435,16 +452,24 @@
                     </svg>
                 </button>
 
-                <!-- User Avatar -->
-                <a href="{{ route('settings.index') }}" class="hover:opacity-80 transition-opacity" title="Profile Settings">
-                    @if(auth()->user()->profile_image_url)
-                        <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2" style="border-color: var(--gold);">
-                    @else
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
-                            {{ auth()->user()->initials }}
-                        </div>
-                    @endif
-                </a>
+                @auth
+                    <!-- User Avatar -->
+                    <a href="{{ route('settings.index') }}" class="hover:opacity-80 transition-opacity" title="Profile Settings">
+                        @if(auth()->user()->profile_image_url)
+                            <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2" style="border-color: var(--gold);">
+                        @else
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background-color: var(--gold);">
+                                {{ auth()->user()->initials }}
+                            </div>
+                        @endif
+                    </a>
+                @endauth
+
+                @guest
+                    <a href="{{ route('login') }}" class="text-sm font-medium hover:opacity-80 transition-opacity px-3 py-1.5 rounded-lg" style="color: var(--gold); border: 1px solid var(--gold);">
+                        Login
+                    </a>
+                @endguest
             </div>
         </header>
 

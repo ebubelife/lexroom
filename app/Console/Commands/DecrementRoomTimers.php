@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\GenerateReportJob;
 use App\Models\Room;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class DecrementRoomTimers extends Command
 {
@@ -17,21 +17,24 @@ class DecrementRoomTimers extends Command
         $activeRooms = Room::where('status', 'active')->get();
 
         foreach ($activeRooms as $room) {
-            $timerKey = "room:{$room->id}:timer";
-            $remaining = Redis::get($timerKey);
-
-            if ($remaining !== null && $remaining > 0) {
-                Redis::decr($timerKey);
+            // Calculate remaining seconds based on clock
+            $remaining = ($room->duration * 60) - $room->started_at->diffInSeconds(now());
+            
+            if ($remaining <= 0) {
+                $room->update([
+                    'status' => 'completed',
+                    'ended_at' => now(),
+                ]);
                 
-                // Check if time is up
-                if ($remaining <= 1) {
-                    $room->update(['status' => 'completed', 'ended_at' => now()]);
-                    $this->info("Room {$room->uuid} completed - time expired");
-                    
-                    // Trigger report generation
-                    GenerateReportJob::dispatch($room->id);
-                    $this->info("Report generation queued for room {$room->uuid}");
-                }
+                // Clear state
+                Cache::forget("room:{$room->id}:timer");
+                Cache::forget("room:{$room->id}:phase");
+                
+                $this->info("Room {$room->id} marked as completed.");
+                
+                // Trigger report generation
+                GenerateReportJob::dispatch($room->id);
+                $this->info("Report generation queued for room {$room->uuid}");
             }
         }
 

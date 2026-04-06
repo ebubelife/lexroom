@@ -130,8 +130,9 @@ Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'
 
 // Chat polling endpoints (guest or authenticated)
 Route::get('/rooms/{uuid}/poll', [\App\Http\Controllers\ChatController::class, 'poll'])->name('chat.poll');
-Route::post('/rooms/{uuid}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
-Route::post('/rooms/{uuid}/start', [\App\Http\Controllers\ChatController::class, 'startSession'])->name('chat.start');
+    Route::post('/rooms/{uuid}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('rooms.messages.send');
+    Route::post('/rooms/{uuid}/clock-in', [\App\Http\Controllers\ChatController::class, 'clockIn'])->name('rooms.clock-in');
+    Route::post('/rooms/{uuid}/start', [\App\Http\Controllers\ChatController::class, 'startSession'])->name('rooms.start');
 Route::post('/rooms/{uuid}/phase', [\App\Http\Controllers\ChatController::class, 'changePhase'])->name('chat.phase');
 
 // Evidence routes (guest or authenticated)

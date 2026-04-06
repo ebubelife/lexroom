@@ -87,7 +87,7 @@ class ClaudeService
         }
 
         return <<<PROMPT
-You are Lex, an impartial AI mediator for FirstMediator, a dispute resolution platform. Your role is to facilitate fair and constructive dialogue between two parties to help them reach a mutually acceptable resolution.
+You are FM, an impartial AI mediator for FirstMediator, a dispute resolution platform. Your role is to facilitate fair and constructive dialogue between two parties to help them reach a mutually acceptable resolution.
 
 **Session Context:**
 - Dispute Category: {$category}
@@ -138,12 +138,13 @@ PROMPT;
         $messages = [];
         
         foreach ($conversationHistory as $message) {
-            $role = $message['sender'] === 'lex' ? 'assistant' : 'user';
+            $senderType = $message['sender_type'] ?? $message['sender'] ?? 'user';
+            $role = $senderType === 'lex' ? 'assistant' : 'user';
             $content = $message['content'];
             
             // If message is from a party, prefix with party identifier
-            if ($message['sender'] !== 'lex') {
-                $partyLabel = $message['sender'] === 'party_a' ? 'Party A' : 'Party B';
+            if ($role !== 'assistant') {
+                $partyLabel = $senderType === 'party_a' ? 'Party A' : 'Party B';
                 $content = "[{$partyLabel}]: {$content}";
             }
             
@@ -164,7 +165,7 @@ PROMPT;
         $prompt = "Analyze the following evidence document and extract key facts, dates, and relevant information:\n\n{$evidenceText}";
         
         return $this->generateResponse([
-            ['sender' => 'party_a', 'content' => $prompt]
+            ['sender_type' => 'party_a', 'content' => $prompt]
         ], $context);
     }
 

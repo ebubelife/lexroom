@@ -3,6 +3,16 @@
 @section('title', 'Room Session — First Mediator')
 @section('page-title', 'Live Session')
 
+@php
+    $initialMessages = $room->messages->map(fn($m) => [
+        'id' => $m->id,
+        'sender_type' => $m->sender_type,
+        'content' => $m->content,
+        'phase' => $m->phase,
+        'created_at' => $m->created_at->toIso8601String(),
+    ]);
+@endphp
+
 @section('content')
 <div class="max-w-7xl mx-auto" x-data="liveRoom('{{ $room->uuid }}', '{{ request('token') }}')" x-init="init()">
     <!-- Session Header -->
@@ -50,7 +60,18 @@
                         <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <div>
                             <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Invited Party</p>
-                            <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
+                                @if(auth()->check() && auth()->id() === $room->party_a_id && $room->status === 'pending')
+                                    <button @click="copyInviteLink" 
+                                            class="p-1 rounded bg-gold bg-opacity-10 hover:bg-opacity-20 transition-all group"
+                                            title="Copy Invite Link for Party B">
+                                        <svg class="w-3 h-3" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                        </svg>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,20 +94,104 @@
                 <!-- Timer & Action -->
                 <div class="flex items-center gap-4 ml-auto lg:ml-0">
                     <div class="text-right">
-                        <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(timer.remaining_seconds)"></div>
+                        <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(remainingSeconds)"></div>
                         <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
                     </div>
                     
-                    <button x-show="status === 'pending'" 
+                    <button x-show="status === 'pending' && isPartyA" 
                             @click="openStartModal"
-                            class="px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all hover:scale-105 active:scale-95"
-                            style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
-                        Start Session
+                            :disabled="!clockedIn"
+                            class="px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all"
+                            :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+                            :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
+                        <span x-text="clockedIn ? 'Start Session' : 'Waiting for Party B...'"></span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Clock-In Overlay for Party B (Google Meet/Zoom Style) -->
+    <template x-if="isPartyB && !clockedIn && roomStatus === 'pending'">
+        <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black bg-opacity-95 backdrop-blur-xl overflow-y-auto">
+            <div class="max-w-5xl w-full flex flex-col gap-8 my-auto py-8">
+                <!-- Branding Header -->
+                <div class="text-center">
+                    <div class="inline-flex items-center justify-center px-4 py-1 rounded-full mb-4" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.2);">
+                        <span class="text-[10px] uppercase tracking-widest font-bold font-sans" style="color: var(--gold);">Mediation Room Invitation</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-serif text-white mb-2">First Mediator <span class="text-xs align-top opacity-50">TM</span></h1>
+                </div>
+
+                <!-- Main Join Card -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-0 rounded-3xl overflow-hidden shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                    <!-- Left Pane: Case Brief (Scrollable) -->
+                    <div class="md:col-span-2 p-8 md:p-12 border-b md:border-b-0 md:border-r" style="border-color: var(--border-color);">
+                        <h2 class="text-xs uppercase tracking-widest font-bold mb-6 opacity-50" style="color: var(--gold);">Case Summary briefing</h2>
+                        <div class="max-h-[300px] md:max-h-[450px] overflow-y-auto pr-4 custom-scrollbar">
+                            <h3 class="text-2xl font-serif text-white mb-4 leading-tight">{{ $room->case_id }}</h3>
+                            <div class="prose prose-invert max-w-none">
+                                <p class="text-lg leading-relaxed italic opacity-90" style="color: var(--text-primary);">
+                                    "{{ $room->case_summary }}"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Pane: Actions & Info -->
+                    <div class="p-8 md:p-12 flex flex-col justify-between space-y-8 bg-black bg-opacity-20 backdrop-blur-sm">
+                        <div class="space-y-8">
+                            <!-- Inviter Info -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-inner" style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                                    {{ strtoupper(substr($room->partyA->name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest opacity-40 font-bold">Host Invited You</p>
+                                    <p class="text-lg font-serif text-white">{{ $room->partyA->name }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Meeting Metadata -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
+                                    <span class="text-xs opacity-50">Mediator Identity</span>
+                                    <span class="text-xs font-bold font-mono tracking-tighter" style="color: var(--gold);">FM (FIRST MEDIATOR)</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
+                                    <span class="text-xs opacity-50">Est. Duration</span>
+                                    <span class="text-xs font-bold text-white">{{ $room->duration }} Mins</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
+                                    <span class="text-xs opacity-50">Security Level</span>
+                                    <span class="text-xs font-bold text-green-400">ENCRYPTED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Action -->
+                        <div class="space-y-4 pt-8">
+                            <button @click="clockIn" 
+                                    class="w-full py-5 rounded-2xl text-white font-bold uppercase tracking-widest shadow-xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                                    style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                                <span>Join Mediation Now</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </button>
+                            <p class="text-[9px] text-center opacity-30 px-4 leading-tight uppercase font-bold tracking-widest">
+                                By joining, you agree to the confidentiality of this session.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        </style>
+    </template>
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <!-- Main Chat Area -->
@@ -98,13 +203,13 @@
                 <div class="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4" id="chat-messages" x-ref="chatContainer">
                     <template x-for="message in messages" :key="message.id">
                         <div>
-                            <!-- Lex Message -->
+                            <!-- FM Message -->
                             <div x-show="message.sender_type === 'lex'" class="w-full">
                                 <div class="p-3 md:p-4 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border-left: 4px solid var(--gold);">
                                     <div class="flex items-center mb-2">
                                         <div class="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-bold mr-2"
-                                             style="background-color: var(--gold);">L</div>
-                                        <span class="text-sm md:text-base font-medium" style="color: var(--gold);">First Mediator AI</span>
+                                             style="background-color: var(--gold);">FM</div>
+                                        <span class="text-[10px] font-bold tracking-widest uppercase opacity-50" style="color: var(--gold);">FM Mediator</span>
                                     </div>
                                     <p class="text-sm md:text-base whitespace-pre-wrap" style="color: var(--text-primary);" x-text="message.content"></p>
                                     <span class="text-xs mt-2 block" style="color: var(--text-secondary);" x-text="formatTimestamp(message.created_at)"></span>
@@ -143,16 +248,14 @@
                         </div>
                     </template>
                     
-                    <!-- Lex Processing Indicator -->
+                    <!-- FM Processing Indicator -->
                     <div x-show="lexProcessing" class="w-full">
-                        <div class="p-3 rounded-lg flex items-center space-x-2" style="background-color: rgba(201, 168, 76, 0.05);">
-                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                 style="background-color: var(--gold);">L</div>
-                            <span class="text-sm" style="color: var(--text-secondary);">First Mediator is analyzing...</span>
-                            <div class="flex space-x-1">
-                                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0ms;"></div>
-                                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 150ms;"></div>
-                                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 300ms;"></div>
+                        <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.05);">
+                            <p class="text-[10px] uppercase tracking-wider font-bold mb-1 opacity-50" style="color: var(--gold);">FM is analyzing...</p>
+                            <div class="flex space-x-1.5 p-2 bg-opacity-50 rounded-lg inline-flex" style="background-color: var(--bg-secondary);">
+                                <div class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--gold); border-radius: 4px; border: 2px solid var(--gold); animation-delay: 0s"></div>
+                                <div class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--gold); border-radius: 4px; border: 2px solid var(--gold); animation-delay: 0.2s"></div>
+                                <div class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--gold); border-radius: 4px; border: 2px solid var(--gold); animation-delay: 0.4s"></div>
                             </div>
                         </div>
                     </div>
@@ -165,7 +268,7 @@
                                x-model="messageInput"
                                @keyup.enter="sendMessage"
                                :disabled="status !== 'active'"
-                               placeholder="Type your message..."
+                               :placeholder="status === 'pending' ? 'Waiting for session to start...' : 'Type your message...'"
                                class="flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold disabled:opacity-50"
                                style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                         <button @click="sendMessage"
@@ -320,14 +423,20 @@ function liveRoom(roomUuid, token) {
         roomUuid: roomUuid,
         token: token,
         messageInput: '',
-        messages: [],
-        lastMessageId: 0,
-        timer: { remaining_seconds: 0, total_seconds: 0 },
-        phase: 'opening',
-        status: 'pending',
+        messages: @json($initialMessages),
+        lastMessageId: {{ $room->messages->last()?->id ?? 0 }},
+        remainingSeconds: {{ $room->status === 'active' ? max(0, $room->duration * 60 - $room->started_at?->diffInSeconds(now())) : $room->duration * 60 }},
+        totalSeconds: {{ $room->duration * 60 }},
+        roomStatus: '{{ $room->status }}',
         lexProcessing: false,
         files: [],
         pollInterval: null,
+        timerInterval: null,
+        isPolling: false,
+        isPartyA: {{ auth()->check() && auth()->id() === $room->party_a_id ? 'true' : 'false' }},
+        isPartyB: {{ (auth()->check() && auth()->id() === $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token) ? 'true' : 'false' }},
+        clockedIn: {{ $room->party_b_clocked_in_at ? 'true' : 'false' }},
+        inviteUrl: "{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}",
         
         // Progress & Modal State
         uploading: false,
@@ -335,16 +444,32 @@ function liveRoom(roomUuid, token) {
         showStartModal: false,
         
         init() {
-            this.startPolling();
+            this.scrollToBottom();
+            this.pollInterval = setInterval(() => this.poll(), 2000);
+            
+            // Start live countdown timer if room is active
+            if (this.roomStatus === 'active') {
+                this.startLocalTimer();
+            }
             this.loadFiles();
         },
         
-        startPolling() {
-            this.poll();
-            this.pollInterval = setInterval(() => this.poll(), 2000);
+        startLocalTimer() {
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            this.timerInterval = setInterval(() => {
+                if (this.remainingSeconds > 0) {
+                    this.remainingSeconds--;
+                } else if (this.roomStatus === 'active') {
+                    // Refresh if time is up to see the completion state
+                    window.location.reload();
+                }
+            }, 1000);
         },
         
         async poll() {
+            if (this.isPolling) return;
+            this.isPolling = true;
+            
             try {
                 const url = `/rooms/${this.roomUuid}/poll?since=${this.lastMessageId}${this.token ? '&token=' + this.token : ''}`;
                 const response = await fetch(url);
@@ -356,12 +481,23 @@ function liveRoom(roomUuid, token) {
                     this.$nextTick(() => this.scrollToBottom());
                 }
                 
-                this.timer = data.timer;
-                this.phase = data.phase;
                 this.status = data.status;
+                this.roomStatus = data.status;
                 this.lexProcessing = data.lex_processing;
+                this.clockedIn = !!data.party_b_clocked_in_at;
+
+                if (data.timer && this.roomStatus === 'active') {
+                    this.totalSeconds = data.timer.total_seconds;
+                    // Only snap to server time if there's a significant drift (>10s)
+                    // or if our local timer hasn't started yet
+                    if (Math.abs(this.remainingSeconds - data.timer.remaining_seconds) > 10 || this.remainingSeconds === 0) {
+                        this.remainingSeconds = data.timer.remaining_seconds;
+                    }
+                }
             } catch (error) {
                 console.error('Poll error:', error);
+            } finally {
+                this.isPolling = false;
             }
         },
         
@@ -385,8 +521,14 @@ function liveRoom(roomUuid, token) {
                 });
                 
                 const data = await response.json();
-                if (data.success) {
-                    this.poll();
+                if (data.success && data.message) {
+                    this.messages.push(data.message);
+                    if (data.message.id > this.lastMessageId) {
+                        this.lastMessageId = data.message.id;
+                    }
+                    this.$nextTick(() => this.scrollToBottom());
+                    // Small delay to let Lex start processing before the next poll
+                    setTimeout(() => this.poll(), 500);
                 }
             } catch (error) {
                 console.error('Send error:', error);
@@ -412,11 +554,39 @@ function liveRoom(roomUuid, token) {
                 const data = await response.json();
                 if (data.success) {
                     window.showToast('Session started successfully');
-                    this.poll();
+                    this.roomStatus = 'active';
+                    this.startLocalTimer();
                 }
             } catch (error) {
                 console.error('Start error:', error);
                 window.showToast('Failed to start session', 'error');
+            }
+        },
+
+        async clockIn() {
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/clock-in`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        token: this.token
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    this.clockedIn = true;
+                    window.showToast('You have joined the mediation room');
+                    this.poll();
+                } else {
+                    window.showToast(data.error || 'Failed to join mediation', 'error');
+                }
+            } catch (error) {
+                console.error('Clock-in error:', error);
+                window.showToast('Error joining mediation', 'error');
             }
         },
         
@@ -432,6 +602,15 @@ function liveRoom(roomUuid, token) {
             } catch (error) {
                 console.error('Load files error:', error);
             }
+        },
+
+        copyInviteLink() {
+            navigator.clipboard.writeText(this.inviteUrl).then(() => {
+                window.showToast('Invite link copied! Open this in an Incognito window to join as Party B.');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                window.showToast('Failed to copy link', 'error');
+            });
         },
         
         uploadFile(event) {
