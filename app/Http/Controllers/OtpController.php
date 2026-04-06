@@ -10,18 +10,20 @@ use Illuminate\Support\Facades\Mail;
 
 class OtpController extends Controller
 {
-    public function showVerification()
+    public function showVerification(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
+        $verifyPhone = $request->query('verify') === 'phone';
         
-        // If user is fully verified, redirect to dashboard
-        if ($user->isFullyVerified()) {
+        // If user is fully verified and not explicitly requesting phone verification, redirect to dashboard
+        if ($user->isFullyVerified() && !$verifyPhone) {
             return redirect()->route('dashboard');
         }
 
         return view('auth.verify-otp', [
             'needsEmailVerification' => !$user->hasVerifiedEmail(),
-            'needsPhoneVerification' => !$user->hasVerifiedPhone(),
+            'needsPhoneVerification' => $verifyPhone && !$user->hasVerifiedPhone(),
         ]);
     }
 
