@@ -95,7 +95,7 @@ class User extends Authenticatable
 
     public function getFirstNameAttribute()
     {
-        return $this->first_name ?: explode(' ', $this->name ?? '')[0];
+        return ($this->attributes['first_name'] ?? null) ?: explode(' ', $this->name ?? '')[0];
     }
 
     protected function casts(): array
@@ -134,8 +134,11 @@ class User extends Authenticatable
 
     public function getInitialsAttribute()
     {
-        if ($this->first_name && $this->last_name) {
-            return strtoupper(substr($this->first_name, 0, 1) . substr($this->last_name, 0, 1));
+        $firstName = $this->attributes['first_name'] ?? null;
+        $lastName = $this->attributes['last_name'] ?? null;
+
+        if ($firstName && $lastName) {
+            return strtoupper(substr($firstName, 0, 1) . substr($lastName, 0, 1));
         }
         
         $names = explode(' ', $this->name ?? '');
