@@ -61,13 +61,7 @@
                         ✓ Verified
                     </span>
                 @else
-                    <button 
-                        @click="activeTab = 'email'"
-                        class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90"
-                        style="background-color: var(--gold); color: var(--white);"
-                    >
-                        Verify Now
-                    </button>
+                   
                 @endif
             </div>
 
@@ -105,9 +99,7 @@
         <div x-show="activeTab === 'email'" x-transition>
             <div class="mb-6">
                 <h3 class="text-lg font-medium mb-2" style="color: var(--text-primary);">Verify Email Address</h3>
-                <p class="text-sm mb-4" style="color: var(--text-secondary);">
-                    We'll send a 6-digit code to {{ auth()->user()->email }}
-                </p>
+               
 
                 <!-- Verify OTP Form -->
                 <form method="POST" action="{{ route('otp.verify') }}" class="mb-6">
