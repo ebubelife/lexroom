@@ -110,7 +110,7 @@ class User extends Authenticatable
 
     public function isFullyVerified()
     {
-        return $this->hasVerifiedEmail() && $this->hasVerifiedPhone();
+        return $this->hasVerifiedEmail();
     }
 
     public function getFormattedPhoneAttribute()

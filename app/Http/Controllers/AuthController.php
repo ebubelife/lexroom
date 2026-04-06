@@ -28,15 +28,11 @@ class AuthController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string', new NigerianPhone],
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
             'terms' => ['required', 'accepted'],
         ], [
             'terms.accepted' => 'You must agree to the Terms of Service and Privacy Policy',
         ]);
-
-        // Normalize phone number
-        $normalizedPhone = PhoneHelper::validateAndNormalize($request->phone);
 
         // Check for referral
         $referredById = null;
@@ -50,7 +46,6 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $normalizedPhone,
             'password' => Hash::make($request->password),
             'referred_by_id' => $referredById,
         ]);
@@ -122,11 +117,7 @@ class AuthController extends Controller
                 // User exists with Google ID, check if fully verified
                 Auth::login($user);
                 
-                // Google users only need phone verification (email is pre-verified)
-                if (!$user->phone_verified_at) {
-                    return redirect()->route('verification.notice');
-                }
-                
+                // Google users are pre-verified via email 
                 return redirect()->intended('/dashboard');
             }
             
@@ -141,11 +132,7 @@ class AuthController extends Controller
                 ]);
                 Auth::login($existingUser);
                 
-                // Google users only need phone verification
-                if (!$existingUser->phone_verified_at) {
-                    return redirect()->route('verification.notice');
-                }
-                
+                // Google users are pre-verified via email 
                 return redirect()->intended('/dashboard');
             }
             
@@ -183,14 +170,10 @@ class AuthController extends Controller
         }
         
         $request->validate([
-            'phone' => ['required', 'string', new NigerianPhone],
             'terms' => ['required', 'accepted'],
         ], [
             'terms.accepted' => 'You must agree to the Terms of Service and Privacy Policy',
         ]);
-        
-        // Normalize phone number
-        $normalizedPhone = PhoneHelper::validateAndNormalize($request->phone);
         
         // Check for referral
         $referredById = null;
@@ -205,7 +188,6 @@ class AuthController extends Controller
         $newUser = User::create([
             'name' => session('google_user_name'),
             'email' => session('google_user_email'),
-            'phone' => $normalizedPhone,
             'google_id' => session('google_user_id'),
             'google_avatar' => session('google_user_avatar'),
             'email_verified_at' => now(), // Google accounts are pre-verified
@@ -218,11 +200,7 @@ class AuthController extends Controller
 
         Auth::login($newUser);
 
-        // Google users only need phone verification
-        if (!$newUser->phone_verified_at) {
-            return redirect()->route('verification.notice');
-        }
-
+        // Google users don't need phone verification anymore
         return redirect()->intended('/dashboard');
     }
 }

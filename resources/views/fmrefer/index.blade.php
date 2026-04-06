@@ -10,7 +10,7 @@
             Refer & Earn
         </h1>
         <p class="text-base" style="color: var(--text-secondary);">
-            Invite friends to LexRoom and earn $1,000 for every successful mediation.
+            Invite friends to First Mediator and earn $1,000 for every successful mediation.
         </p>
     </div>
 

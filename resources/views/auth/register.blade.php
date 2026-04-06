@@ -103,24 +103,6 @@
             @enderror
         </div>
 
-        <!-- Phone -->
-        <div class="mb-4">
-            <label for="phone" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Phone Number</label>
-            <input 
-                type="tel" 
-                id="phone" 
-                name="phone" 
-                value="{{ old('phone') }}" 
-                required 
-                class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
-                style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"
-                placeholder="Enter your phone number"
-            >
-            @error('phone')
-                <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
-            @enderror
-        </div>
-
         <!-- Password -->
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Password</label>
@@ -189,7 +171,7 @@
                     style="border-color: var(--border-color); focus:ring-color: var(--gold);"
                 >
                 <span class="text-sm" style="color: var(--text-secondary);">
-                    I agree to the <a href="#" class="underline hover:no-underline" style="color: var(--gold);">Terms of Service</a> and <a href="#" class="underline hover:no-underline" style="color: var(--gold);">Privacy Policy</a>
+                    I agree to the <a href="{{ route('terms') }}" class="underline hover:no-underline" style="color: var(--gold);">Terms of Service</a> and <a href="{{ route('privacy') }}" class="underline hover:no-underline" style="color: var(--gold);">Privacy Policy</a>
                 </span>
             </label>
             @error('terms')

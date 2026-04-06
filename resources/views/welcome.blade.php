@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
+<script src="{{ asset('js/shared-layout.js') }}"></script>
 <style>
 :root {
   --navy: #0D1B2A;
@@ -58,14 +60,7 @@
 
 html { scroll-behavior: smooth; }
 
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text-primary);
-  line-height: 1.6;
-  transition: background 0.3s ease, color 0.3s ease;
-  overflow-x: hidden;
-}
+html { scroll-behavior: smooth; }
 
 /* ── SCROLL ANIMATIONS ── */
 .reveal {
@@ -79,118 +74,7 @@ body {
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
 
-/* ── NAV ── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: var(--nav-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.3s, border-color 0.3s;
-}
-.nav-inner {
-  max-width: 1160px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 64px;
-}
-.logo {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none;
-}
-.logo-icon {
-  width: 32px; height: 32px;
-}
-.logo-text {
-  font-family: var(--serif);
-  font-size: 20px;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-}
-.logo-text span { color: var(--gold); font-style: italic; }
-.nav-links {
-  display: flex; align-items: center; gap: 32px;
-  list-style: none;
-}
-.nav-links a {
-  font-size: 14px; font-weight: 400;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color 0.2s;
-  letter-spacing: 0.01em;
-}
-.nav-links a:hover { color: var(--text-primary); }
-.nav-right {
-  display: flex; align-items: center; gap: 12px;
-}
-.btn-ghost {
-  font-family: var(--sans);
-  font-size: 14px; font-weight: 500;
-  color: var(--text-primary);
-  background: none; border: none;
-  padding: 8px 16px; border-radius: 8px;
-  cursor: pointer; text-decoration: none;
-  transition: background 0.2s, color 0.2s;
-}
-.btn-ghost:hover { background: var(--gray-100); }
-[data-theme="dark"] .btn-ghost:hover { background: rgba(255,255,255,0.06); }
-
-.btn-primary {
-  font-family: var(--sans);
-  font-size: 14px; font-weight: 600;
-  color: var(--navy);
-  background: var(--gold);
-  border: none; border-radius: 8px;
-  padding: 9px 20px;
-  cursor: pointer; text-decoration: none;
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  letter-spacing: -0.01em;
-}
-.btn-primary:hover {
-  background: var(--gold-light);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
-}
-.btn-primary:active { transform: none; }
-
-/* ── MOBILE MENU ── */
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  color: var(--text-primary);
-  z-index: 110;
-}
-.mobile-menu-btn svg { width: 24px; height: 24px; }
-
-.mobile-nav {
-  position: fixed;
-  top: 64px; left: 0; right: 0;
-  background: var(--nav-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  transform: translateY(-100%);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-  z-index: 90;
-}
-.mobile-nav.open {
-  transform: translateY(0);
-  opacity: 1;
-  visibility: visible;
-}
-.mobile-nav .btn-ghost, .mobile-nav .btn-primary {
-  width: 100%;
-  text-align: center;
-  padding: 14px;
-}
+/* Header/Footer styles moved to shared-layout.css */
 
 .btn-primary-lg {
   font-size: 16px; padding: 14px 32px; border-radius: 10px;
@@ -723,23 +607,39 @@ p { color: var(--text-secondary); line-height: 1.7; }
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 48px 24px;
+  padding: 80px 24px 48px;
   background: var(--bg);
 }
 .footer-inner {
   max-width: 1160px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 24px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
+}
+.footer-col h4 {
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 24px;
 }
 .footer-links {
-  display: flex; gap: 28px; list-style: none;
+  display: flex; flex-direction: column; gap: 12px; list-style: none;
 }
 .footer-links a {
-  font-size: 14px; color: var(--text-muted);
+  font-size: 14px; color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s;
 }
-.footer-links a:hover { color: var(--text-primary); }
+.footer-links a:hover { color: var(--gold); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+  text-align: center;
+}
 .footer-copy {
   font-size: 13px; color: var(--text-muted);
 }
@@ -760,63 +660,26 @@ footer {
   
   .mockup-content { grid-template-columns: 1fr; }
   .mockup-sidebar { display: none; }
-  .footer-inner { 
-    flex-direction: column; 
-    align-items: center; 
-    text-align: center;
+  .footer-grid {
+    grid-template-columns: 1fr;
     gap: 48px;
+    text-align: center;
+  }
+  .footer-inner {
+    text-align: center;
+  }
+  .footer-col .logo {
+    justify-content: center;
   }
   .footer-links {
-    flex-direction: column;
-    gap: 20px;
     align-items: center;
-  }
-  .footer-copy {
-    margin-top: 16px;
   }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <a href="#" class="logo">
-      <!-- Original SVG Logo (commented out for potential future use)
-      <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="16" y1="4" x2="16" y2="7" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="8" y1="12" x2="24" y2="12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="12" x2="16" y2="28" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M8 12 Q6 18 8 22 Q10 26 14 26" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <path d="M24 12 Q26 18 24 22 Q22 26 18 26" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <line x1="8" y1="7" x2="8" y2="12" stroke="#C9A84C" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-        <line x1="24" y1="7" x2="24" y2="12" stroke="#C9A84C" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-      </svg>
-      -->
-      
-     
-     
-      
-      <!-- FM Logo Text -->
-
-       <img 
-        src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
-        alt="FirstMediator" 
-        class="logo-text logo-dark"
-        style="height: 72px; display: var(--logo-dark-display) !important;"
-      >
-      <img 
-        src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
-        alt="First Mediator" 
-        class="logo-text logo-light"
-        style="height: 72px; display: var(--logo-light-display) !important;"
-      >
-     
-    </a>
-    <ul class="nav-links">
-      <li><a href="#how">How it works</a></li>
-      <li><a href="#categories">Disputes</a></li>
+@include('partials.navbar')
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -1196,85 +1059,9 @@ footer {
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <!-- Col 1: Logo -->
-      <div class="footer-col">
-        <a href="/" class="logo">
-          <img 
-            src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
-            alt="FirstMediator" 
-            style="height: 72px; display: var(--logo-light-display) !important;"
-          >
-          <img 
-            src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
-            alt="First Mediator" 
-            style="height: 72px; display: var(--logo-dark-display) !important;"
-          >
-        </a>
-      </div>
-
-      <!-- Col 2: Legal -->
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul class="footer-links">
-          <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
-          <li><a href="{{ route('gdpr') }}">GDPR Policy</a></li>
-          <li><a href="{{ route('terms') }}">Terms of Service</a></li>
-          <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 3: Company -->
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul class="footer-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="{{ route('about') }}">About Us</a></li>
-          <li><a href="/login">Login</a></li>
-          <li><a href="/register">Sign Up</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2026 FirstMediator &middot; Dispute Resolution, Without the Legal Bill.</p>
-    </div>
-  </div>
-</footer>
+@include('partials.footer')
 
 <script>
-// Theme toggle
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
-  
-  // Update logo display
-  html.style.setProperty('--logo-light-display', isDark ? 'block' : 'none');
-  html.style.setProperty('--logo-dark-display', isDark ? 'none' : 'block');
-}
-
-// Mobile Menu Toggle
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobile-nav');
-  const openIcon = document.getElementById('menu-icon-open');
-  const closeIcon = document.getElementById('menu-icon-close');
-  const isOpen = menu.classList.contains('open');
-  
-  if (isOpen) {
-    menu.classList.remove('open');
-    openIcon.style.display = 'block';
-    closeIcon.style.display = 'none';
-  } else {
-    menu.classList.add('open');
-    openIcon.style.display = 'none';
-    closeIcon.style.display = 'block';
-  }
-}
-
 // Scroll reveal
 const revealEls = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {

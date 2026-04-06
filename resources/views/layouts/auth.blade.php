@@ -18,6 +18,8 @@
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
+    <script src="{{ asset('js/shared-layout.js') }}"></script>
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -104,122 +106,20 @@
         })();
     </script>
 </head>
-<body class="min-h-screen" style="background-color: var(--bg-primary); color: var(--text-primary);">
+<body class="min-h-screen flex flex-col" style="background-color: var(--bg-primary); color: var(--text-primary);">
     <!-- Top Bar -->
-    <header class="w-full py-4 px-6" style="border-bottom: 1px solid var(--border-color);">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Logo -->
-            <a href="/" class="flex items-center">
-                <img 
-                    src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
-                    alt="First Mediator" 
-                    class="h-24"
-                    style="display: var(--logo-light-display) !important;"
-                >
-                <img 
-                    src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
-                    alt="First Mediator" 
-                    class="h-24"
-                    style="display: var(--logo-dark-display) !important;"
-                >
-            </a>
-
-            <!-- Theme Toggle -->
-            <button 
-                type="button" 
-                id="theme-toggle"
-                class="p-2 rounded-lg hover:bg-opacity-10 hover:bg-gray-500 transition-colors"
-                aria-label="Toggle theme"
-            >
-                <svg class="w-5 h-5 theme-icon-sun" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
-                </svg>
-                <svg class="w-5 h-5 theme-icon-moon hidden" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                </svg>
-            </button>
-        </div>
-    </header>
+    @include('partials.navbar')
 
     <!-- Main Content -->
-    <main class="flex-1 flex items-center justify-center px-6 py-12">
+    <main class="flex-1 flex items-center justify-center px-6 py-12" style="margin-top: 72px; min-height: calc(100vh - 72px - 300px);">
         <div class="w-full max-w-md animate-fade-up">
             @yield('content')
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="py-12 px-6" style="border-top: 1px solid var(--border-color); background-color: var(--bg-primary);">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left mb-10">
-            <!-- Col 1: Logo -->
-            <div class="flex justify-center md:justify-start">
-                <a href="/">
-                    <img src="{{ asset('assets/images/logos/fm-lightmode.png') }}" class="h-12 w-auto block dark:hidden" alt="LexRoom">
-                    <img src="{{ asset('assets/images/logos/fm-darkmode.png') }}" class="h-12 w-auto hidden dark:block" alt="LexRoom">
-                </a>
-            </div>
+    @include('partials.footer')
 
-            <!-- Col 2: Legal -->
-            <div>
-                <h4 class="font-serif text-lg mb-4 text-[var(--gold)]">Legal</h4>
-                <div class="flex flex-col space-y-2">
-                    <a href="{{ route('privacy') }}" class="hover:text-[var(--gold)] transition-colors">Privacy Policy</a>
-                    <a href="{{ route('gdpr') }}" class="hover:text-[var(--gold)] transition-colors">GDPR Policy</a>
-                    <a href="{{ route('terms') }}" class="hover:text-[var(--gold)] transition-colors">Terms of Service</a>
-                    <a href="{{ route('disclaimer') }}" class="hover:text-[var(--gold)] transition-colors">Disclaimer</a>
-                </div>
-            </div>
-
-            <!-- Col 3: Company -->
-            <div>
-                <h4 class="font-serif text-lg mb-4 text-[var(--gold)]">Company</h4>
-                <div class="flex flex-col space-y-2">
-                    <a href="/" class="hover:text-[var(--gold)] transition-colors">Home</a>
-                    <a href="{{ route('about') }}" class="hover:text-[var(--gold)] transition-colors">About Us</a>
-                    <a href="/login" class="hover:text-[var(--gold)] transition-colors">Login</a>
-                    <a href="/register" class="hover:text-[var(--gold)] transition-colors">Sign Up</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
-            <p class="text-sm opacity-60">© 2026 FirstMediator &middot; Dispute Resolution, Without the Legal Bill.</p>
-        </div>
-    </footer>
-
-    <!-- Theme Toggle Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            const sunIcon = document.querySelector('.theme-icon-sun');
-            const moonIcon = document.querySelector('.theme-icon-moon');
-
-            function updateTheme() {
-                const currentTheme = html.getAttribute('data-theme');
-                const isDark = currentTheme === 'dark';
-                
-                // Update icons
-                sunIcon.classList.toggle('hidden', isDark);
-                moonIcon.classList.toggle('hidden', !isDark);
-                
-                // Update logo display
-                html.style.setProperty('--logo-light-display', isDark ? 'none' : 'block');
-                html.style.setProperty('--logo-dark-display', isDark ? 'block' : 'none');
-            }
-
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('firstmediator_theme', newTheme);
-                updateTheme();
-            });
-
-            // Initialize theme display
-            updateTheme();
-        });
-    </script>
+    <!-- JavaScript handled in shared-layout.js -->
 </body>
 </html>

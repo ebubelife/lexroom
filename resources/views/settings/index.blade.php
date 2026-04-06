@@ -84,8 +84,18 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Phone</label>
-                <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone) }}" required
+                <div class="flex justify-between items-end mb-2">
+                    <label class="block text-sm font-medium" style="color: var(--text-primary);">Phone (Optional)</label>
+                    @if(auth()->user()->phone && !auth()->user()->hasVerifiedPhone())
+                        <a href="{{ route('verification.notice') }}" class="text-xs hover:underline" style="color: var(--gold);">Verify Phone</a>
+                    @elseif(auth()->user()->hasVerifiedPhone())
+                        <span class="text-xs text-green-600 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            Verified
+                        </span>
+                    @endif
+                </div>
+                <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone) }}"
                        class="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
                        style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
             </div>

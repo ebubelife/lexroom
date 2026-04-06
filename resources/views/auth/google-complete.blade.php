@@ -24,7 +24,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Complete your account</h1>
-        <p class="text-sm" style="color: var(--text-secondary);">Add your phone number to complete your First Mediator setup.</p>
+        <p class="text-sm" style="color: var(--text-secondary);">Accept our terms to complete your First Mediator setup.</p>
     </div>
 
     <!-- Google Account Info -->
@@ -49,25 +49,6 @@
     <form method="POST" action="{{ route('auth.google.complete') }}">
         @csrf
 
-        <!-- Phone Number -->
-        <div class="mb-6">
-            <label for="phone" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Phone Number</label>
-            <input 
-                type="tel" 
-                id="phone" 
-                name="phone" 
-                value="{{ old('phone') }}" 
-                required 
-                autofocus
-                class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
-                style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"
-                placeholder="Enter your phone number"
-            >
-            @error('phone')
-                <p class="mt-1 text-sm" style="color: #ef4444;">{{ $message }}</p>
-            @enderror
-        </div>
-
         <!-- Terms Checkbox -->
         <div class="mb-6">
             <label class="flex items-start">
@@ -80,7 +61,7 @@
                     style="border-color: var(--border-color); focus:ring-color: var(--gold);"
                 >
                 <span class="text-sm" style="color: var(--text-secondary);">
-                    I agree to the <a href="#" class="underline hover:no-underline" style="color: var(--gold);">Terms of Service</a> and <a href="#" class="underline hover:no-underline" style="color: var(--gold);">Privacy Policy</a>
+                    I agree to the <a href="{{ route('terms') }}" class="underline hover:no-underline" style="color: var(--gold);">Terms of Service</a> and <a href="{{ route('privacy') }}" class="underline hover:no-underline" style="color: var(--gold);">Privacy Policy</a>
                 </span>
             </label>
             @error('terms')
