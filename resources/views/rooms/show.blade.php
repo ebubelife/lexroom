@@ -126,10 +126,18 @@
                 <!-- Main Join Card -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-0 rounded-3xl overflow-hidden shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
                     <!-- Left Pane: Case Brief (Scrollable) -->
-                    <div class="md:col-span-2 p-8 md:p-12 border-b md:border-b-0 md:border-r" style="border-color: var(--border-color);">
-                        <h2 class="text-xs uppercase tracking-widest font-bold mb-6 opacity-50" style="color: var(--gold);">Case Summary briefing</h2>
-                        <div class="max-h-[300px] md:max-h-[450px] overflow-y-auto pr-4 custom-scrollbar">
-                            <h3 class="text-2xl font-serif text-white mb-4 leading-tight">{{ $room->case_id }}</h3>
+                    <div class="md:col-span-2 p-8 md:p-12 border-b md:border-b-0 md:border-r flex flex-col" style="border-color: var(--border-color);">
+                        <h2 class="text-xs uppercase tracking-widest font-bold mb-6 opacity-50 flex-shrink-0" style="color: var(--gold);">Case Summary briefing</h2>
+                        <div class="max-h-[300px] md:max-h-[450px] overflow-y-auto pr-4 custom-scrollbar flex-1">
+                            <h3 class="text-2xl font-serif text-white mb-6 leading-tight">{{ $room->case_id }}</h3>
+                            
+                            <div class="mb-8 pl-4 border-l-[3px]" style="border-color: var(--gold);">
+                                <h4 class="text-[10px] uppercase tracking-widest font-bold mb-3 opacity-60 text-white">Dispute Category</h4>
+                                <div class="inline-flex px-4 py-1.5 rounded-full text-[11px] font-bold font-sans text-white shadow-sm" style="background-color: var(--gold);">
+                                    {{ ucfirst($room->category ?? 'General') }}
+                                </div>
+                            </div>
+
                             <div class="prose prose-invert max-w-none">
                                 <p class="text-lg leading-relaxed italic opacity-90" style="color: var(--text-primary);">
                                     "{{ $room->case_summary }}"
