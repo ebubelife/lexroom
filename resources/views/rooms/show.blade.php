@@ -29,10 +29,11 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base md:text-lg font-serif leading-tight truncate max-w-md" style="color: var(--text-primary);" title="{{ $room->case_summary }}">
-                            {{ $room->case_summary ? Str::limit($room->case_summary, 80) : ucfirst($room->category) . ' Dispute' }}
+                        <h2 class="text-base md:text-lg font-serif leading-tight break-words whitespace-pre-wrap line-clamp-2 md:line-clamp-none max-w-md" style="color: var(--text-primary);" title="{{ $room->case_summary }}">
+                            {{ $room->case_summary ? Str::limit($room->case_summary, 120) : ucfirst($room->category) . ' Dispute' }}
                         </h2>
-                        <div class="flex items-center gap-3 mt-1">
+                        <div class="flex items-center flex-wrap gap-3 mt-1">
+                            <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">{{ ucfirst($room->category) }}</span>
                             <p class="text-xs md:text-sm font-medium opacity-80" style="color: var(--gold);">{{ $room->jurisdiction }} &bull; {{ ucfirst($room->language) }}</p>
                             @if($room->case_summary)
                             <button onclick="document.getElementById('caseSummaryModal').classList.remove('hidden')" class="text-xs underline underline-offset-2 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--gold);">View full summary</button>
@@ -106,6 +107,19 @@
                             :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                         <span x-text="clockedIn ? 'Start Session' : 'Waiting for Party B...'"></span>
                     </button>
+                    
+                    <!-- Pause/Resume Actions for Party A -->
+                    <button x-show="status === 'active' && isPartyA"
+                            @click="showPauseModal = true"
+                            class="px-4 py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white">
+                        Pause Session
+                    </button>
+                    <button x-show="status === 'paused' && isPartyA"
+                            @click="resumeSession"
+                            class="px-4 py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700">
+                        Resume Session
+                    </button>
+                    <span x-show="status === 'pause_requested' && isPartyA" class="text-xs text-yellow-600 font-bold px-2">Waiting for Party B to accept pause...</span>
                 </div>
             </div>
         </div>
@@ -422,6 +436,30 @@
                 </div>
             </div>
         </div>
+        <!-- Pause Request Alert for Party B -->
+        <div x-show="status === 'pause_requested' && isPartyB" class="fixed top-4 right-4 z-50 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg max-w-sm">
+            <div class="font-bold mb-1">Pause Requested</div>
+            <p class="text-sm mb-3">Party A has requested to pause this session. The countdown will stop once accepted.</p>
+            <div class="flex gap-2">
+                <button @click="acceptPause" class="px-3 py-1 bg-red-600 text-white rounded text-sm font-bold hover:bg-red-700">Accept Pause</button>
+            </div>
+        </div>
+
+        <!-- Pause Confirmation Modal for Party A -->
+        <div x-show="showPauseModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showPauseModal = false"></div>
+            <div class="relative w-full max-w-sm p-6 rounded-2xl shadow-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                <h3 class="text-xl font-serif mb-2 text-gray-900 dark:text-white">Pause Session?</h3>
+                <p class="text-sm opacity-80 mb-6 text-gray-600 dark:text-gray-300">
+                    A pause request will be sent to Party B. Once accepted, the session is paused and timer stops. 
+                    A paused session expires and ends automatically after 24 hours.
+                </p>
+                <div class="flex gap-2 w-full">
+                    <button @click="requestPause" class="flex-1 py-2 bg-yellow-600 text-white rounded-lg font-bold">Request Pause</button>
+                    <button @click="showPauseModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg font-bold text-gray-800 dark:text-white">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -450,6 +488,7 @@ function liveRoom(roomUuid, token) {
         uploading: false,
         uploadProgress: 0,
         showStartModal: false,
+        showPauseModal: false,
         
         init() {
             this.scrollToBottom();
@@ -465,11 +504,13 @@ function liveRoom(roomUuid, token) {
         startLocalTimer() {
             if (this.timerInterval) clearInterval(this.timerInterval);
             this.timerInterval = setInterval(() => {
-                if (this.remainingSeconds > 0) {
-                    this.remainingSeconds--;
-                } else if (this.roomStatus === 'active') {
-                    // Refresh if time is up to see the completion state
-                    window.location.reload();
+                if (this.roomStatus === 'active') {
+                    if (this.remainingSeconds > 0) {
+                        this.remainingSeconds--;
+                    } else {
+                        // Refresh if time is up to see the completion state
+                        window.location.reload();
+                    }
                 }
             }, 1000);
         },
@@ -597,6 +638,64 @@ function liveRoom(roomUuid, token) {
                 window.showToast('Error joining mediation', 'error');
             }
         },
+
+        async requestPause() {
+            this.showPauseModal = false;
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/pause-request`, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.showToast('Pause requested');
+                    this.poll();
+                } else {
+                    window.showToast(data.error || 'Failed to request pause', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                window.showToast('Error requesting pause', 'error');
+            }
+        },
+
+        async acceptPause() {
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/pause-accept`, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.showToast('Session paused');
+                    this.poll();
+                } else {
+                    window.showToast(data.error || 'Failed to accept pause', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                window.showToast('Error accepting pause', 'error');
+            }
+        },
+
+        async resumeSession() {
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/resume`, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.showToast('Session resumed');
+                    this.poll();
+                } else {
+                    window.showToast(data.error || 'Failed to resume session', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                window.showToast('Error resuming session', 'error');
+            }
+        },
         
         async loadFiles() {
             try {
@@ -717,7 +816,9 @@ function liveRoom(roomUuid, token) {
             const styles = {
                 'pending': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
                 'active': 'background-color: rgba(34, 197, 94, 0.1); color: #15803D;',
-                'completed': 'background-color: rgba(107, 107, 104, 0.1); color: #6B6B68;'
+                'completed': 'background-color: rgba(107, 107, 104, 0.1); color: #6B6B68;',
+                'pause_requested': 'background-color: rgba(185, 28, 28, 0.1); color: #B91C1C;',
+                'paused': 'background-color: rgba(75, 85, 99, 0.1); color: #4B5563;'
             };
             return styles[status] || styles.pending;
         }

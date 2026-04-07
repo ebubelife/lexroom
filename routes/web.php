@@ -102,6 +102,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/rooms', [\App\Http\Controllers\RoomController::class, 'index'])->name('rooms.index');
     Route::get('/rooms/create', [\App\Http\Controllers\RoomController::class, 'create'])->name('rooms.create');
     Route::post('/rooms', [\App\Http\Controllers\RoomController::class, 'store'])->name('rooms.store');
+    Route::delete('/rooms/{room}', [\App\Http\Controllers\RoomController::class, 'destroy'])->name('rooms.destroy');
     
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\ProfileController::class, 'index'])->name('settings.index');
@@ -133,6 +134,9 @@ Route::get('/rooms/{uuid}/poll', [\App\Http\Controllers\ChatController::class, '
     Route::post('/rooms/{uuid}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('rooms.messages.send');
     Route::post('/rooms/{uuid}/clock-in', [\App\Http\Controllers\ChatController::class, 'clockIn'])->name('rooms.clock-in');
     Route::post('/rooms/{uuid}/start', [\App\Http\Controllers\ChatController::class, 'startSession'])->name('rooms.start');
+    Route::post('/rooms/{uuid}/pause-request', [\App\Http\Controllers\ChatController::class, 'requestPause'])->name('rooms.pause-request');
+    Route::post('/rooms/{uuid}/pause-accept', [\App\Http\Controllers\ChatController::class, 'acceptPause'])->name('rooms.pause-accept');
+    Route::post('/rooms/{uuid}/resume', [\App\Http\Controllers\ChatController::class, 'resumeSession'])->name('rooms.resume');
 Route::post('/rooms/{uuid}/phase', [\App\Http\Controllers\ChatController::class, 'changePhase'])->name('chat.phase');
 
 // Evidence routes (guest or authenticated)

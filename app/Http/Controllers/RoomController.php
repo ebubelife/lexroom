@@ -170,4 +170,19 @@ class RoomController extends Controller
         
         return redirect()->route('login')->with('error', 'Please log in to access this room.');
     }
+
+    public function destroy(Room $room)
+    {
+        $user = auth()->user();
+        
+        // Ensure only Party A (the creator) can delete it
+        if ($user && $room->party_a_id !== $user->id) {
+            return redirect()->route('rooms.index')->with('error', 'Unauthorized action.');
+        }
+
+        // Proceed to delete the room
+        $room->delete();
+
+        return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
+    }
 }

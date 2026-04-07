@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Decrement room timers every second
 Schedule::command('rooms:decrement-timers')->everySecond();
+
+// Check for expired paused sessions every 15 minutes
+Schedule::command('check:paused-sessions')->everyFifteenMinutes();

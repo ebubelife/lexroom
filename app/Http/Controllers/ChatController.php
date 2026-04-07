@@ -35,13 +35,15 @@ class ChatController extends Controller
 
         // Get timer state from Cache
         $timerKey = "room:{$room->id}:timer";
-        $startedAtKey = "room:{$room->id}:started_at";
-        
         $totalSeconds = $room->duration * 60;
-        $startedAt = Cache::get($startedAtKey);
+        $startedAt = $room->started_at;
         
-        if ($startedAt) {
-            $elapsed = now()->diffInSeconds($startedAt);
+        if ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
+            $elapsed = now()->diffInSeconds($startedAt) - $room->total_paused_seconds;
+            $remainingSeconds = max(0, $totalSeconds - $elapsed);
+            Cache::put($timerKey, $remainingSeconds, 7200);
+        } elseif ($startedAt && $room->status === 'paused' && $room->paused_at) {
+            $elapsed = $room->paused_at->diffInSeconds($startedAt) - $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, $remainingSeconds, 7200);
         } else {
@@ -224,5 +226,96 @@ class ChatController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+    public function requestPause(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        $user = auth()->user();
+
+        // Only Party A can request pause
+        if ($user && $room->party_a_id !== $user->id) {
+            return response()->json(['error' => 'Only the room creator can request a pause.'], 403);
+        }
+
+        if ($room->status !== 'active') {
+            return response()->json(['error' => 'Session must be active to pause.'], 400);
+        }
+
+        $room->update([
+            'status' => 'pause_requested',
+            'pause_requested_at' => now(),
+        ]);
+
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => "Party A has requested to pause the session. Party B, please accept to pause.",
+            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Pause requested.']);
+    }
+
+    public function acceptPause(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        
+        // Ensure user is Party B (could be guest with token or auth)
+        if (auth()->check() && $room->party_b_id !== auth()->id()) {
+            return response()->json(['error' => 'Only Party B can accept the pause.'], 403);
+        }
+
+        if ($room->status !== 'pause_requested') {
+            return response()->json(['error' => 'No active pause request.'], 400);
+        }
+
+        $room->update([
+            'status' => 'paused',
+            'paused_at' => now(),
+        ]);
+
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => "Session is now paused. It can be resumed by Party A within 24 hours.",
+            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Session paused.']);
+    }
+
+    public function resumeSession(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        $user = auth()->user();
+
+        // Only Party A can resume
+        if ($user && $room->party_a_id !== $user->id) {
+            return response()->json(['error' => 'Only the room creator can resume the session.'], 403);
+        }
+
+        if ($room->status !== 'paused' || !$room->paused_at) {
+            return response()->json(['error' => 'Session is not paused.'], 400);
+        }
+
+        $pausedDuration = now()->diffInSeconds($room->paused_at);
+        $totalPaused = $room->total_paused_seconds + $pausedDuration;
+
+        $room->update([
+            'status' => 'active',
+            'paused_at' => null,
+            'pause_requested_at' => null,
+            'total_paused_seconds' => $totalPaused,
+        ]);
+
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => "Session has been resumed.",
+            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Session resumed.']);
     }
 }

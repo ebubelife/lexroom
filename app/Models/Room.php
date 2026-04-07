@@ -14,13 +14,16 @@ class Room extends Model
         'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category',
         'jurisdiction', 'language', 'duration', 'status',
         'payment_type', 'case_summary', 'invite_token',
-        'started_at', 'ended_at', 'party_b_clocked_in_at'
+        'started_at', 'ended_at', 'party_b_clocked_in_at',
+        'pause_requested_at', 'paused_at', 'total_paused_seconds'
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
         'party_b_clocked_in_at' => 'datetime',
+        'pause_requested_at' => 'datetime',
+        'paused_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -146,6 +149,8 @@ class Room extends Model
             'waiting_for_party_b' => ['bg' => '#EFF6FF', 'text' => '#1D4ED8', 'dark_bg' => 'rgba(37,99,235,0.15)', 'dark_text' => '#93C5FD'],
             'completed' => ['bg' => '#F4F4F2', 'text' => '#6B6B68', 'dark_bg' => 'rgba(255,255,255,0.08)', 'dark_text' => '#9BA8B4'],
             'escalated' => ['bg' => '#F5EDD6', 'text' => '#92400E', 'dark_bg' => 'rgba(201,168,76,0.15)', 'dark_text' => '#C9A84C'],
+            'pause_requested' => ['bg' => '#FEF2F2', 'text' => '#B91C1C', 'dark_bg' => 'rgba(185,28,28,0.15)', 'dark_text' => '#FCA5A5'],
+            'paused' => ['bg' => '#F3F4F6', 'text' => '#4B5563', 'dark_bg' => 'rgba(75,85,99,0.15)', 'dark_text' => '#9CA3AF'],
         ];
 
         return $colors[$this->status] ?? $colors['pending'];

@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="openSummaryModal">
             <!-- Step 1: Dispute Category -->
             <div x-show="currentStep === 0" x-transition>
                 <h2 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Select Dispute Category</h2>
@@ -243,14 +243,72 @@
                 
                 <button type="submit"
                         x-show="currentStep === 3"
-                        :disabled="!canProceed() || submitting"
+                        :disabled="!canProceed()"
                         class="px-6 py-2 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         style="background-color: var(--gold);">
-                    <span x-show="!submitting">Create Room & Proceed to Payment</span>
-                    <span x-show="submitting">Creating...</span>
+                    Review Summary & Pay
                 </button>
             </div>
         </form>
+
+        <!-- Pre-Payment Summary Modal -->
+        <div x-show="showSummaryModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showSummaryModal = false"></div>
+            <div class="relative w-full max-w-2xl p-8 rounded-2xl shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="flex items-center justify-between mb-6 border-b pb-4" style="border-color: var(--border-color);">
+                    <h3 class="text-2xl font-serif" style="color: var(--text-primary);">Mediation Session Summary</h3>
+                    <button type="button" @click="showSummaryModal = false" class="p-2 rounded-lg hover:bg-opacity-10 hover:bg-gray-500" style="color: var(--text-secondary);">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4 mb-8">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Dispute Category</p>
+                            <p class="font-medium text-sm capitalize" style="color: var(--text-primary);" x-text="formData.category"></p>
+                        </div>
+                        <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Jurisdiction</p>
+                            <p class="font-medium text-sm" style="color: var(--text-primary);" x-text="formData.jurisdiction"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                        <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-2" style="color: var(--gold);">Case Summary Overview</p>
+                        <p class="text-sm italic opacity-90 line-clamp-3" style="color: var(--text-primary);" x-text="formData.case_summary"></p>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 rounded-xl border bg-opacity-5" style="background-color: var(--gold); border-color: var(--gold);">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--text-primary);">Total Amount Due</p>
+                            <p class="text-sm font-medium" style="color: var(--text-primary);" x-text="formData.payment_type === 'split' ? 'Split Payment' : 'Full Payment'"></p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold" style="color: var(--gold);" x-text="'$' + (formData.payment_type === 'split' ? getSelectedPlanPrice() / 2 : getSelectedPlanPrice()).toLocaleString()"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 border-t pt-6" style="border-color: var(--border-color);">
+                    <label class="flex items-start gap-3 cursor-pointer mb-6">
+                        <input type="checkbox" x-model="agreedToTerms" class="mt-1 w-4 h-4 rounded border-gray-300 text-gold focus:ring-gold" style="accent-color: var(--gold);">
+                        <span class="text-sm" style="color: var(--text-secondary);">
+                            I confirm that the case details provided are accurate to the best of my knowledge and I agree to First Mediator's <a href="#" class="underline hover:text-gold">Terms of Service</a> and <a href="#" class="underline hover:text-gold">Confidentiality Agreement</a>.
+                        </span>
+                    </label>
+                    <button type="button"
+                            @click="submitForm"
+                            :disabled="!agreedToTerms || submitting"
+                            class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                            style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);"
+                            :class="agreedToTerms && !submitting ? 'hover:scale-[1.02] active:scale-95' : ''">
+                        <span x-show="!submitting">Proceed to Payment</span>
+                        <span x-show="submitting">Processing...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -259,6 +317,8 @@ function roomCreation() {
     return {
         currentStep: 0,
         submitting: false,
+        showSummaryModal: false,
+        agreedToTerms: false,
         steps: ['Category', 'Jurisdiction', 'Summary', 'Payment'],
         formData: {
             category: '',
@@ -329,8 +389,13 @@ function roomCreation() {
             return plan ? plan.price : 0;
         },
         
-        async submitForm() {
+        openSummaryModal() {
             if (!this.canProceed() || this.submitting) return;
+            this.showSummaryModal = true;
+        },
+        
+        async submitForm() {
+            if (!this.canProceed() || !this.agreedToTerms || this.submitting) return;
             
             this.submitting = true;
             
