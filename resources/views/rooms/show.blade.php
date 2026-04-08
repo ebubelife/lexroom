@@ -505,6 +505,7 @@ function liveRoom(roomUuid, token) {
         remainingSeconds: {{ $room->status === 'active' ? max(0, (int)($room->duration * 60 - $room->started_at?->diffInSeconds(now()))) : (int)($room->duration * 60) }},
         totalSeconds: {{ $room->duration * 60 }},
         roomSessionStatus: '{{ $room->status }}',
+        timerSynced: false,
         lexProcessing: false,
         files: [],
         pollInterval: null,
@@ -597,31 +598,28 @@ function liveRoom(roomUuid, token) {
                 this.lexProcessing = data.lex_processing;
                 this.clockedIn = !!data.party_b_clocked_in_at;
 
-                // Start the local timer if session just became active (or was already active on load)
                 if (this.roomSessionStatus === 'active') {
-                    if (!this.timerInterval) {
-                        // First time we see active — sync from server then start ticking
-                        if (data.timer) {
-                            this.remainingSeconds = data.timer.remaining_seconds;
-                            this.totalSeconds = data.timer.total_seconds;
+                    if (!this.timerSynced) {
+                        // Sync from server ONCE, then let local timer run independently
+                        if (data.timer && data.timer.remaining_seconds > 0) {
+                            this.remainingSeconds = Math.floor(data.timer.remaining_seconds);
+                            this.totalSeconds = Math.floor(data.timer.total_seconds);
                         }
+                        this.timerSynced = true;
                         this.startLocalTimer();
-                    } else if (data.timer) {
-                        // Already ticking — only snap if server says we've drifted > 10s
-                        this.totalSeconds = data.timer.total_seconds;
-                        if (Math.abs(this.remainingSeconds - data.timer.remaining_seconds) > 10) {
-                            this.remainingSeconds = data.timer.remaining_seconds;
-                        }
                     }
+                    // After initial sync, DO NOT override remainingSeconds from server
                 } else if (this.roomSessionStatus === 'paused' || this.roomSessionStatus === 'pause_requested') {
                     // Stop the local timer when paused
                     if (this.timerInterval) {
                         clearInterval(this.timerInterval);
                         this.timerInterval = null;
                     }
-                    if (data.timer) {
-                        this.remainingSeconds = data.timer.remaining_seconds;
+                    // Accept server's paused time so resume starts from correct value
+                    if (data.timer && data.timer.remaining_seconds > 0) {
+                        this.remainingSeconds = Math.floor(data.timer.remaining_seconds);
                     }
+                    this.timerSynced = false; // Allow re-sync when resumed
                 }
             } catch (error) {
                 console.error('Poll error:', error);
@@ -684,7 +682,7 @@ function liveRoom(roomUuid, token) {
                 if (data.success) {
                     window.showToast('Session started successfully');
                     this.roomSessionStatus = 'active';
-                    this.roomStatus = 'active';
+                    this.timerSynced = true; // Prevent poll from overriding the timer
                     this.startLocalTimer();
                 }
             } catch (error) {
