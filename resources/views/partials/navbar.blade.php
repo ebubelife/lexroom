@@ -45,20 +45,20 @@
   
   <!-- Mobile Nav Dropdown -->
   <div id="mobile-nav" class="mobile-nav">
-    @auth
-      <a href="{{ route('dashboard') }}" class="btn-primary" onclick="toggleMobileMenu()">Dashboard</a>
-    @else
-      <a href="{{ route('login') }}" class="btn-ghost" onclick="toggleMobileMenu()">Log in</a>
-      <a href="{{ route('register') }}" class="btn-primary" onclick="toggleMobileMenu()">Create a Room</a>
-    @endauth
-    
-    <div style="height: 1px; background: var(--border); margin: 8px 0;"></div>
-    
     <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">
       <li><a href="{{ url('/#how') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">How it works</a></li>
       <li><a href="{{ url('/#categories') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Disputes</a></li>
       <li><a href="{{ url('/#pricing') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Pricing</a></li>
       <li><a href="{{ url('/#faq') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">FAQ</a></li>
     </ul>
+
+    <div style="height: 1px; background: var(--border); margin: 8px 0;"></div>
+
+    @auth
+      <a href="{{ route('dashboard') }}" class="btn-primary" onclick="toggleMobileMenu()">Dashboard</a>
+    @else
+      <a href="{{ route('login') }}" class="btn-ghost" onclick="toggleMobileMenu()">Log in</a>
+      <a href="{{ route('register') }}" class="btn-primary" onclick="toggleMobileMenu()">Create a Room</a>
+    @endauth
   </div>
 </nav>

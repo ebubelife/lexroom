@@ -11,7 +11,7 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category',
+        'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category', 'title',
         'jurisdiction', 'language', 'duration', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'started_at', 'ended_at', 'party_b_clocked_in_at',

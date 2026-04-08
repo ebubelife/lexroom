@@ -125,8 +125,16 @@
             <!-- Step 3: Case Summary -->
             <div x-show="currentStep === 2" x-transition>
                 <h2 class="text-2xl font-serif mb-2" style="color: var(--text-primary);">Case Summary</h2>
-                <p class="text-sm mb-6" style="color: var(--text-secondary);">Provide a brief summary to help First Mediator understand your dispute before the session</p>
+                <p class="text-sm mb-6" style="color: var(--text-secondary);">Provide a brief summary and title to help First Mediator understand your dispute before the session</p>
                 
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Dispute Title</label>
+                    <input type="text" x-model="formData.title"
+                           placeholder="e.g. Unpaid Invoice for Logo Design"
+                           class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
+                           style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Your Case Summary</label>
                     <textarea x-model="formData.case_summary"
@@ -254,7 +262,7 @@
         <!-- Pre-Payment Summary Modal -->
         <div x-show="showSummaryModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showSummaryModal = false"></div>
-            <div class="relative w-full max-w-2xl p-8 rounded-2xl shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 rounded-2xl shadow-2xl border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
                 <div class="flex items-center justify-between mb-6 border-b pb-4" style="border-color: var(--border-color);">
                     <h3 class="text-2xl font-serif" style="color: var(--text-primary);">Mediation Session Summary</h3>
                     <button type="button" @click="showSummaryModal = false" class="p-2 rounded-lg hover:bg-opacity-10 hover:bg-gray-500" style="color: var(--text-secondary);">
@@ -263,7 +271,11 @@
                 </div>
                 
                 <div class="space-y-4 mb-8">
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2 p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Dispute Title</p>
+                            <p class="font-medium text-sm capitalize" style="color: var(--text-primary);" x-text="formData.title || 'Untitled'"></p>
+                        </div>
                         <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
                             <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Dispute Category</p>
                             <p class="font-medium text-sm capitalize" style="color: var(--text-primary);" x-text="formData.category"></p>
@@ -272,14 +284,26 @@
                             <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Jurisdiction</p>
                             <p class="font-medium text-sm" style="color: var(--text-primary);" x-text="formData.jurisdiction"></p>
                         </div>
+                        <div class="md:col-span-2 p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--gold);">Invited Party Email (Party B)</p>
+                            <p class="font-medium text-sm" style="color: var(--text-primary);" x-text="formData.party_b_email"></p>
+                        </div>
                     </div>
                     
-                    <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                    <div class="p-4 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);" x-data="{ expanded: false }">
                         <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-2" style="color: var(--gold);">Case Summary Overview</p>
-                        <p class="text-sm italic opacity-90 line-clamp-3" style="color: var(--text-primary);" x-text="formData.case_summary"></p>
+                        <p class="text-sm italic opacity-90 transition-all duration-300" 
+                           :class="expanded ? '' : 'line-clamp-3'" 
+                           style="color: var(--text-primary);" x-text="formData.case_summary"></p>
+                        <button type="button" 
+                                x-show="formData.case_summary.length > 150"
+                                @click="expanded = !expanded" 
+                                class="text-xs italic font-light mt-2 hover:underline focus:outline-none" style="color: var(--gold);">
+                            <span x-text="expanded ? 'view less' : 'view more'"></span>
+                        </button>
                     </div>
 
-                    <div class="flex items-center justify-between p-4 rounded-xl border bg-opacity-5" style="background-color: var(--gold); border-color: var(--gold);">
+                    <div class="flex items-center justify-between p-4 rounded-xl border" style="background-color: rgba(201, 168, 76, 0.15); border-color: var(--gold);">
                         <div>
                             <p class="text-[10px] uppercase tracking-wider font-bold opacity-60 mb-1" style="color: var(--text-primary);">Total Amount Due</p>
                             <p class="text-sm font-medium" style="color: var(--text-primary);" x-text="formData.payment_type === 'split' ? 'Split Payment' : 'Full Payment'"></p>
@@ -294,7 +318,7 @@
                     <label class="flex items-start gap-3 cursor-pointer mb-6">
                         <input type="checkbox" x-model="agreedToTerms" class="mt-1 w-4 h-4 rounded border-gray-300 text-gold focus:ring-gold" style="accent-color: var(--gold);">
                         <span class="text-sm" style="color: var(--text-secondary);">
-                            I confirm that the case details provided are accurate to the best of my knowledge and I agree to First Mediator's <a href="#" class="underline hover:text-gold">Terms of Service</a> and <a href="#" class="underline hover:text-gold">Confidentiality Agreement</a>.
+                            I confirm that the case details provided are accurate to the best of my knowledge and I agree to First Mediator's <a href="{{ route('terms') }}" target="_blank" class="underline hover:text-gold">Terms of Service</a> and <a href="{{ route('privacy') }}" target="_blank" class="underline hover:text-gold">Privacy Policy</a>.
                         </span>
                     </label>
                     <button type="button"
@@ -325,6 +349,7 @@ function roomCreation() {
             custom_category: '',
             jurisdiction: '',
             language: 'english',
+            title: '',
             case_summary: '',
             duration: '60',
             payment_type: 'full',
@@ -369,7 +394,7 @@ function roomCreation() {
                 case 1:
                     return this.formData.jurisdiction !== '' && this.formData.language !== '';
                 case 2:
-                    return this.formData.case_summary.length >= 50 && this.formData.case_summary.length <= 2000;
+                    return this.formData.title.trim().length > 0 && this.formData.case_summary.length >= 50 && this.formData.case_summary.length <= 2000;
                 case 3:
                     return this.formData.duration !== '' && 
                            this.formData.payment_type !== '' && 

@@ -42,6 +42,7 @@ class RoomController extends Controller
     {
         $validated = $request->validate([
             'category' => 'required|in:tenancy,freelance,business,ecommerce,employment,debt',
+            'title' => 'required|string|max:255',
             'jurisdiction' => 'required|string|max:255',
             'language' => 'required|in:english',
             'case_summary' => 'required|string|min:50|max:2000',
@@ -55,6 +56,7 @@ class RoomController extends Controller
             'uuid' => Str::uuid(),
             'party_a_id' => auth()->id(),
             'category' => $validated['category'],
+            'title' => $validated['title'],
             'jurisdiction' => $validated['jurisdiction'],
             'language' => $validated['language'],
             'case_summary' => $validated['case_summary'],

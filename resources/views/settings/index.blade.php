@@ -75,23 +75,23 @@
             <div class="mb-4 md:mb-6">
                 <label class="block text-sm font-medium mb-3" style="color: var(--text-primary);">Profile Image</label>
                 <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-3 sm:space-y-0">
-                    <div class="relative group">
+                    <div class="relative group shrink-0 aspect-square">
                         <template x-if="imagePreview">
-                            <div class="relative w-20 h-20 md:w-24 md:h-24">
-                                <img :src="imagePreview" alt="Profile" class="w-full h-full rounded-full object-cover border-2" :style="isUploading ? 'border-color: var(--gold); opacity: 0.5;' : 'border-color: var(--gold);'">
+                            <div class="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
+                                <img :src="imagePreview" alt="Profile" class="w-full h-full object-cover border-2 rounded-full" :style="isUploading ? 'border-color: var(--gold); opacity: 0.5;' : 'border-color: var(--gold);'">
                                 <!-- Progress Overlay -->
-                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-full">
+                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                                     <span class="text-white text-xs md:text-sm font-bold" x-text="uploadProgress + '%'"></span>
                                 </div>
                             </div>
                         </template>
                         <template x-if="!imagePreview">
-                            <div class="relative w-20 h-20 md:w-24 md:h-24">
-                                <div class="w-full h-full rounded-full flex items-center justify-center text-white text-xl md:text-2xl font-bold" style="background-color: var(--gold);">
+                            <div class="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
+                                <div class="w-full h-full flex items-center justify-center text-white text-xl md:text-2xl font-bold leading-none" style="background-color: var(--gold);">
                                     {{ auth()->user()->initials }}
                                 </div>
                                 <!-- Progress Overlay -->
-                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-full">
+                                <div x-show="isUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                                     <span class="text-white text-xs md:text-sm font-bold" x-text="uploadProgress + '%'"></span>
                                 </div>
                             </div>

@@ -22,17 +22,15 @@
                 backdrop-filter: blur(10px);">
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div class="flex-1 space-y-3">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-lg bg-opacity-10" style="background-color: var(--gold);">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base md:text-lg font-serif leading-tight break-words whitespace-pre-wrap line-clamp-2 md:line-clamp-none max-w-md" style="color: var(--text-primary);" title="{{ $room->case_summary }}">
-                            {{ $room->case_summary ? Str::limit($room->case_summary, 120) : ucfirst($room->category) . ' Dispute' }}
+                <div class="flex items-start gap-4">
+                    <div class="flex-1 w-full max-w-2xl">
+                        <h2 class="text-lg md:text-xl font-serif font-bold uppercase tracking-wide leading-tight break-words mb-2" style="color: var(--gold);">
+                            {{ $room->title ?: ucfirst($room->category) . ' Dispute' }}
                         </h2>
-                        <div class="flex items-center flex-wrap gap-3 mt-1">
+                        <p class="text-sm md:text-base leading-relaxed line-clamp-2 opacity-90 break-words mb-3" style="color: var(--text-primary);" title="{{ $room->case_summary }}">
+                            {{ $room->case_summary }}
+                        </p>
+                        <div class="flex items-center flex-wrap gap-3">
                             <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">{{ ucfirst($room->category) }}</span>
                             <p class="text-xs md:text-sm font-medium opacity-80" style="color: var(--gold);">{{ $room->jurisdiction }} &bull; {{ ucfirst($room->language) }}</p>
                             @if($room->case_summary)
@@ -78,9 +76,9 @@
                 </div>
             </div>
             
-            <div class="flex flex-row lg:flex-col items-center lg:items-end gap-6 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-opacity-10 border-white">
+            <div class="grid grid-cols-2 lg:flex lg:flex-col items-start lg:items-end gap-4 lg:gap-6 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-opacity-10 border-white">
                 <!-- Status & Phase -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mt-1 lg:mt-0 justify-start">
                     <div class="text-right hidden sm:block">
                         <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Current Phase</p>
                         <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--gold);">{{ str_replace('_', ' ', $room->current_phase ?: 'Opening') }}</span>
@@ -92,17 +90,18 @@
                     </span>
                 </div>
 
-                <!-- Timer & Action -->
-                <div class="flex items-center gap-4 ml-auto lg:ml-0">
-                    <div class="text-right">
-                        <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(remainingSeconds)"></div>
-                        <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
-                    </div>
-                    
+                <!-- Timer -->
+                <div class="text-right justify-self-end lg:mt-0">
+                    <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(remainingSeconds)"></div>
+                    <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="col-span-2 w-full flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 lg:w-auto">
                     <button x-show="status === 'pending' && isPartyA" 
                             @click="openStartModal"
                             :disabled="!clockedIn"
-                            class="px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all"
+                            class="w-full sm:w-auto px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
                             :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
                             :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                         <span x-text="clockedIn ? 'Start Session' : 'Waiting for Party B...'"></span>
@@ -111,15 +110,15 @@
                     <!-- Pause/Resume Actions for Party A -->
                     <button x-show="status === 'active' && isPartyA"
                             @click="showPauseModal = true"
-                            class="px-4 py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white">
+                            class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
                     <button x-show="status === 'paused' && isPartyA"
                             @click="resumeSession"
-                            class="px-4 py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700">
+                            class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
-                    <span x-show="status === 'pause_requested' && isPartyA" class="text-xs text-yellow-600 font-bold px-2">Waiting for Party B to accept pause...</span>
+                    <span x-show="status === 'pause_requested' && isPartyA" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
                 </div>
             </div>
         </div>
