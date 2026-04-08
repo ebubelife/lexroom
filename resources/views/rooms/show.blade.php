@@ -505,6 +505,7 @@ function liveRoom(roomUuid, token) {
         remainingSeconds: {{ $room->status === 'active' ? max(0, $room->duration * 60 - $room->started_at?->diffInSeconds(now())) : $room->duration * 60 }},
         totalSeconds: {{ $room->duration * 60 }},
         roomStatus: '{{ $room->status }}',
+        status: '{{ $room->status }}',
         lexProcessing: false,
         files: [],
         pollInterval: null,

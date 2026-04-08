@@ -68,3 +68,7 @@ To run the room timers and other background tasks locally, you should have this 
 ```bash
 php artisan schedule:work
 ```
+
+```bash
+php artisan tinker --execute=" \App\Models\SessionMessage::truncate(); \App\Models\EvidenceFile::truncate(); \App\Models\Report::truncate(); \App\Models\Room::query()->delete(); \Illuminate\Support\Facades\Storage::disk('public')->deleteDirectory('evidence'); echo 'Wiped.'; "
+```
