@@ -203,6 +203,14 @@ class AuthController extends Controller
 
         Auth::login($newUser);
 
+        // Send welcome email because Google accounts are pre-verified
+        try {
+            \Illuminate\Support\Facades\Mail::to($newUser->email)->send(new \App\Mail\WelcomeEmail($newUser));
+            \Illuminate\Support\Facades\Log::info("Successfully sent welcome email to " . $newUser->email . " via Google Signup");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send welcome email via Google Signup: ' . $e->getMessage());
+        }
+
         // Google users don't need phone verification anymore
         return redirect()->intended('/dashboard');
     }
