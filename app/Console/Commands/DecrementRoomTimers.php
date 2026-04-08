@@ -17,8 +17,8 @@ class DecrementRoomTimers extends Command
         $activeRooms = Room::where('status', 'active')->get();
 
         foreach ($activeRooms as $room) {
-            // Calculate remaining seconds based on clock
-            $remaining = ($room->duration * 60) - $room->started_at->diffInSeconds(now());
+            // Calculate remaining seconds based on clock (original duration + extensions)
+            $remaining = (($room->duration + $room->extended_minutes) * 60) - $room->started_at->diffInSeconds(now()) + (int)$room->total_paused_seconds;
             
             if ($remaining <= 0) {
                 $room->update([

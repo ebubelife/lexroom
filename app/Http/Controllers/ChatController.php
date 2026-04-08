@@ -2,14 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateReportJob;
 use App\Jobs\ProcessLexResponse;
 use App\Models\Room;
+use App\Models\SessionExtension;
 use App\Models\SessionMessage;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
+    // Cost per 30-minute extension block in naira
+    const EXTENSION_COST_PER_30_MIN = 5000;
+
     /**
      * Poll for new messages and room state
      */
@@ -33,11 +42,11 @@ class ChatController extends Controller
                 ];
             });
 
-        // Get timer state from Cache
+        // Total seconds = (original duration + extensions) * 60
+        $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
         $timerKey = "room:{$room->id}:timer";
-        $totalSeconds = $room->duration * 60;
         $startedAt = $room->started_at;
-        
+
         if ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
             $elapsed = (int) now()->diffInSeconds($startedAt) - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
@@ -60,12 +69,13 @@ class ChatController extends Controller
             'messages' => $messages,
             'timer' => [
                 'remaining_seconds' => (int) $remainingSeconds,
-                'total_seconds' => $totalSeconds,
+                'total_seconds' => (int) $totalSeconds,
             ],
             'phase' => $currentPhase,
             'lex_processing' => $lexProcessing,
             'status' => $room->status,
             'party_b_clocked_in_at' => $room->party_b_clocked_in_at,
+            'extended_minutes' => (int) $room->extended_minutes,
         ]);
     }
 
@@ -99,13 +109,12 @@ class ChatController extends Controller
 
         // Trigger Lex response (queued)
         Cache::put("room:{$room->id}:lex_processing", true, 60);
-        // Send message to FM for processing
+
         if (config('queue.default') === 'sync') {
-            // If using sync, give the server more time to wait for the AI
-            set_time_limit(120); 
+            set_time_limit(120);
         }
-        
-        \App\Jobs\ProcessLexResponse::dispatch($room->id, $message->id);
+
+        ProcessLexResponse::dispatch($room->id, $message->id);
 
         return response()->json([
             'success' => true,
@@ -116,6 +125,135 @@ class ChatController extends Controller
                 'phase' => $message->phase,
                 'created_at' => $message->created_at->toISOString(),
             ],
+        ]);
+    }
+
+    /**
+     * Lock session when timer expires (called from frontend)
+     */
+    public function lockSession(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+
+        if (!in_array($room->status, ['active', 'pause_requested'])) {
+            return response()->json(['success' => true, 'status' => $room->status]);
+        }
+
+        $room->update([
+            'status' => 'completed',
+            'ended_at' => now(),
+        ]);
+
+        // Clean up cache
+        Cache::forget("room:{$room->id}:timer");
+        Cache::forget("room:{$room->id}:lex_processing");
+
+        // Save FM closing message
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => '⏰ Session time has expired. This mediation room is now locked. Party A may extend the session to continue.',
+            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+        ]);
+
+        // Trigger report generation
+        GenerateReportJob::dispatch($room->id);
+
+        return response()->json(['success' => true, 'status' => 'completed']);
+    }
+
+    /**
+     * Extend session — Party A buys more time
+     */
+    public function extendSession(Request $request, $uuid)
+    {
+        $request->validate([
+            'minutes' => 'required|integer|in:30,60,90,120',
+        ]);
+
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        $user = Auth::user();
+
+        // Only party A can extend
+        if (!$user || $room->party_a_id !== $user->id) {
+            return response()->json(['error' => 'Only Party A can extend the session.'], 403);
+        }
+
+        // Room must be completed (expired) or active
+        if (!in_array($room->status, ['completed', 'active'])) {
+            return response()->json(['error' => 'Session cannot be extended in its current state.'], 400);
+        }
+
+        $minutes = (int) $request->minutes;
+        $blocks = $minutes / 30;
+        $amount = $blocks * self::EXTENSION_COST_PER_30_MIN;
+
+        // Deduct from wallet
+        $wallet = Wallet::where('user_id', $user->id)->first();
+        if (!$wallet || $wallet->credits_balance < $amount) {
+            return response()->json([
+                'error' => "Insufficient wallet balance. You need ₦" . number_format($amount) . " to extend by {$minutes} minutes.",
+                'required' => $amount,
+                'balance' => $wallet ? (float) $wallet->credits_balance : 0,
+            ], 402);
+        }
+
+        DB::transaction(function () use ($room, $user, $wallet, $minutes, $amount) {
+            // Deduct wallet
+            $wallet->decrement('credits_balance', $amount);
+
+            // Record extension for admin tracking
+            SessionExtension::create([
+                'room_id' => $room->id,
+                'user_id' => $user->id,
+                'minutes_added' => $minutes,
+                'amount_paid' => $amount,
+                'status' => 'paid',
+            ]);
+
+            // Update room
+            $wasCompleted = $room->status === 'completed';
+            $room->update([
+                'extended_minutes' => $room->extended_minutes + $minutes,
+                'status' => 'active',
+                // If room was ended, adjust started_at to account for extension properly
+                // We keep original started_at. Timer calc will use new totalSeconds.
+            ]);
+
+            // If room was locked, clear ended_at so it's live again
+            if ($wasCompleted) {
+                $room->update(['ended_at' => null]);
+            }
+
+            // Refresh cache for new total
+            $newTotal = ($room->duration + $room->extended_minutes + $minutes) * 60;
+            Cache::put("room:{$room->id}:phase", Cache::get("room:{$room->id}:phase", 'opening'), 7200);
+
+            // FM announcement
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => "⏱️ Session extended by {$minutes} minutes. The mediation continues. Please use this additional time productively.",
+                'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+            ]);
+        });
+
+        // Re-fetch room with fresh data
+        $room->refresh();
+        $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
+        $elapsed = (int) now()->diffInSeconds($room->started_at) - (int) $room->total_paused_seconds;
+        $remainingSeconds = max(0, $totalSeconds - $elapsed);
+
+        return response()->json([
+            'success' => true,
+            'minutes_added' => $minutes,
+            'amount_paid' => $amount,
+            'extended_minutes' => (int) $room->extended_minutes,
+            'timer' => [
+                'remaining_seconds' => (int) $remainingSeconds,
+                'total_seconds' => (int) $totalSeconds,
+            ],
+            'wallet_balance' => (float) $wallet->fresh()->credits_balance,
         ]);
     }
 
@@ -140,28 +278,23 @@ class ChatController extends Controller
         Cache::put("room:{$room->id}:phase", 'opening', 7200);
         Cache::put("room:{$room->id}:lex_processing", false, 7200);
 
-        // Set initial phase
-        Cache::put("room:{$room->id}:phase", 'opening', 7200);
-
         // Send FM welcome message
-        $welcomeMessage = SessionMessage::create([
+        SessionMessage::create([
             'room_id' => $room->id,
             'sender_type' => 'lex',
             'content' => "Welcome to FirstMediator. I'm FM, your AI advisor. I'm here to facilitate a fair and constructive dialogue between both parties. Let's begin with opening statements. Party A, please share your perspective on this dispute.",
             'phase' => 'opening',
         ]);
 
-        $remainingSeconds = $room->duration * 60;
-        if ($room->status === 'active' && $room->started_at) {
-            $remainingSeconds = max(0, ($room->duration * 60) - $room->started_at->diffInSeconds(now()));
-        }
+        $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
+        $remainingSeconds = $totalSeconds;
 
         return response()->json([
             'success' => true,
             'message' => 'Session started',
             'timer' => [
                 'remaining_seconds' => (int) $remainingSeconds,
-                'total_seconds' => (int) ($room->duration * 60),
+                'total_seconds' => (int) $totalSeconds,
             ],
         ]);
     }
@@ -172,9 +305,9 @@ class ChatController extends Controller
     public function clockIn(Request $request, $uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        
+
         // Guest verification if not logged in
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             $token = $request->input('token');
             if (!$token || $token !== $room->invite_token) {
                 return response()->json(['error' => 'Invalid invitation token'], 403);
@@ -187,7 +320,7 @@ class ChatController extends Controller
 
         $room->update([
             'party_b_clocked_in_at' => now(),
-            'status' => 'pending' // Ensure it's pending so Party A can start
+            'status' => 'pending'
         ]);
 
         // Send FM greeting for Party B arrival
@@ -231,7 +364,7 @@ class ChatController extends Controller
     public function requestPause(Request $request, $uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Only Party A can request pause
         if ($user && $room->party_a_id !== $user->id) {
@@ -260,9 +393,9 @@ class ChatController extends Controller
     public function acceptPause(Request $request, $uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        
+
         // Ensure user is Party B (could be guest with token or auth)
-        if (auth()->check() && $room->party_b_id !== auth()->id()) {
+        if (Auth::check() && $room->party_b_id !== Auth::id()) {
             return response()->json(['error' => 'Only Party B can accept the pause.'], 403);
         }
 
@@ -288,7 +421,7 @@ class ChatController extends Controller
     public function resumeSession(Request $request, $uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Only Party A can resume
         if ($user && $room->party_a_id !== $user->id) {

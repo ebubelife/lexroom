@@ -12,7 +12,7 @@ class Room extends Model
 
     protected $fillable = [
         'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category', 'title',
-        'jurisdiction', 'language', 'duration', 'status',
+        'jurisdiction', 'language', 'duration', 'extended_minutes', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'started_at', 'ended_at', 'party_b_clocked_in_at',
         'pause_requested_at', 'paused_at', 'total_paused_seconds'
@@ -125,6 +125,19 @@ class Room extends Model
     public function evidenceFiles()
     {
         return $this->hasMany(EvidenceFile::class);
+    }
+
+    public function extensions()
+    {
+        return $this->hasMany(\App\Models\SessionExtension::class);
+    }
+
+    /**
+     * Total duration including extensions (in minutes)
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return (int)($this->duration + $this->extended_minutes);
     }
 
     public function getCategoryBadgeColorAttribute()

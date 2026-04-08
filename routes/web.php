@@ -139,6 +139,8 @@ Route::get('/rooms/{uuid}/poll', [\App\Http\Controllers\ChatController::class, '
     Route::post('/rooms/{uuid}/pause-accept', [\App\Http\Controllers\ChatController::class, 'acceptPause'])->name('rooms.pause-accept');
     Route::post('/rooms/{uuid}/resume', [\App\Http\Controllers\ChatController::class, 'resumeSession'])->name('rooms.resume');
 Route::post('/rooms/{uuid}/phase', [\App\Http\Controllers\ChatController::class, 'changePhase'])->name('chat.phase');
+Route::post('/rooms/{uuid}/lock', [\App\Http\Controllers\ChatController::class, 'lockSession'])->name('rooms.lock');
+Route::post('/rooms/{uuid}/extend', [\App\Http\Controllers\ChatController::class, 'extendSession'])->name('rooms.extend');
 
 // Evidence routes (guest or authenticated)
 Route::post('/rooms/{uuid}/evidence', [\App\Http\Controllers\EvidenceController::class, 'upload'])->name('evidence.upload');

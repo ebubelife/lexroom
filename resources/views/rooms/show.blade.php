@@ -122,6 +122,11 @@
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
+                    <button x-show="roomSessionStatus === 'active' || roomSessionStatus === 'completed'"
+                            @click="showExtendModal = true"
+                            class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-blue-600 hover:bg-blue-700 text-center">
+                        Extend Session
+                    </button>
                     <span x-show="roomSessionStatus === 'pause_requested'" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
                 @endif
             </div>
@@ -494,6 +499,50 @@
         </div>
     </template>
     
+    <!-- Extend Session Modal -->
+    <div x-show="showExtendModal" 
+         x-cloak
+         class="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showExtendModal = false"></div>
+        <div class="relative w-full max-w-sm p-6 rounded-3xl shadow-2xl border"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                     style="background-color: rgba(99, 102, 241, 0.1);">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-serif text-white">Extend Session</h3>
+                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Each 30-min block is ₦5,000.</p>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Select Duration</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <template x-for="mins in [30, 60, 90, 120]">
+                        <button @click="extendingMinutes = mins"
+                                :class="extendingMinutes === mins ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+                                class="p-3 rounded-xl border text-center transition-all">
+                            <span class="block text-sm font-bold text-white" x-text="mins + ' Min'"></span >
+                            <span class="block text-[10px] opacity-60" x-text="'₦' + (mins/30 * 5000).toLocaleString()"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <button @click="buyTime"
+                    :disabled="isExtending"
+                    class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-all"
+                    :class="isExtending ? 'opacity-50' : 'hover:scale-[1.02] active:scale-95'"
+                    style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+                <span x-text="isExtending ? 'Processing...' : 'Purchase Extension'"></span>
+            </button>
+            <button @click="showExtendModal = false" class="w-full mt-3 text-xs opacity-50 hover:opacity-100 transition-opacity">Cancel</button>
+        </div>
+    </div>
+    
 <script>
 function liveRoom(roomUuid, token) {
     return {
@@ -526,6 +575,14 @@ function liveRoom(roomUuid, token) {
         showResendModal: false,
         resendEmail: '{{ $room->party_b_email }}',
         isResending: false,
+
+        // Extension & Warning State
+        showExtendModal: false,
+        extendingMinutes: 30,
+        isExtending: false,
+        notified10Min: false,
+        notified5Min: false,
+        notified1Min: false,
         
         submitResendInvite() {
             this.isResending = true;
@@ -572,12 +629,94 @@ function liveRoom(roomUuid, token) {
                 if (this.roomSessionStatus === 'active') {
                     if (this.remainingSeconds > 0) {
                         this.remainingSeconds--;
+                        this.checkWarnings();
                     } else {
-                        // Refresh if time is up to see the completion state
-                        window.location.reload();
+                        // Timer hit zero. Lock it.
+                        this.lockSession();
                     }
                 }
             }, 1000);
+        },
+
+        checkWarnings() {
+            // 10 Minutes Warning
+            if (this.remainingSeconds === 600 && !this.notified10Min) {
+                window.showToast('10 minutes remaining in this session.', 'info');
+                this.notified10Min = true;
+            }
+            // 5 Minutes Warning
+            if (this.remainingSeconds === 300 && !this.notified5Min) {
+                window.showToast('5 minutes remaining. Please start concluding.', 'warning');
+                this.notified5Min = true;
+            }
+            // 1 Minute Warning
+            if (this.remainingSeconds === 60 && !this.notified1Min) {
+                this.notified1Min = true;
+                alert('Only 1 minute left! Please round up your discussion.');
+            }
+        },
+
+        async lockSession() {
+            if (this.timerInterval) {
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+            }
+
+            if (this.roomSessionStatus === 'completed') return;
+
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/lock`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    this.roomSessionStatus = 'completed';
+                    window.showToast('Session time expired. Room locked.', 'error');
+                }
+            } catch (error) {
+                console.error('Lock error:', error);
+            }
+        },
+
+        async buyTime() {
+            this.isExtending = true;
+            try {
+                const response = await fetch(`/rooms/${this.roomUuid}/extend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ minutes: this.extendingMinutes })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showExtendModal = false;
+                    this.roomSessionStatus = 'active';
+                    this.remainingSeconds = data.timer.remaining_seconds;
+                    this.totalSeconds = data.timer.total_seconds;
+                    this.timerSynced = true;
+
+                    // Reset notifications for new time
+                    this.notified10Min = false;
+                    this.notified5Min = false;
+                    this.notified1Min = false;
+
+                    this.startLocalTimer();
+                    window.showToast(`Session extended by ${this.extendingMinutes} minutes!`);
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error('Extend error:', error);
+                alert('Failed to extend session. Check connection.');
+            } finally {
+                this.isExtending = false;
+            }
         },
         
         async poll() {
