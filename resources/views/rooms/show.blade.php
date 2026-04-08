@@ -557,8 +557,10 @@ function liveRoom(roomUuid, token) {
             this.scrollToBottom();
             this.pollInterval = setInterval(() => this.poll(), 2000);
             
-            // Start live countdown timer if room is active
+            // Room already active on page load — PHP gave correct remainingSeconds
+            // Mark synced so poll() doesn't overwrite it with server recalc
             if (this.roomSessionStatus === 'active') {
+                this.timerSynced = true;
                 this.startLocalTimer();
             }
             this.loadFiles();
