@@ -97,8 +97,8 @@
                 </div>
                 
                 <!-- Action Buttons -->
-                <div class="col-span-2 w-full flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 lg:w-auto">
-                    <div x-show="roomSessionStatus === 'pending' && isPartyA" class="w-full sm:w-auto flex flex-col items-center">
+                @if(auth()->check() && auth()->id() == $room->party_a_id)
+                    <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
                         <button @click="openStartModal"
                                 :disabled="!clockedIn"
                                 class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
@@ -112,18 +112,18 @@
                     </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
-                    <button x-show="roomSessionStatus === 'active' && isPartyA"
+                    <button x-show="roomSessionStatus === 'active'"
                             @click="showPauseModal = true"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
-                    <button x-show="roomSessionStatus === 'paused' && isPartyA"
+                    <button x-show="roomSessionStatus === 'paused'"
                             @click="resumeSession"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
-                    <span x-show="roomSessionStatus === 'pause_requested' && isPartyA" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
-                </div>
+                    <span x-show="roomSessionStatus === 'pause_requested'" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
+                @endif
             </div>
         </div>
     </div>
@@ -504,15 +504,14 @@ function liveRoom(roomUuid, token) {
         lastMessageId: {{ $room->messages->last()?->id ?? 0 }},
         remainingSeconds: {{ $room->status === 'active' ? max(0, $room->duration * 60 - $room->started_at?->diffInSeconds(now())) : $room->duration * 60 }},
         totalSeconds: {{ $room->duration * 60 }},
-        roomStatus: '{{ $room->status }}',
         roomSessionStatus: '{{ $room->status }}',
         lexProcessing: false,
         files: [],
         pollInterval: null,
         timerInterval: null,
         isPolling: false,
-        isPartyA: {{ auth()->check() && auth()->id() === $room->party_a_id ? 'true' : 'false' }},
-        isPartyB: {{ (auth()->check() && auth()->id() === $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token) ? 'true' : 'false' }},
+        isPartyA: {{ auth()->check() && auth()->id() == $room->party_a_id ? 'true' : 'false' }},
+        isPartyB: {{ (auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token) ? 'true' : 'false' }},
         clockedIn: {{ $room->party_b_clocked_in_at ? 'true' : 'false' }},
         inviteUrl: "{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}",
         
@@ -558,7 +557,7 @@ function liveRoom(roomUuid, token) {
             this.pollInterval = setInterval(() => this.poll(), 2000);
             
             // Start live countdown timer if room is active
-            if (this.roomStatus === 'active') {
+            if (this.roomSessionStatus === 'active') {
                 this.startLocalTimer();
             }
             this.loadFiles();
@@ -567,7 +566,7 @@ function liveRoom(roomUuid, token) {
         startLocalTimer() {
             if (this.timerInterval) clearInterval(this.timerInterval);
             this.timerInterval = setInterval(() => {
-                if (this.roomStatus === 'active') {
+                if (this.roomSessionStatus === 'active') {
                     if (this.remainingSeconds > 0) {
                         this.remainingSeconds--;
                     } else {
@@ -594,7 +593,6 @@ function liveRoom(roomUuid, token) {
                 }
                 
                 this.roomSessionStatus = data.status;
-                this.roomStatus = data.status;
                 this.lexProcessing = data.lex_processing;
                 this.clockedIn = !!data.party_b_clocked_in_at;
 
