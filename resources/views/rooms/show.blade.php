@@ -85,8 +85,8 @@
                     </div>
                     <div class="h-8 w-px bg-white bg-opacity-10 hidden sm:block"></div>
                     <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm" 
-                          :style="getStatusStyle(status)">
-                        <span x-text="status"></span>
+                          :style="getStatusStyle(roomSessionStatus)">
+                        <span x-text="roomSessionStatus"></span>
                     </span>
                 </div>
 
@@ -98,7 +98,7 @@
                 
                 <!-- Action Buttons -->
                 <div class="col-span-2 w-full flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 lg:w-auto">
-                    <div x-show="status === 'pending' && isPartyA" class="w-full sm:w-auto flex flex-col items-center">
+                    <div x-show="roomSessionStatus === 'pending' && isPartyA" class="w-full sm:w-auto flex flex-col items-center">
                         <button @click="openStartModal"
                                 :disabled="!clockedIn"
                                 class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
@@ -112,17 +112,17 @@
                     </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
-                    <button x-show="status === 'active' && isPartyA"
+                    <button x-show="roomSessionStatus === 'active' && isPartyA"
                             @click="showPauseModal = true"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
-                    <button x-show="status === 'paused' && isPartyA"
+                    <button x-show="roomSessionStatus === 'paused' && isPartyA"
                             @click="resumeSession"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
-                    <span x-show="status === 'pause_requested' && isPartyA" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
+                    <span x-show="roomSessionStatus === 'pause_requested' && isPartyA" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
                 </div>
             </div>
         </div>
@@ -292,12 +292,12 @@
                         <input type="text" 
                                x-model="messageInput"
                                @keyup.enter="sendMessage"
-                               :disabled="status !== 'active'"
-                               :placeholder="status === 'pending' ? 'Waiting for session to start...' : 'Type your message...'"
+                               :disabled="roomSessionStatus !== 'active'"
+                               :placeholder="roomSessionStatus === 'pending' ? 'Waiting for session to start...' : 'Type your message...'"
                                class="flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold disabled:opacity-50"
                                style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                         <button @click="sendMessage"
-                                :disabled="status !== 'active' || !messageInput.trim()"
+                                :disabled="roomSessionStatus !== 'active' || !messageInput.trim()"
                                 class="px-4 md:px-6 py-2 md:py-3 rounded-lg text-white text-sm md:text-base font-medium transition-colors hover:opacity-90 disabled:opacity-50"
                                 style="background-color: var(--gold);">
                             Send
@@ -316,7 +316,7 @@
                 
                 <!-- Upload Button -->
                 <button @click="$refs.fileInput.click()"
-                        :disabled="status === 'completed'"
+                        :disabled="roomSessionStatus === 'completed'"
                         class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-dashed transition-colors hover:border-gold mb-3 md:mb-4 disabled:opacity-50"
                         style="border-color: var(--border-color); color: var(--text-primary);">
                     <svg class="w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +353,7 @@
                                         <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);" x-text="file.party"></p>
                                     </div>
                                 </div>
-                                <button x-show="status === 'pending'" 
+                                <button x-show="roomSessionStatus === 'pending'" 
                                         @click="removeFile(file.id)"
                                         class="p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:bg-opacity-10 text-red-500"
                                         title="Remove Evidence">
@@ -440,7 +440,7 @@
             </div>
         </div>
         <!-- Pause Request Alert for Party B -->
-        <div x-show="status === 'pause_requested' && isPartyB" class="fixed top-4 right-4 z-50 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg max-w-sm">
+        <div x-show="roomSessionStatus === 'pause_requested' && isPartyB" class="fixed top-4 right-4 z-50 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg max-w-sm">
             <div class="font-bold mb-1">Pause Requested</div>
             <p class="text-sm mb-3">Party A has requested to pause this session. The countdown will stop once accepted.</p>
             <div class="flex gap-2">
@@ -505,7 +505,7 @@ function liveRoom(roomUuid, token) {
         remainingSeconds: {{ $room->status === 'active' ? max(0, $room->duration * 60 - $room->started_at?->diffInSeconds(now())) : $room->duration * 60 }},
         totalSeconds: {{ $room->duration * 60 }},
         roomStatus: '{{ $room->status }}',
-        status: '{{ $room->status }}',
+        roomSessionStatus: '{{ $room->status }}',
         lexProcessing: false,
         files: [],
         pollInterval: null,
@@ -593,12 +593,12 @@ function liveRoom(roomUuid, token) {
                     this.$nextTick(() => this.scrollToBottom());
                 }
                 
-                this.status = data.status;
+                this.roomSessionStatus = data.status;
                 this.roomStatus = data.status;
                 this.lexProcessing = data.lex_processing;
                 this.clockedIn = !!data.party_b_clocked_in_at;
 
-                if (data.timer && this.roomStatus === 'active') {
+                if (data.timer && this.roomSessionStatus === 'active') {
                     this.totalSeconds = data.timer.total_seconds;
                     // Only snap to server time if there's a significant drift (>10s)
                     // or if our local timer hasn't started yet
@@ -614,7 +614,7 @@ function liveRoom(roomUuid, token) {
         },
         
         async sendMessage() {
-            if (!this.messageInput.trim() || this.status !== 'active') return;
+            if (!this.messageInput.trim() || this.roomSessionStatus !== 'active') return;
             
             const content = this.messageInput;
             this.messageInput = '';
@@ -649,7 +649,7 @@ function liveRoom(roomUuid, token) {
         },
         
         openStartModal() {
-            if (this.status !== 'pending') return;
+            if (this.roomSessionStatus !== 'pending') return;
             this.showStartModal = true;
         },
 
@@ -666,6 +666,7 @@ function liveRoom(roomUuid, token) {
                 const data = await response.json();
                 if (data.success) {
                     window.showToast('Session started successfully');
+                    this.roomSessionStatus = 'active';
                     this.roomStatus = 'active';
                     this.startLocalTimer();
                 }
@@ -875,7 +876,7 @@ function liveRoom(roomUuid, token) {
             });
         },
         
-        getStatusStyle(status) {
+        getStatusStyle(currentSessionStatus) {
             const styles = {
                 'pending': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
                 'active': 'background-color: rgba(34, 197, 94, 0.1); color: #15803D;',
@@ -883,7 +884,7 @@ function liveRoom(roomUuid, token) {
                 'pause_requested': 'background-color: rgba(185, 28, 28, 0.1); color: #B91C1C;',
                 'paused': 'background-color: rgba(75, 85, 99, 0.1); color: #4B5563;'
             };
-            return styles[status] || styles.pending;
+            return styles[currentSessionStatus] || styles.pending;
         }
     }
 }
