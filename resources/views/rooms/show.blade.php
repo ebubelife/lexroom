@@ -592,15 +592,34 @@ function liveRoom(roomUuid, token) {
                     this.$nextTick(() => this.scrollToBottom());
                 }
                 
+                const previousStatus = this.roomSessionStatus;
                 this.roomSessionStatus = data.status;
                 this.lexProcessing = data.lex_processing;
                 this.clockedIn = !!data.party_b_clocked_in_at;
 
-                if (data.timer && this.roomSessionStatus === 'active') {
-                    this.totalSeconds = data.timer.total_seconds;
-                    // Only snap to server time if there's a significant drift (>10s)
-                    // or if our local timer hasn't started yet
-                    if (Math.abs(this.remainingSeconds - data.timer.remaining_seconds) > 10 || this.remainingSeconds === 0) {
+                // Start the local timer if session just became active (or was already active on load)
+                if (this.roomSessionStatus === 'active') {
+                    if (!this.timerInterval) {
+                        // First time we see active — sync from server then start ticking
+                        if (data.timer) {
+                            this.remainingSeconds = data.timer.remaining_seconds;
+                            this.totalSeconds = data.timer.total_seconds;
+                        }
+                        this.startLocalTimer();
+                    } else if (data.timer) {
+                        // Already ticking — only snap if server says we've drifted > 10s
+                        this.totalSeconds = data.timer.total_seconds;
+                        if (Math.abs(this.remainingSeconds - data.timer.remaining_seconds) > 10) {
+                            this.remainingSeconds = data.timer.remaining_seconds;
+                        }
+                    }
+                } else if (this.roomSessionStatus === 'paused' || this.roomSessionStatus === 'pause_requested') {
+                    // Stop the local timer when paused
+                    if (this.timerInterval) {
+                        clearInterval(this.timerInterval);
+                        this.timerInterval = null;
+                    }
+                    if (data.timer) {
                         this.remainingSeconds = data.timer.remaining_seconds;
                     }
                 }
