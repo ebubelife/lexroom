@@ -155,20 +155,7 @@
                        style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 md:mb-6">
-                <div>
-                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">BVN (Optional)</label>
-                    <input type="text" name="bvn" value="{{ old('bvn', auth()->user()->bvn) }}" maxlength="11"
-                           class="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
-                           style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">NIN (Optional)</label>
-                    <input type="text" name="nin" value="{{ old('nin', auth()->user()->nin) }}" maxlength="11"
-                           class="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
-                           style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
-                </div>
-            </div>
+
 
             <button type="submit" class="w-full md:w-auto px-6 py-2 md:py-3 rounded-lg text-white text-sm md:text-base font-medium transition-colors hover:opacity-90"
                     style="background-color: var(--gold);">

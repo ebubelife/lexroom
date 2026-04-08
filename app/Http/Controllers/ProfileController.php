@@ -21,8 +21,6 @@ class ProfileController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . auth()->id(),
             'phone' => 'nullable|string|max:20',
-            'bvn' => 'nullable|string|size:11',
-            'nin' => 'nullable|string|size:11',
             'profile_image' => 'nullable|image|max:2048',
         ]);
 
