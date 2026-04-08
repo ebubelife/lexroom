@@ -103,6 +103,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/rooms/create', [\App\Http\Controllers\RoomController::class, 'create'])->name('rooms.create');
     Route::post('/rooms', [\App\Http\Controllers\RoomController::class, 'store'])->name('rooms.store');
     Route::delete('/rooms/{room}', [\App\Http\Controllers\RoomController::class, 'destroy'])->name('rooms.destroy');
+    Route::post('/rooms/{uuid}/resend-invite', [\App\Http\Controllers\RoomController::class, 'resendInvite'])->name('rooms.resend-invite');
     
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\ProfileController::class, 'index'])->name('settings.index');

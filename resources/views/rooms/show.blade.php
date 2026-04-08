@@ -98,14 +98,18 @@
                 
                 <!-- Action Buttons -->
                 <div class="col-span-2 w-full flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 lg:w-auto">
-                    <button x-show="status === 'pending' && isPartyA" 
-                            @click="openStartModal"
-                            :disabled="!clockedIn"
-                            class="w-full sm:w-auto px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
-                            :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
-                            :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
-                        <span x-text="clockedIn ? 'Start Session' : 'Waiting for Party B...'"></span>
-                    </button>
+                    <div x-show="status === 'pending' && isPartyA" class="w-full sm:w-auto flex flex-col items-center">
+                        <button @click="openStartModal"
+                                :disabled="!clockedIn"
+                                class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
+                                :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+                                :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
+                            <span x-text="clockedIn ? 'Start Session' : 'Waiting for Party B...'"></span>
+                        </button>
+                        <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                            Resend / Correct Invite Email
+                        </button>
+                    </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
                     <button x-show="status === 'active' && isPartyA"
@@ -462,6 +466,34 @@
     </div>
 </div>
 
+    <!-- Resend/Correct Invite Modal -->
+    <template x-if="showResendModal">
+        <div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+            <div @click.away="showResendModal = false" class="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative border border-gray-100 dark:border-gray-700">
+                <button @click="showResendModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: rgba(201, 168, 76, 0.1);">
+                        <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2">Resend Invitation</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Current Party B Email Address:</p>
+                </div>
+                <div class="mb-6">
+                    <input type="email" x-model="resendEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition-all text-center">
+                </div>
+                <button @click="submitResendInvite()" 
+                        :disabled="isResending"
+                        class="w-full py-3 rounded-xl text-white text-sm font-bold tracking-widest uppercase transition-all shadow-lg"
+                        :class="isResending ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95 cursor-pointer'"
+                        style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                    <span x-text="isResending ? 'Sending...' : 'Resend Invite'"></span>
+                </button>
+            </div>
+        </div>
+    </template>
+    
 <script>
 function liveRoom(roomUuid, token) {
     return {
@@ -488,6 +520,37 @@ function liveRoom(roomUuid, token) {
         uploadProgress: 0,
         showStartModal: false,
         showPauseModal: false,
+        
+        // Resend Invite State
+        showResendModal: false,
+        resendEmail: '{{ $room->party_b_email }}',
+        isResending: false,
+        
+        submitResendInvite() {
+            this.isResending = true;
+            fetch(`/rooms/${this.roomUuid}/resend-invite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ email: this.resendEmail })
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.isResending = false;
+                if (data.success) {
+                    this.showResendModal = false;
+                    alert('Invitation sent successfully!');
+                } else {
+                    alert(data.message || 'Failed to resend invitation.');
+                }
+            })
+            .catch(err => {
+                this.isResending = false;
+                alert('An error occurred while resending the invitation.');
+            });
+        },
         
         init() {
             this.scrollToBottom();

@@ -187,4 +187,38 @@ class RoomController extends Controller
 
         return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
     }
+
+    public function resendInvite(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+
+        // Ensure user is Party A
+        if (auth()->id() !== $room->party_a_id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'email' => 'required|email|max:255'
+        ]);
+
+        $email = $request->email;
+
+        // If email changed, update it and regenerate token
+        if ($email !== $room->party_b_email) {
+            $room->update([
+                'party_b_email' => $email,
+                'invite_token' => Str::random(64)
+            ]);
+        }
+
+        // Send email
+        try {
+            Mail::to($email)->send(new RoomInvitation($room));
+            Log::info("Successfully resent invitation email to Party B: " . $email);
+            return response()->json(['success' => true, 'message' => 'Invitation sent successfully.']);
+        } catch (\Exception $e) {
+            Log::error('Failed to resend Room Invitation to Party B: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to send invitation. Please try again later.'], 500);
+        }
+    }
 }
