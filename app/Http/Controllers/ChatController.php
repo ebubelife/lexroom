@@ -39,15 +39,15 @@ class ChatController extends Controller
         $startedAt = $room->started_at;
         
         if ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
-            $elapsed = now()->diffInSeconds($startedAt) - $room->total_paused_seconds;
+            $elapsed = (int) now()->diffInSeconds($startedAt) - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
-            Cache::put($timerKey, $remainingSeconds, 7200);
+            Cache::put($timerKey, (int) $remainingSeconds, 7200);
         } elseif ($startedAt && $room->status === 'paused' && $room->paused_at) {
-            $elapsed = $room->paused_at->diffInSeconds($startedAt) - $room->total_paused_seconds;
+            $elapsed = (int) $room->paused_at->diffInSeconds($startedAt) - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
-            Cache::put($timerKey, $remainingSeconds, 7200);
+            Cache::put($timerKey, (int) $remainingSeconds, 7200);
         } else {
-            $remainingSeconds = Cache::get($timerKey) ?? $totalSeconds;
+            $remainingSeconds = (int) (Cache::get($timerKey) ?? $totalSeconds);
         }
 
         // Get current phase

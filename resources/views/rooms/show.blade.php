@@ -502,7 +502,7 @@ function liveRoom(roomUuid, token) {
         messageInput: '',
         messages: @json($initialMessages),
         lastMessageId: {{ $room->messages->last()?->id ?? 0 }},
-        remainingSeconds: {{ $room->status === 'active' ? max(0, $room->duration * 60 - $room->started_at?->diffInSeconds(now())) : $room->duration * 60 }},
+        remainingSeconds: {{ $room->status === 'active' ? max(0, (int)($room->duration * 60 - $room->started_at?->diffInSeconds(now()))) : (int)($room->duration * 60) }},
         totalSeconds: {{ $room->duration * 60 }},
         roomSessionStatus: '{{ $room->status }}',
         lexProcessing: false,
@@ -876,8 +876,9 @@ function liveRoom(roomUuid, token) {
         },
         
         formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
+            const s = Math.max(0, Math.floor(seconds));
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         },
         
