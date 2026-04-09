@@ -155,7 +155,8 @@ class RoomController extends Controller
         }
         
         // Check if user's email matches Party B email (invited but not assigned yet)
-        if ($user && $room->party_b_email && $user->email === $room->party_b_email) {
+        // BUT only if they are not already Party A!
+        if ($user && $room->party_b_email && $user->email === $room->party_b_email && $user->id !== $room->party_a_id) {
             // Auto-assign Party B if not already assigned
             if (!$room->party_b_id) {
                 $room->update(['party_b_id' => $user->id]);

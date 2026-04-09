@@ -142,6 +142,16 @@
                     </button>
                     <span x-show="roomSessionStatus === 'pause_requested'" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
                 @endif
+
+                {{-- Global Extend Button for Party A --}}
+                @if(auth()->check() && auth()->id() == $room->party_a_id)
+                    <div x-show="roomSessionStatus === 'active' || roomSessionStatus === 'completed'" class="w-full flex justify-center mt-4">
+                        <button @click="showExtendModal = true"
+                                class="w-full sm:w-auto px-6 py-3 rounded-xl text-white text-sm font-bold shadow-lg transition-all bg-blue-600 hover:bg-blue-700 text-center uppercase tracking-wider">
+                            Extend Session
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -574,7 +584,7 @@ function liveRoom(roomUuid, token) {
         timerInterval: null,
         isPolling: false,
         isPartyA: parseInt('{{ (auth()->check() && auth()->id() == $room->party_a_id) ? "1" : "0" }}') === 1,
-        isPartyB: parseInt('{{ ((auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token)) ? "1" : "0" }}') === 1,
+        isPartyB: parseInt('{{ ((auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token && (!auth()->check() || auth()->id() != $room->party_a_id))) ? "1" : "0" }}') === 1,
         clockedIn: parseInt('{{ $room->party_b_clocked_in_at ? "1" : "0" }}') === 1,
         inviteUrl: "{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}",
         

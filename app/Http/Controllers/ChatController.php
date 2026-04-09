@@ -93,6 +93,19 @@ class ChatController extends Controller
 
         $room = Room::where('uuid', $uuid)->firstOrFail();
 
+        // Enforce role based on authentication
+        $senderType = $request->input('sender_type');
+        if (Auth::check()) {
+            if (Auth::id() == $room->party_a_id) {
+                $senderType = 'party_a';
+            } elseif (Auth::id() == $room->party_b_id) {
+                $senderType = 'party_b';
+            }
+        } elseif (request('token') === $room->invite_token) {
+            // Unauthenticated guest with token must be Party B
+            $senderType = 'party_b';
+        }
+
         // Verify room is active
         if ($room->status !== 'active') {
             return response()->json(['error' => 'Room is not active'], 403);
@@ -104,7 +117,7 @@ class ChatController extends Controller
         // Save message
         $message = SessionMessage::create([
             'room_id' => $room->id,
-            'sender_type' => $request->input('sender_type'),
+            'sender_type' => $senderType,
             'content' => $request->input('content'),
             'phase' => $currentPhase,
         ]);
