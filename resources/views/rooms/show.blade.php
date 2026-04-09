@@ -527,7 +527,7 @@
                     </svg>
                 </div>
                 <h3 class="text-2xl font-serif text-white">Extend Session</h3>
-                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Each 30-min block is ₦5,000.</p>
+                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Each 30-min block is $50.</p>
             </div>
 
             <div class="space-y-4 mb-8">
@@ -538,7 +538,7 @@
                                 :class="extendingMinutes === mins ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
                                 class="p-3 rounded-xl border text-center transition-all">
                             <span class="block text-sm font-bold text-white" x-text="mins + ' Min'"></span >
-                            <span class="block text-[10px] opacity-60" x-text="'₦' + (mins/30 * 5000).toLocaleString()"></span>
+                            <span class="block text-[10px] opacity-60" x-text="'$' + (mins/30 * 50).toLocaleString()"></span>
                         </button>
                     </template>
                 </div>

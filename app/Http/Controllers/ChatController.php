@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
-    // Cost per 30-minute extension block in naira
-    const EXTENSION_COST_PER_30_MIN = 5000;
+    // Cost per 30-minute extension block in USD
+    const EXTENSION_COST_PER_30_MIN = 50;
 
     /**
      * Poll for new messages and room state
@@ -194,7 +194,7 @@ class ChatController extends Controller
         $wallet = Wallet::where('user_id', $user->id)->first();
         if (!$wallet || $wallet->credits_balance < $amount) {
             return response()->json([
-                'error' => "Insufficient wallet balance. You need ₦" . number_format($amount) . " to extend by {$minutes} minutes.",
+                'error' => "Insufficient wallet balance. You need $" . number_format($amount) . " to extend by {$minutes} minutes.",
                 'required' => $amount,
                 'balance' => $wallet ? (float) $wallet->credits_balance : 0,
             ], 402);
