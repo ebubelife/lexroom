@@ -47,7 +47,9 @@ class ChatController extends Controller
         $timerKey = "room:{$room->id}:timer";
         $startedAt = $room->started_at;
 
-        if ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
+        if ($room->status === 'completed') {
+            $remainingSeconds = 0;
+        } elseif ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
             $elapsed = (int) now()->diffInSeconds($startedAt) - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, (int) $remainingSeconds, 7200);
@@ -102,8 +104,8 @@ class ChatController extends Controller
         // Save message
         $message = SessionMessage::create([
             'room_id' => $room->id,
-            'sender_type' => $request->sender_type,
-            'content' => $request->content,
+            'sender_type' => $request->input('sender_type'),
+            'content' => $request->input('content'),
             'phase' => $currentPhase,
         ]);
 
@@ -114,7 +116,7 @@ class ChatController extends Controller
             set_time_limit(120);
         }
 
-        ProcessLexResponse::dispatch($room->id, $message->id);
+        dispatch(new ProcessLexResponse($room->id, $message->id));
 
         return response()->json([
             'success' => true,

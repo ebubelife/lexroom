@@ -11,6 +11,19 @@
         'phase' => $m->phase,
         'created_at' => $m->created_at->toIso8601String(),
     ]);
+    
+    // Calculate remaining seconds for JS init
+    $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
+    $remainingSeconds = 0;
+    if (in_array($room->status, ['active', 'pause_requested'])) {
+        $elapsed = now()->diffInSeconds($room->started_at) - (int)$room->total_paused_seconds;
+        $remainingSeconds = max(0, $totalSeconds - $elapsed);
+    } elseif ($room->status === 'paused' && $room->paused_at) {
+        $elapsed = $room->paused_at->diffInSeconds($room->started_at) - (int)$room->total_paused_seconds;
+        $remainingSeconds = max(0, $totalSeconds - $elapsed);
+    } elseif ($room->status === 'pending') {
+        $remainingSeconds = $totalSeconds;
+    }
 @endphp
 
 @section('content')
@@ -92,7 +105,7 @@
 
                 <!-- Timer -->
                 <div class="text-right justify-self-end lg:mt-0">
-                    <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="formatTime(remainingSeconds)"></div>
+                    <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="roomSessionStatus === 'completed' ? '00:00' : formatTime(remainingSeconds)"></div>
                     <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
                 </div>
                 
@@ -551,8 +564,8 @@ function liveRoom(roomUuid, token) {
         messageInput: '',
         messages: @json($initialMessages),
         lastMessageId: {{ $room->messages->last()?->id ?? 0 }},
-        remainingSeconds: {{ $room->status === 'active' ? max(0, (int)($room->duration * 60 - $room->started_at?->diffInSeconds(now()))) : (int)($room->duration * 60) }},
-        totalSeconds: {{ $room->duration * 60 }},
+        remainingSeconds: {{ (int)$remainingSeconds }},
+        totalSeconds: {{ (int)$totalSeconds }},
         roomSessionStatus: '{{ $room->status }}',
         timerSynced: false,
         lexProcessing: false,
