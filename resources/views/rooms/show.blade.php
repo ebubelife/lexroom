@@ -482,7 +482,6 @@
             </div>
         </div>
     </div>
-</div>
 
     <!-- Resend/Correct Invite Modal -->
     <template x-if="showResendModal">
@@ -555,6 +554,7 @@
             <button @click="showExtendModal = false" class="w-full mt-3 text-xs opacity-50 hover:opacity-100 transition-opacity">Cancel</button>
         </div>
     </div>
+    </div>
     
 <script>
 function liveRoom(roomUuid, token) {
@@ -562,10 +562,10 @@ function liveRoom(roomUuid, token) {
         roomUuid: roomUuid,
         token: token,
         messageInput: '',
-        messages: @json($initialMessages),
-        lastMessageId: {{ $room->messages->last()?->id ?? 0 }},
-        remainingSeconds: {{ (int)$remainingSeconds }},
-        totalSeconds: {{ (int)$totalSeconds }},
+        messages: {!! json_encode($initialMessages) !!},
+        lastMessageId: parseInt('{{ $room->messages->last()?->id ?? 0 }}') || 0,
+        remainingSeconds: parseInt('{{ $remainingSeconds }}') || 0,
+        totalSeconds: parseInt('{{ $totalSeconds }}') || 0,
         roomSessionStatus: '{{ $room->status }}',
         timerSynced: false,
         lexProcessing: false,
@@ -573,9 +573,9 @@ function liveRoom(roomUuid, token) {
         pollInterval: null,
         timerInterval: null,
         isPolling: false,
-        isPartyA: {{ auth()->check() && auth()->id() == $room->party_a_id ? 'true' : 'false' }},
-        isPartyB: {{ (auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token) ? 'true' : 'false' }},
-        clockedIn: {{ $room->party_b_clocked_in_at ? 'true' : 'false' }},
+        isPartyA: parseInt('{{ (auth()->check() && auth()->id() == $room->party_a_id) ? "1" : "0" }}') === 1,
+        isPartyB: parseInt('{{ ((auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token)) ? "1" : "0" }}') === 1,
+        clockedIn: parseInt('{{ $room->party_b_clocked_in_at ? "1" : "0" }}') === 1,
         inviteUrl: "{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}",
         
         // Progress & Modal State
@@ -597,7 +597,8 @@ function liveRoom(roomUuid, token) {
         notified5Min: false,
         notified1Min: false,
         
-        submitResendInvite() {
+        submitResendInvite: function() {
+            var self = this;
             this.isResending = true;
             fetch(`/rooms/${this.roomUuid}/resend-invite`, {
                 method: 'POST',
@@ -607,28 +608,27 @@ function liveRoom(roomUuid, token) {
                 },
                 body: JSON.stringify({ email: this.resendEmail })
             })
-            .then(res => res.json())
-            .then(data => {
-                this.isResending = false;
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                self.isResending = false;
                 if (data.success) {
-                    this.showResendModal = false;
+                    self.showResendModal = false;
                     alert('Invitation sent successfully!');
                 } else {
                     alert(data.message || 'Failed to resend invitation.');
                 }
             })
-            .catch(err => {
-                this.isResending = false;
+            .catch(function(err) {
+                self.isResending = false;
                 alert('An error occurred while resending the invitation.');
             });
         },
         
-        init() {
+        init: function() {
+            var self = this;
             this.scrollToBottom();
-            this.pollInterval = setInterval(() => this.poll(), 2000);
+            this.pollInterval = setInterval(function() { self.poll(); }, 2000);
             
-            // Room already active on page load — PHP gave correct remainingSeconds
-            // Mark synced so poll() doesn't overwrite it with server recalc
             if (this.roomSessionStatus === 'active') {
                 this.timerSynced = true;
                 this.startLocalTimer();
@@ -636,40 +636,38 @@ function liveRoom(roomUuid, token) {
             this.loadFiles();
         },
         
-        startLocalTimer() {
+        startLocalTimer: function() {
+            var self = this;
             if (this.timerInterval) clearInterval(this.timerInterval);
-            this.timerInterval = setInterval(() => {
-                if (this.roomSessionStatus === 'active') {
-                    if (this.remainingSeconds > 0) {
-                        this.remainingSeconds--;
-                        this.checkWarnings();
+            this.timerInterval = setInterval(function() {
+                if (self.roomSessionStatus === 'active') {
+                    if (self.remainingSeconds > 0) {
+                        self.remainingSeconds--;
+                        self.checkWarnings();
                     } else {
-                        // Timer hit zero. Lock it.
-                        this.lockSession();
+                        self.lockSession();
                     }
                 }
             }, 1000);
         },
 
-        checkWarnings() {
-            // 10 Minutes Warning
+        checkWarnings: function() {
             if (this.remainingSeconds === 600 && !this.notified10Min) {
                 window.showToast('10 minutes remaining in this session.', 'info');
                 this.notified10Min = true;
             }
-            // 5 Minutes Warning
             if (this.remainingSeconds === 300 && !this.notified5Min) {
                 window.showToast('5 minutes remaining. Please start concluding.', 'warning');
                 this.notified5Min = true;
             }
-            // 1 Minute Warning
             if (this.remainingSeconds === 60 && !this.notified1Min) {
                 this.notified1Min = true;
                 alert('Only 1 minute left! Please round up your discussion.');
             }
         },
 
-        async lockSession() {
+        lockSession: function() {
+            var self = this;
             if (this.timerInterval) {
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;
@@ -677,166 +675,169 @@ function liveRoom(roomUuid, token) {
 
             if (this.roomSessionStatus === 'completed') return;
 
-            try {
-                const response = await fetch(`/rooms/${this.roomUuid}/lock`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                });
-                const data = await response.json();
+            fetch(`/rooms/${this.roomUuid}/lock`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
                 if (data.success) {
-                    this.roomSessionStatus = 'completed';
+                    self.roomSessionStatus = 'completed';
                     window.showToast('Session time expired. Room locked.', 'error');
                 }
-            } catch (error) {
-                console.error('Lock error:', error);
-            }
+            })
+            .catch(function(err) {
+                console.error('Lock error:', err);
+            });
         },
 
-        async buyTime() {
+        buyTime: function() {
+            var self = this;
             this.isExtending = true;
-            try {
-                const response = await fetch(`/rooms/${this.roomUuid}/extend`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({ minutes: this.extendingMinutes })
-                });
-
-                const data = await response.json();
+            fetch(`/rooms/${this.roomUuid}/extend`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ minutes: this.extendingMinutes })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                self.isExtending = false;
                 if (data.success) {
-                    this.showExtendModal = false;
-                    this.roomSessionStatus = 'active';
-                    this.remainingSeconds = data.timer.remaining_seconds;
-                    this.totalSeconds = data.timer.total_seconds;
-                    this.timerSynced = true;
+                    self.showExtendModal = false;
+                    self.roomSessionStatus = 'active';
+                    self.remainingSeconds = data.timer.remaining_seconds;
+                    self.totalSeconds = data.timer.total_seconds;
+                    self.timerSynced = true;
 
-                    // Reset notifications for new time
-                    this.notified10Min = false;
-                    this.notified5Min = false;
-                    this.notified1Min = false;
+                    self.notified10Min = false;
+                    self.notified5Min = false;
+                    self.notified1Min = false;
 
-                    this.startLocalTimer();
-                    window.showToast(`Session extended by ${this.extendingMinutes} minutes!`);
+                    self.startLocalTimer();
+                    window.showToast(`Session extended by ${self.extendingMinutes} minutes!`);
                 } else if (data.error) {
                     alert(data.error);
                 }
-            } catch (error) {
-                console.error('Extend error:', error);
+            })
+            .catch(function(err) {
+                self.isExtending = false;
+                console.error('Extend error:', err);
                 alert('Failed to extend session. Check connection.');
-            } finally {
-                this.isExtending = false;
-            }
+            });
         },
         
-        async poll() {
+        poll: function() {
+            var self = this;
             if (this.isPolling) return;
             this.isPolling = true;
             
-            try {
-                const url = `/rooms/${this.roomUuid}/poll?since=${this.lastMessageId}${this.token ? '&token=' + this.token : ''}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
+            var url = `/rooms/${this.roomUuid}/poll?since=${this.lastMessageId}${this.token ? '&token=' + this.token : ''}`;
+            fetch(url)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
                 if (data.messages && data.messages.length > 0) {
-                    this.messages.push(...data.messages);
-                    this.lastMessageId = data.messages[data.messages.length - 1].id;
-                    this.$nextTick(() => this.scrollToBottom());
+                    for (var i = 0; i < data.messages.length; i++) {
+                        self.messages.push(data.messages[i]);
+                    }
+                    self.lastMessageId = data.messages[data.messages.length - 1].id;
+                    self.$nextTick(function() { self.scrollToBottom(); });
                 }
                 
-                const previousStatus = this.roomSessionStatus;
-                this.roomSessionStatus = data.status;
-                this.lexProcessing = data.lex_processing;
-                this.clockedIn = !!data.party_b_clocked_in_at;
+                self.roomSessionStatus = data.status;
+                self.lexProcessing = data.lex_processing;
+                self.clockedIn = !!data.party_b_clocked_in_at;
 
-                if (this.roomSessionStatus === 'active') {
-                    if (!this.timerSynced) {
-                        // Sync from server ONCE, then let local timer run independently
+                if (self.roomSessionStatus === 'active') {
+                    if (!self.timerSynced) {
                         if (data.timer && data.timer.remaining_seconds > 0) {
-                            this.remainingSeconds = Math.floor(data.timer.remaining_seconds);
-                            this.totalSeconds = Math.floor(data.timer.total_seconds);
+                            self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
+                            self.totalSeconds = Math.floor(data.timer.total_seconds);
                         }
-                        this.timerSynced = true;
-                        this.startLocalTimer();
+                        self.timerSynced = true;
+                        self.startLocalTimer();
                     }
-                    // After initial sync, DO NOT override remainingSeconds from server
-                } else if (this.roomSessionStatus === 'paused' || this.roomSessionStatus === 'pause_requested') {
-                    // Stop the local timer when paused
-                    if (this.timerInterval) {
-                        clearInterval(this.timerInterval);
-                        this.timerInterval = null;
+                } else if (self.roomSessionStatus === 'paused' || self.roomSessionStatus === 'pause_requested') {
+                    if (self.timerInterval) {
+                        clearInterval(self.timerInterval);
+                        self.timerInterval = null;
                     }
-                    // Accept server's paused time so resume starts from correct value
                     if (data.timer && data.timer.remaining_seconds > 0) {
-                        this.remainingSeconds = Math.floor(data.timer.remaining_seconds);
+                        self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
                     }
-                    this.timerSynced = false; // Allow re-sync when resumed
+                    self.timerSynced = false;
                 }
-            } catch (error) {
-                console.error('Poll error:', error);
-            } finally {
-                this.isPolling = false;
-            }
+            })
+            .catch(function(err) {
+                console.error('Poll error:', err);
+            })
+            .finally(function() {
+                self.isPolling = false;
+            });
         },
         
-        async sendMessage() {
+        sendMessage: function() {
+            var self = this;
             if (!this.messageInput.trim() || this.roomSessionStatus !== 'active') return;
             
-            const content = this.messageInput;
+            var content = this.messageInput;
             this.messageInput = '';
             
-            try {
-                const response = await fetch(`/rooms/${this.roomUuid}/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        content: content,
-                        sender_type: '{{ auth()->check() && auth()->id() === $room->party_a_id ? "party_a" : "party_b" }}'
-                    })
-                });
-                
-                const data = await response.json();
+            fetch(`/rooms/${this.roomUuid}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    content: content,
+                    sender_type: this.isPartyA ? 'party_a' : 'party_b'
+                })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
                 if (data.success && data.message) {
-                    this.messages.push(data.message);
-                    if (data.message.id > this.lastMessageId) {
-                        this.lastMessageId = data.message.id;
+                    self.messages.push(data.message);
+                    if (data.message.id > self.lastMessageId) {
+                        self.lastMessageId = data.message.id;
                     }
-                    this.$nextTick(() => this.scrollToBottom());
-                    // Small delay to let Lex start processing before the next poll
-                    setTimeout(() => this.poll(), 500);
+                    self.$nextTick(function() { self.scrollToBottom(); });
+                    setTimeout(function() { self.poll(); }, 500);
                 }
-            } catch (error) {
-                console.error('Send error:', error);
-                this.messageInput = content;
-            }
+            })
+            .catch(function(err) {
+                console.error('Send error:', err);
+                self.messageInput = content;
+            });
         },
         
-        openStartModal() {
+        openStartModal: function() {
             if (this.roomSessionStatus !== 'pending') return;
             this.showStartModal = true;
         },
 
-        async startSession() {
+        startSession: async function() {
+            var self = this;
             this.showStartModal = false;
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/start`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/start`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
                 });
                 
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     window.showToast('Session started successfully');
                     this.roomSessionStatus = 'active';
-                    this.timerSynced = true; // Prevent poll from overriding the timer
+                    this.remainingSeconds = data.timer.remaining_seconds;
+                    this.totalSeconds = data.timer.total_seconds;
+                    this.timerSynced = true;
                     this.startLocalTimer();
                 }
             } catch (error) {
@@ -845,9 +846,9 @@ function liveRoom(roomUuid, token) {
             }
         },
 
-        async clockIn() {
+        clockIn: async function() {
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/clock-in`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/clock-in`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -858,7 +859,7 @@ function liveRoom(roomUuid, token) {
                     })
                 });
                 
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     this.clockedIn = true;
                     window.showToast('You have joined the mediation room');
@@ -872,14 +873,14 @@ function liveRoom(roomUuid, token) {
             }
         },
 
-        async requestPause() {
+        requestPause: async function() {
             this.showPauseModal = false;
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/pause-request`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/pause-request`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
                 });
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     window.showToast('Pause requested');
                     this.poll();
@@ -892,13 +893,13 @@ function liveRoom(roomUuid, token) {
             }
         },
 
-        async acceptPause() {
+        acceptPause: async function() {
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/pause-accept`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/pause-accept`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
                 });
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     window.showToast('Session paused');
                     this.poll();
@@ -911,13 +912,13 @@ function liveRoom(roomUuid, token) {
             }
         },
 
-        async resumeSession() {
+        resumeSession: async function() {
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/resume`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/resume`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
                 });
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     window.showToast('Session resumed');
                     this.poll();
@@ -930,11 +931,11 @@ function liveRoom(roomUuid, token) {
             }
         },
         
-        async loadFiles() {
+        loadFiles: async function() {
             try {
-                const url = `/rooms/${this.roomUuid}/evidence${this.token ? '?token=' + this.token : ''}`;
-                const response = await fetch(url);
-                const data = await response.json();
+                var url = `/rooms/${this.roomUuid}/evidence${this.token ? '?token=' + this.token : ''}`;
+                var response = await fetch(url);
+                var data = await response.json();
                 
                 if (data.success) {
                     this.files = data.files;
@@ -999,11 +1000,11 @@ function liveRoom(roomUuid, token) {
             xhr.send(formData);
         },
 
-        async removeFile(fileId) {
+        removeFile: async function(fileId) {
             if (!confirm('Are you sure you want to remove this evidence?')) return;
             
             try {
-                const response = await fetch(`/rooms/${this.roomUuid}/evidence/${fileId}`, {
+                var response = await fetch(`/rooms/${this.roomUuid}/evidence/${fileId}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -1014,7 +1015,7 @@ function liveRoom(roomUuid, token) {
                     })
                 });
                 
-                const data = await response.json();
+                var data = await response.json();
                 if (data.success) {
                     window.showToast('Evidence removed');
                     this.loadFiles();
@@ -1027,27 +1028,28 @@ function liveRoom(roomUuid, token) {
             }
         },
         
-        formatTime(seconds) {
-            const s = Math.max(0, Math.floor(seconds));
-            const mins = Math.floor(s / 60);
-            const secs = s % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        formatTime: function(seconds) {
+            var s = Math.max(0, Math.floor(seconds));
+            var mins = Math.floor(s / 60);
+            var secs = s % 60;
+            return (mins < 10 ? '0' + mins : mins) + ":" + (secs < 10 ? '0' + secs : secs);
         },
         
-        formatTimestamp(timestamp) {
+        formatTimestamp: function(timestamp) {
             return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         },
         
-        scrollToBottom() {
-            this.$nextTick(() => {
-                if (this.$refs.chatContainer) {
-                    this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+        scrollToBottom: function() {
+            var self = this;
+            this.$nextTick(function() {
+                if (self.$refs.chatContainer) {
+                    self.$refs.chatContainer.scrollTop = self.$refs.chatContainer.scrollHeight;
                 }
             });
         },
         
-        getStatusStyle(currentSessionStatus) {
-            const styles = {
+        getStatusStyle: function(currentSessionStatus) {
+            var styles = {
                 'pending': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
                 'active': 'background-color: rgba(34, 197, 94, 0.1); color: #15803D;',
                 'completed': 'background-color: rgba(107, 107, 104, 0.1); color: #6B6B68;',
@@ -1056,7 +1058,7 @@ function liveRoom(roomUuid, token) {
             };
             return styles[currentSessionStatus] || styles.pending;
         }
-    }
+    };
 }
 </script>
 @endsection
