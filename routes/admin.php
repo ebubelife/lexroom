@@ -1,7 +1,15 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EvidenceController;
+use App\Http\Controllers\Admin\ReferralController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\WalletController;
 use Illuminate\Support\Facades\Route;
 
 // Admin guest routes
@@ -16,5 +24,52 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Protected admin routes
     Route::middleware('admin')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Users
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::post('/users/{user}/verify-email', [UserController::class, 'verifyEmail'])->name('users.verify-email');
+        Route::post('/users/{user}/verify-phone', [UserController::class, 'verifyPhone'])->name('users.verify-phone');
+        Route::post('/users/{user}/suspend', [UserController::class, 'suspend'])->name('users.suspend');
+        Route::post('/users/{user}/unsuspend', [UserController::class, 'unsuspend'])->name('users.unsuspend');
+        Route::post('/users/{user}/adjust-wallet', [UserController::class, 'adjustWallet'])->name('users.adjust-wallet');
+
+        // Rooms
+        Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+        Route::get('/rooms/{room}', [RoomController::class, 'show'])->name('rooms.show');
+        Route::post('/rooms/{room}/force-lock', [RoomController::class, 'forceLock'])->name('rooms.force-lock');
+        Route::post('/rooms/{room}/force-expire', [RoomController::class, 'forceExpire'])->name('rooms.force-expire');
+        Route::post('/rooms/{room}/add-time', [RoomController::class, 'addTime'])->name('rooms.add-time');
+        Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+
+        // Billing
+        Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
+        Route::get('/billing/refunds', [BillingController::class, 'refunds'])->name('billing.refunds');
+        Route::get('/billing/export', [BillingController::class, 'export'])->name('billing.export');
+        Route::post('/billing/{billing}/refund', [BillingController::class, 'issueRefund'])->name('billing.refund');
+
+        // Files
+        Route::get('/files', [EvidenceController::class, 'index'])->name('files.index');
+        Route::get('/files/{file}/download', [EvidenceController::class, 'download'])->name('files.download');
+        Route::delete('/files/{file}', [EvidenceController::class, 'destroy'])->name('files.destroy');
+
+        // Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/{report}/download', [ReportController::class, 'download'])->name('reports.download');
+        Route::post('/reports/{report}/regenerate', [ReportController::class, 'regenerate'])->name('reports.regenerate');
+        Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+
+        // Referrals
+        Route::get('/referrals', [ReferralController::class, 'index'])->name('referrals.index');
+        Route::post('/referrals/{reward}/revoke', [ReferralController::class, 'revoke'])->name('referrals.revoke');
+
+        // Wallets
+        Route::get('/wallets', [WalletController::class, 'index'])->name('wallets.index');
+        Route::post('/wallets/{wallet}/adjust', [WalletController::class, 'adjust'])->name('wallets.adjust');
+        Route::post('/wallets/{wallet}/release-escrow', [WalletController::class, 'releaseEscrow'])->name('wallets.release-escrow');
+
+        // Settings & Audit Log
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     });
 });

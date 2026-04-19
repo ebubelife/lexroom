@@ -309,3 +309,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 ---
 
 *Last updated: planning phase — ready to build.*
+Email: admin@firstmediator.com
+
+Password: Admin@1234!
+
+URL: http://127.0.0.1:8000/admin/login

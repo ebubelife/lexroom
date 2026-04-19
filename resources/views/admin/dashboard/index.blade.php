@@ -133,12 +133,7 @@
         <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
             <div class="flex items-center justify-between px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
                 <h2 class="text-sm font-semibold">Recent Users</h2>
-                <a href="#" class="text-xs hover:underline" style="color: var(--gold);">View all</a>
-            </div>
-            <table class="w-full data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
+                <a href="{{ route('admin.users.index') }}" class="text-xs hover:underline" style="color: var(--gold);">View all</a>
                         <th>Email</th>
                         <th>Verified</th>
                         <th>Joined</th>
