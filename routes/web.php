@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LogViewerController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PasswordResetLinkController;
@@ -61,9 +60,8 @@ Route::get('/test-email', function () {
     return response($html, 200);
 })->name('test.email');
 
-// Log Viewer (for debugging)
-Route::get('/logs', [LogViewerController::class, 'index'])->name('logs.index');
-Route::get('/logs/clear', [LogViewerController::class, 'clear'])->name('logs.clear');
+// Log Viewer
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
 
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
