@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\PhoneHelper;
+use App\Models\ReferralReward;
 use App\Models\User;
 use App\Rules\NigerianPhone;
 use Illuminate\Auth\Events\Registered;
@@ -56,6 +57,16 @@ class AuthController extends Controller
         session()->forget('referred_by_code');
 
         event(new Registered($user));
+
+        // Create pending referral record
+        if ($referredById) {
+            ReferralReward::create([
+                'referrer_id'      => $referredById,
+                'referred_user_id' => $user->id,
+                'status'           => 'pending',
+                'expires_at'       => now()->addDays(config('referral.pending_expiry_days', 90)),
+            ]);
+        }
 
         Auth::login($user);
         
@@ -200,6 +211,16 @@ class AuthController extends Controller
 
         // Clear session data
         session()->forget(['google_user_id', 'google_user_name', 'google_user_email', 'google_user_avatar', 'referred_by_code']);
+
+        // Create pending referral record
+        if ($referredById) {
+            ReferralReward::create([
+                'referrer_id'      => $referredById,
+                'referred_user_id' => $newUser->id,
+                'status'           => 'pending',
+                'expires_at'       => now()->addDays(config('referral.pending_expiry_days', 90)),
+            ]);
+        }
 
         Auth::login($newUser);
 

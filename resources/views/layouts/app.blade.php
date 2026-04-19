@@ -330,6 +330,17 @@
                         Wallet
                     </a>
 
+                    <!-- Referrals -->
+                    <a href="{{ route('referrals.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('referrals.*') ? 'nav-link-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Referrals
+                        @if(auth()->user()->wallet?->referral_minutes > 0)
+                            <span class="ml-auto text-xs px-1.5 py-0.5 rounded-full font-medium" style="background-color: rgba(201,168,76,0.15); color: var(--gold);">{{ auth()->user()->wallet->referral_minutes }}m</span>
+                        @endif
+                    </a>
+
                     <!-- Legal Reports -->
                     <a href="{{ route('reports.index') }}" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

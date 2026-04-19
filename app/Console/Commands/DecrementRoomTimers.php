@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\AwardReferralMinutes;
 use App\Jobs\GenerateReportJob;
 use App\Models\Room;
 use Illuminate\Console\Command;
@@ -35,6 +36,9 @@ class DecrementRoomTimers extends Command
                 // Trigger report generation
                 GenerateReportJob::dispatch($room->id);
                 $this->info("Report generation queued for room {$room->uuid}");
+
+                // Trigger referral reward check
+                AwardReferralMinutes::dispatch($room->id);
             }
         }
 

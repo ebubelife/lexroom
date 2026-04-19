@@ -174,4 +174,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'referred_by_id');
     }
+
+    public function referralRewards()
+    {
+        return $this->hasMany(ReferralReward::class, 'referrer_id');
+    }
+
+    public function referralRecord()
+    {
+        return $this->hasOne(ReferralReward::class, 'referred_user_id');
+    }
 }
