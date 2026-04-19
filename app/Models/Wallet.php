@@ -9,10 +9,11 @@ class Wallet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'credits_balance', 'referral_minutes', 'referral_minutes_expires_at'];
+    protected $fillable = ['user_id', 'credits_balance', 'escrow_balance', 'referral_minutes', 'referral_minutes_expires_at'];
 
     protected $casts = [
         'credits_balance' => 'decimal:2',
+        'escrow_balance'  => 'decimal:2',
         'referral_minutes' => 'integer',
         'referral_minutes_expires_at' => 'datetime',
     ];
@@ -25,6 +26,22 @@ class Wallet extends Model
     public function getFormattedBalanceAttribute()
     {
         return '₦' . number_format($this->credits_balance, 0);
+    }
+
+    public function moveEscrowToCredits(float $amount): void
+    {
+        $this->decrement('escrow_balance', $amount);
+        $this->increment('credits_balance', $amount);
+    }
+
+    public function holdInEscrow(float $amount): void
+    {
+        $this->increment('escrow_balance', $amount);
+    }
+
+    public function releaseEscrow(float $amount): void
+    {
+        $this->decrement('escrow_balance', $amount);
     }
 
     public function addReferralMinutes(int $minutes): void

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Billing;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -53,21 +54,51 @@ class RoomController extends Controller
 
         // Create room
         $room = Room::create([
-            'uuid' => Str::uuid(),
-            'party_a_id' => auth()->id(),
-            'category' => $validated['category'],
-            'title' => $validated['title'],
-            'jurisdiction' => $validated['jurisdiction'],
-            'language' => $validated['language'],
-            'case_summary' => $validated['case_summary'],
-            'duration' => $validated['duration'],
-            'payment_type' => $validated['payment_type'],
-            'status' => 'pending', // Allow Party A to start session manually
-            'invite_token' => Str::random(64),
+            'uuid'          => Str::uuid(),
+            'party_a_id'    => auth()->id(),
+            'category'      => $validated['category'],
+            'title'         => $validated['title'],
+            'jurisdiction'  => $validated['jurisdiction'],
+            'language'      => $validated['language'],
+            'case_summary'  => $validated['case_summary'],
+            'duration'      => $validated['duration'],
+            'payment_type'  => $validated['payment_type'],
+            'party_b_email' => $validated['party_b_email'],
+            'status'        => 'pending',
+            'invite_token'  => Str::random(64),
         ]);
 
-        // Store Party B email temporarily (we'll create user account later if they sign up)
-        $room->update(['party_b_email' => $validated['party_b_email']]);
+        // Create pending billing record for Party A
+        $prices = ['30' => 4.50, '60' => 7.50, '90' => 10.00];
+        $plans  = ['30' => 'starter', '60' => 'standard', '90' => 'extended'];
+        $fullAmount = $prices[$validated['duration']];
+        $partyAAmount = $validated['payment_type'] === 'split' ? $fullAmount / 2 : $fullAmount;
+
+        Billing::create([
+            'room_id' => $room->id,
+            'user_id' => auth()->id(),
+            'party'   => 'party_a',
+            'amount'  => $partyAAmount,
+            'plan'    => $plans[$validated['duration']],
+            'status'  => 'pending',
+        ]);
+
+        // If split, create pending billing record for Party B and generate payment token
+        if ($validated['payment_type'] === 'split') {
+            Billing::create([
+                'room_id' => $room->id,
+                'user_id' => 0, // unknown until Party B pays
+                'party'   => 'party_b',
+                'amount'  => $fullAmount / 2,
+                'plan'    => $plans[$validated['duration']],
+                'status'  => 'pending',
+            ]);
+
+            $room->update([
+                'party_b_payment_token'      => Str::random(64),
+                'party_b_payment_expires_at' => now()->addDays(7),
+            ]);
+        }
 
         // Send invitation email to Party B
         try {
