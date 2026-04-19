@@ -124,11 +124,11 @@
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
                         <span style="color: var(--text-secondary);">Credits</span>
-                        <span class="font-medium">₦{{ number_format($user->wallet?->credits_balance ?? 0, 0) }}</span>
+                        <span class="font-medium">£{{ number_format($user->wallet?->credits_balance ?? 0, 0) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span style="color: var(--text-secondary);">Escrow</span>
-                        <span class="font-medium">₦{{ number_format($user->wallet?->escrow_balance ?? 0, 0) }}</span>
+                        <span class="font-medium">£{{ number_format($user->wallet?->escrow_balance ?? 0, 0) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span style="color: var(--text-secondary);">Referral mins</span>
@@ -237,7 +237,7 @@
                                 <td><span class="font-mono text-xs" style="color: var(--gold);">{{ $billing->room?->case_id ?? '—' }}</span></td>
                                 <td class="text-sm">{{ ucfirst($billing->party) }}</td>
                                 <td class="text-sm">{{ $billing->plan ?? '—' }}</td>
-                                <td class="text-sm font-medium">₦{{ number_format($billing->amount, 0) }}</td>
+                                <td class="text-sm font-medium">£{{ number_format($billing->amount, 0) }}</td>
                                 <td>
                                     @php
                                         $colors = ['paid' => ['bg' => 'rgba(74,222,128,0.12)', 'text' => '#4ADE80'], 'pending' => ['bg' => 'rgba(251,191,36,0.12)', 'text' => '#FCD34D'], 'refunded' => ['bg' => 'rgba(239,68,68,0.12)', 'text' => '#F87171']];
@@ -312,7 +312,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Amount (₦)</label>
+                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Amount (£)</label>
                     <input type="number" name="amount" min="1" placeholder="0"
                            class="w-full px-3 py-2 rounded-lg text-sm outline-none"
                            style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">

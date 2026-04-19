@@ -8,6 +8,7 @@
 
     {{-- Stats Grid --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
         {{-- Users --}}
         <div class="stat-card">
             <div class="flex items-start justify-between">
@@ -24,6 +25,7 @@
             </div>
             <p class="text-xs mt-2" style="color: var(--text-secondary);">
                 <span style="color: #4ADE80;">+{{ $stats['new_users_7d'] }}</span> this week
+                · <span style="color: var(--text-secondary);">+{{ $stats['new_users_30d'] }} this month</span>
             </p>
         </div>
 
@@ -52,7 +54,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Revenue</p>
-                    <p class="text-2xl font-semibold">₦{{ number_format($stats['total_revenue'], 0) }}</p>
+                    <p class="text-2xl font-semibold">£{{ number_format($stats['total_revenue'], 2) }}</p>
                 </div>
                 <div class="p-2 rounded-lg" style="background: rgba(74,222,128,0.12);">
                     <svg class="w-5 h-5" style="color: #4ADE80;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,7 +64,7 @@
                 </div>
             </div>
             <p class="text-xs mt-2" style="color: var(--text-secondary);">
-                <span style="color: #4ADE80;">+₦{{ number_format($stats['revenue_7d'], 0) }}</span> this week
+                <span style="color: #4ADE80;">+£{{ number_format($stats['revenue_7d'], 2) }}</span> this week
             </p>
         </div>
 
@@ -81,7 +83,7 @@
                 </div>
             </div>
             <p class="text-xs mt-2" style="color: var(--text-secondary);">
-                {{ $stats['pending_payments'] }} pending payments
+                {{ $stats['pending_payments'] }} pending payment{{ $stats['pending_payments'] !== 1 ? 's' : '' }}
             </p>
         </div>
     </div>
@@ -93,7 +95,7 @@
         <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
             <div class="flex items-center justify-between px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
                 <h2 class="text-sm font-semibold">Recent Rooms</h2>
-                <a href="#" class="text-xs hover:underline" style="color: var(--gold);">View all</a>
+                <a href="{{ route('admin.rooms.index') }}" class="text-xs hover:underline" style="color: var(--gold);">View all →</a>
             </div>
             <table class="w-full data-table">
                 <thead>
@@ -108,12 +110,25 @@
                     @forelse($recentRooms as $room)
                         <tr>
                             <td>
-                                <span class="font-mono text-xs" style="color: var(--gold);">{{ $room->case_id }}</span>
+                                <a href="{{ route('admin.rooms.show', $room) }}"
+                                   class="font-mono text-xs hover:underline" style="color: var(--gold);">
+                                    {{ $room->case_id }}
+                                </a>
                             </td>
                             <td class="text-sm">{{ $room->partyA?->name ?? '—' }}</td>
                             <td>
-                                <span class="badge" style="background: rgba(201,168,76,0.12); color: var(--gold);">
-                                    {{ str_replace('_', ' ', $room->status) }}
+                                @php
+                                    $sc = [
+                                        'active'              => ['rgba(74,222,128,0.12)',  '#4ADE80'],
+                                        'pending'             => ['rgba(251,191,36,0.12)',  '#FCD34D'],
+                                        'waiting_for_party_b' => ['rgba(59,130,246,0.12)',  '#60A5FA'],
+                                        'locked'              => ['rgba(107,114,128,0.12)', '#9CA3AF'],
+                                        'expired'             => ['rgba(239,68,68,0.12)',   '#F87171'],
+                                    ];
+                                    [$bg, $text] = $sc[$room->status] ?? ['rgba(107,114,128,0.12)', '#9CA3AF'];
+                                @endphp
+                                <span class="badge" style="background: {{ $bg }}; color: {{ $text }};">
+                                    {{ ucwords(str_replace('_', ' ', $room->status)) }}
                                 </span>
                             </td>
                             <td class="text-xs" style="color: var(--text-secondary);">
@@ -122,7 +137,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-6" style="color: var(--text-secondary);">No rooms yet</td>
+                            <td colspan="4" class="text-center py-8" style="color: var(--text-secondary);">No rooms yet</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -133,43 +148,65 @@
         <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
             <div class="flex items-center justify-between px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
                 <h2 class="text-sm font-semibold">Recent Users</h2>
-                <a href="{{ route('admin.users.index') }}" class="text-xs hover:underline" style="color: var(--gold);">View all</a>
-                        <th>Email</th>
-                        <th>Verified</th>
-                        <th>Joined</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($recentUsers as $user)
-                        <tr>
-                            <td class="font-medium text-sm">{{ $user->name }}</td>
-                            <td class="text-xs" style="color: var(--text-secondary);">{{ $user->email }}</td>
-                            <td>
-                                @if($user->email_verified_at)
-                                    <span class="badge" style="background: rgba(74,222,128,0.12); color: #4ADE80;">Yes</span>
-                                @else
-                                    <span class="badge" style="background: rgba(239,68,68,0.12); color: #F87171;">No</span>
-                                @endif
-                            </td>
-                            <td class="text-xs" style="color: var(--text-secondary);">
-                                {{ $user->created_at->diffForHumans() }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-6" style="color: var(--text-secondary);">No users yet</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                <a href="{{ route('admin.users.index') }}" class="text-xs hover:underline" style="color: var(--gold);">View all →</a>
+            </div>
+
+            @forelse($recentUsers as $user)
+                <a href="{{ route('admin.users.show', $user) }}"
+                   class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.03]"
+                   style="{{ !$loop->last ? 'border-bottom: 1px solid var(--border-color);' : '' }}">
+
+                    {{-- Avatar --}}
+                    @if($user->profile_image_url)
+                        <img src="{{ $user->profile_image_url }}" alt="{{ $user->name }}"
+                             class="w-9 h-9 rounded-full object-cover flex-shrink-0"
+                             style="border: 2px solid var(--border-color);">
+                    @else
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                             style="background: rgba(201,168,76,0.15); color: var(--gold);">
+                            {{ $user->initials }}
+                        </div>
+                    @endif
+
+                    {{-- Info --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-medium truncate">{{ $user->name }}</p>
+                            @if($user->suspended_at)
+                                <span class="badge flex-shrink-0" style="background: rgba(239,68,68,0.12); color: #F87171;">Suspended</span>
+                            @elseif(!$user->email_verified_at)
+                                <span class="badge flex-shrink-0" style="background: rgba(251,191,36,0.1); color: #FCD34D;">Unverified</span>
+                            @endif
+                        </div>
+                        <p class="text-xs truncate mt-0.5" style="color: var(--text-secondary);">{{ $user->email }}</p>
+                    </div>
+
+                    {{-- Meta --}}
+                    <div class="flex-shrink-0 text-right">
+                        <p class="text-xs" style="color: var(--text-secondary);">{{ $user->created_at->diffForHumans() }}</p>
+                        @if($user->phone)
+                            <p class="text-xs mt-0.5 font-mono" style="color: var(--text-secondary); opacity: 0.6;">{{ $user->phone }}</p>
+                        @endif
+                    </div>
+
+                    {{-- Arrow --}}
+                    <svg class="w-4 h-4 flex-shrink-0 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            @empty
+                <div class="text-center py-8 text-sm" style="color: var(--text-secondary);">No users yet</div>
+            @endforelse
         </div>
     </div>
 
-    {{-- Recent Admin Actions --}}
+    {{-- Recent Admin Activity --}}
     @if($recentActions->isNotEmpty())
     <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
-        <div class="px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
+        <div class="flex items-center justify-between px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
             <h2 class="text-sm font-semibold">Recent Admin Activity</h2>
+            <a href="{{ route('admin.settings.index', ['tab' => 'audit']) }}"
+               class="text-xs hover:underline" style="color: var(--gold);">Full audit log →</a>
         </div>
         <div class="divide-y" style="border-color: var(--border-color);">
             @foreach($recentActions as $action)
@@ -179,11 +216,11 @@
                         {{ strtoupper(substr($action->admin->name, 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm">
+                        <p class="text-sm truncate">
                             <span class="font-medium">{{ $action->admin->name }}</span>
                             <span style="color: var(--text-secondary);"> {{ str_replace('_', ' ', $action->action) }}</span>
                             @if($action->target_type)
-                                <span style="color: var(--text-secondary);"> on {{ $action->target_type }} #{{ $action->target_id }}</span>
+                                <span style="color: var(--text-secondary);"> · {{ $action->target_type }} #{{ $action->target_id }}</span>
                             @endif
                         </p>
                     </div>

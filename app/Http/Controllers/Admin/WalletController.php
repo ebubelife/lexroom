@@ -80,6 +80,6 @@ class WalletController extends Controller
             'amount'  => $amount,
         ]);
 
-        return back()->with('success', "₦" . number_format($amount, 0) . " released from escrow to credits.");
+        return back()->with('success', "£" . number_format($amount, 0) . " released from escrow to credits.");
     }
 }

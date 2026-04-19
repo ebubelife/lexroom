@@ -104,7 +104,7 @@
                                 @endif
                             </td>
                             <td class="text-sm">
-                                ₦{{ number_format($user->wallet?->credits_balance ?? 0, 0) }}
+                                £{{ number_format($user->wallet?->credits_balance ?? 0, 0) }}
                             </td>
                             <td class="text-sm text-center">
                                 {{ $user->referrals_count ?? 0 }}

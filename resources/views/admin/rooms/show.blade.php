@@ -296,7 +296,7 @@
                                 <tr>
                                     <td><span class="badge" style="background: rgba(59,130,246,0.12); color: #60A5FA;">{{ ucfirst($bill->party) }}</span></td>
                                     <td class="text-sm">{{ $bill->plan ?? '—' }}</td>
-                                    <td class="text-sm font-medium">₦{{ number_format($bill->amount, 0) }}</td>
+                                    <td class="text-sm font-medium">£{{ number_format($bill->amount, 0) }}</td>
                                     <td>
                                         @php $bc = ['paid' => ['rgba(74,222,128,0.12)', '#4ADE80'], 'pending' => ['rgba(251,191,36,0.12)', '#FCD34D'], 'refunded' => ['rgba(239,68,68,0.12)', '#F87171']]; [$bbg, $btxt] = $bc[$bill->status] ?? $bc['pending']; @endphp
                                         <span class="badge" style="background: {{ $bbg }}; color: {{ $btxt }};">{{ ucfirst($bill->status) }}</span>
@@ -334,7 +334,7 @@
                                 <tr>
                                     <td class="text-sm">{{ $ext->user?->name ?? '—' }}</td>
                                     <td class="text-sm font-medium" style="color: var(--gold);">+{{ $ext->minutes_added }} min</td>
-                                    <td class="text-sm">₦{{ number_format($ext->amount_paid, 0) }}</td>
+                                    <td class="text-sm">£{{ number_format($ext->amount_paid, 0) }}</td>
                                     <td>
                                         <span class="badge" style="background: rgba(74,222,128,0.12); color: #4ADE80;">{{ ucfirst($ext->status) }}</span>
                                     </td>

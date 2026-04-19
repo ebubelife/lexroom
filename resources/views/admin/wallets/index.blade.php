@@ -12,7 +12,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Credits</p>
-                    <p class="text-2xl font-semibold">₦{{ number_format($stats['total_credits'], 0) }}</p>
+                    <p class="text-2xl font-semibold">£{{ number_format($stats['total_credits'], 0) }}</p>
                 </div>
                 <div class="p-2 rounded-lg" style="background: rgba(74,222,128,0.12);">
                     <svg class="w-5 h-5" style="color: #4ADE80;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Escrow</p>
-                    <p class="text-2xl font-semibold">₦{{ number_format($stats['total_escrow'], 0) }}</p>
+                    <p class="text-2xl font-semibold">£{{ number_format($stats['total_escrow'], 0) }}</p>
                 </div>
                 <div class="p-2 rounded-lg" style="background: rgba(251,191,36,0.12);">
                     <svg class="w-5 h-5" style="color: #FCD34D;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,13 +112,13 @@
                             </td>
                             <td>
                                 <span class="text-sm font-semibold" style="color: #4ADE80;">
-                                    ₦{{ number_format($wallet->credits_balance, 0) }}
+                                    £{{ number_format($wallet->credits_balance, 0) }}
                                 </span>
                             </td>
                             <td>
                                 @if($wallet->escrow_balance > 0)
                                     <span class="text-sm font-medium" style="color: #FCD34D;">
-                                        ₦{{ number_format($wallet->escrow_balance, 0) }}
+                                        £{{ number_format($wallet->escrow_balance, 0) }}
                                     </span>
                                 @else
                                     <span class="text-sm" style="color: var(--text-secondary);">—</span>
@@ -153,7 +153,7 @@
                                             <button type="submit"
                                                     class="text-xs px-2.5 py-1.5 rounded-lg font-medium hover:opacity-80"
                                                     style="background: rgba(251,191,36,0.1); color: #FCD34D; border: 1px solid rgba(251,191,36,0.25);"
-                                                    onclick="return confirm('Release ₦{{ number_format($wallet->escrow_balance, 0) }} from escrow to credits?')">
+                                                    onclick="return confirm('Release £{{ number_format($wallet->escrow_balance, 0) }} from escrow to credits?')">
                                                 Release Escrow
                                             </button>
                                         </form>
@@ -216,7 +216,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Amount (₦)</label>
+                        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Amount (£)</label>
                         <input type="number" name="amount" min="1" placeholder="0"
                                class="w-full px-3 py-2 rounded-lg text-sm outline-none"
                                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">

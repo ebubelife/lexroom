@@ -95,7 +95,7 @@
                                 </span>
                             </td>
                             <td class="text-sm" style="color: var(--text-secondary);">{{ $billing->plan ?? '—' }}</td>
-                            <td class="text-sm font-semibold">₦{{ number_format($billing->amount, 0) }}</td>
+                            <td class="text-sm font-semibold">£{{ number_format($billing->amount, 0) }}</td>
                             <td class="text-xs font-mono" style="color: var(--text-secondary);">
                                 <span title="{{ $billing->stripe_payment_intent_id }}">
                                     {{ substr($billing->stripe_payment_intent_id, 0, 18) }}…
@@ -178,7 +178,7 @@
                 <div x-show="billing.id === selected"
                      class="p-3 rounded-lg text-sm font-medium text-center"
                      style="background: rgba(239,68,68,0.08); color: #F87171;">
-                    Refunding ₦<span x-text="Number(billing.amount).toLocaleString()"></span>
+                    Refunding £<span x-text="Number(billing.amount).toLocaleString()"></span>
                 </div>
             </template>
 

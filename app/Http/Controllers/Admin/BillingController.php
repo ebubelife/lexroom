@@ -94,7 +94,7 @@ class BillingController extends Controller
                 'reason'                   => $request->input('reason'),
             ]);
 
-            return back()->with('success', "Refund of ₦{$billing->amount} issued successfully.");
+            return back()->with('success', "Refund of £{$billing->amount} issued successfully.");
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::error('Stripe refund failed: ' . $e->getMessage());

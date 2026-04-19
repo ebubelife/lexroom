@@ -52,15 +52,16 @@
 
                                 <div class="flex-shrink-0">
                                     @if($meta['type'] === 'boolean')
-                                        {{-- Toggle switch --}}
                                         @php $isOn = filter_var($current, FILTER_VALIDATE_BOOLEAN); @endphp
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="{{ $key }}" value="1"
-                                                   class="sr-only peer" {{ $isOn ? 'checked' : '' }}>
-                                            <div class="w-11 h-6 rounded-full peer transition-all duration-200 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"
-                                                 style="background: {{ $isOn ? 'var(--gold)' : 'var(--border-color)' }};"
-                                                 :style="$el.previousElementSibling.checked ? 'background: var(--gold)' : 'background: var(--border-color)'"
-                                                 x-init="$el.previousElementSibling.addEventListener('change', e => $el.style.background = e.target.checked ? 'var(--gold)' : 'var(--border-color)')">
+                                        <label style="display:inline-block; cursor:pointer; user-select:none;">
+                                            <input type="checkbox"
+                                                   name="{{ $key }}"
+                                                   value="1"
+                                                   {{ $isOn ? 'checked' : '' }}
+                                                   onchange="this.nextElementSibling.style.background=this.checked?'#C9A84C':'#1e2f42'; this.nextElementSibling.children[0].style.left=this.checked?'22px':'2px';"
+                                                   style="position:absolute;opacity:0;width:0;height:0;">
+                                            <div style="width:44px;height:24px;border-radius:9999px;position:relative;transition:background 0.2s;background:{{ $isOn ? '#C9A84C' : '#1e2f42' }};border:1px solid #2a3f55;">
+                                                <div style="position:absolute;top:2px;left:{{ $isOn ? '22px' : '2px' }};width:18px;height:18px;background:white;border-radius:9999px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>
                                             </div>
                                         </label>
                                     @elseif($meta['type'] === 'integer')

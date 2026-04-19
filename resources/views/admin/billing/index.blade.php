@@ -12,7 +12,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Revenue</p>
-                    <p class="text-2xl font-semibold">₦{{ number_format($totals['paid'], 0) }}</p>
+                    <p class="text-2xl font-semibold">£{{ number_format($totals['paid'], 0) }}</p>
                 </div>
                 <div class="p-2 rounded-lg" style="background: rgba(74,222,128,0.12);">
                     <svg class="w-5 h-5" style="color: #4ADE80;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Refunded</p>
-                    <p class="text-2xl font-semibold">₦{{ number_format($totals['refunded'], 0) }}</p>
+                    <p class="text-2xl font-semibold">£{{ number_format($totals['refunded'], 0) }}</p>
                 </div>
                 <div class="p-2 rounded-lg" style="background: rgba(239,68,68,0.12);">
                     <svg class="w-5 h-5" style="color: #F87171;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +159,7 @@
                                 </span>
                             </td>
                             <td class="text-sm" style="color: var(--text-secondary);">{{ $billing->plan ?? '—' }}</td>
-                            <td class="text-sm font-semibold">₦{{ number_format($billing->amount, 0) }}</td>
+                            <td class="text-sm font-semibold">£{{ number_format($billing->amount, 0) }}</td>
                             <td>
                                 @php
                                     $sc = [
