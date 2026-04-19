@@ -48,7 +48,10 @@
                 </div>
             </div>
 
-            <div class="p-3 rounded-lg mb-5 text-sm" style="background-color: var(--bg-primary); color: var(--text-secondary);" x-text="modal?.case_summary"></div>
+            <div class="p-3 rounded-lg mb-5 text-sm" style="background-color: var(--bg-primary); color: var(--text-secondary);" x-data="{ expanded: false }">
+                <p x-text="expanded ? modal?.case_summary : (modal?.case_summary?.substring(0, 150) + (modal?.case_summary?.length > 150 ? '...' : ''))"></p>
+                <button x-show="modal?.case_summary?.length > 150" @click="expanded = !expanded" class="text-xs mt-1 font-medium" style="color: var(--gold);" x-text="expanded ? 'See less \u2191' : 'See more \u2193'"></button>
+            </div>
 
             <div class="flex gap-3">
                 <template x-if="modal?.status_raw === 'pending'">
@@ -58,7 +61,7 @@
                     <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: var(--gold);">Enter Room</a>
                 </template>
                 <template x-if="modal?.status_raw === 'completed'">
-                    <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium" style="border: 1px solid var(--border-color); color: var(--text-primary);">Download Report</a>
+                    <a :href="modal?.report_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: var(--gold);">Download Report</a>
                 </template>
                 <button @click="modal = null" class="flex-1 py-2 rounded-lg text-sm font-medium" style="border: 1px solid var(--border-color); color: var(--text-secondary);">Close</button>
             </div>
@@ -160,7 +163,7 @@
                     @endif
                 </div>
 
-                <h3 class="font-medium mb-2 truncate" title="{{ $session->case_summary ?? ucfirst($session->category) . ' Dispute' }}" style="color: var(--text-primary);">
+                <h3 class="font-medium mb-2 truncate" style="color: var(--text-primary);">
                     {{ $session->case_summary ? Str::limit($session->case_summary, 50) : ucfirst($session->category) . ' Dispute' }}
                 </h3>
 
@@ -169,21 +172,45 @@
                 </p>
 
                 @if($session->status === 'active')
-                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: var(--gold); color: var(--white);">
                     Continue Session
                 </a>
                 @elseif($session->status === 'pending')
                 <a href="{{ route('payment.checkout', $session->id) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #0D1B2A; color: #ffffff;">
                     Complete Payment
                 </a>
+                @elseif($session->status === 'completed')
+                <a href="{{ route('reports.index') }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: var(--gold); color: var(--white);">
+                    Download Report
+                </a>
                 @else
                 <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500 mb-2" style="border: 1px solid var(--border-color); color: var(--text-primary);">
                     Resend Invite
                 </a>
                 @endif
-                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium mt-2 transition-colors hover:opacity-80" style="color: var(--gold);">
+
+                {{-- View Details → opens modal --}}
+                <button @click="modal = {
+                    category: '{{ ucfirst($session->category) }}',
+                    badge_bg: '{{ $session->category_badge_color['bg'] }}',
+                    badge_text: '{{ $session->category_badge_color['text'] }}',
+                    status: '{{ ucfirst(str_replace('_', ' ', $session->status)) }}',
+                    status_raw: '{{ $session->status }}',
+                    status_bg: '{{ $session->status_badge_color['bg'] }}',
+                    status_text: '{{ $session->status_badge_color['text'] }}',
+                    title: '{{ addslashes($session->title ?? ucfirst($session->category) . ' Dispute') }}',
+                    case_summary: '{{ addslashes($session->case_summary ?? '') }}',
+                    jurisdiction: '{{ $session->jurisdiction }}',
+                    duration: '{{ $session->duration }}',
+                    payment_type: '{{ ucfirst($session->payment_type) }}',
+                    party_b: '{{ addslashes($session->partyB?->name ?? $session->party_b_email ?? 'Pending') }}',
+                    created_at: '{{ $session->created_at->format('M j, Y') }}',
+                    checkout_url: '{{ route('payment.checkout', $session->id) }}',
+                    room_url: '{{ route('rooms.show', $session->uuid) }}',
+                    report_url: '{{ route('reports.index') }}',
+                }" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium mt-1 transition-colors hover:opacity-80" style="color: var(--gold);">
                     View Details →
-                </a>
+                </button>
             </div>
             @endforeach
         </div>
@@ -296,6 +323,7 @@
                                         created_at: '{{ $room->created_at->format('M j, Y') }}',
                                         checkout_url: '{{ route('payment.checkout', $room->id) }}',
                                         room_url: '{{ route('rooms.show', $room->uuid) }}',
+                                        report_url: '{{ route('reports.index') }}',
                                     }">
                                     <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
                                         {{ ucfirst($room->category) }}
@@ -431,6 +459,7 @@
                                         created_at: '{{ $room->created_at->format('M j, Y') }}',
                                         checkout_url: '{{ route('payment.checkout', $room->id) }}',
                                         room_url: '{{ route('rooms.show', $room->uuid) }}',
+                                        report_url: '{{ route('reports.index') }}',
                                     }">
                                     <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
                                         {{ ucfirst($room->category) }}
