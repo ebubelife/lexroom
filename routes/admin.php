@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\WalletController;
 use Illuminate\Support\Facades\Route;
 
 // Admin guest routes
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('f-med/admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {
         Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
         Route::post('/login', [AuthController::class, 'login']);
