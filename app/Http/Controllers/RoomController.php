@@ -116,12 +116,12 @@ class RoomController extends Controller
             \Log::error('Failed to send Room Confirmation to Party A: ' . $e->getMessage());
         }
 
-        // For demo: bypass payment and go directly to room
+        // Redirect Party A to Stripe checkout
         return response()->json([
-            'success' => true,
-            'room_id' => $room->id,
-            'payment_url' => route('rooms.show', $room->uuid),
-            'message' => 'Room created successfully!'
+            'success'     => true,
+            'room_id'     => $room->id,
+            'payment_url' => route('payment.checkout', $room->id),
+            'message'     => 'Room created successfully!'
         ]);
     }
 

@@ -98,6 +98,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Stripe checkout (Party A)
+    Route::get('/rooms/{room}/checkout', [\App\Http\Controllers\StripeController::class, 'checkoutPartyA'])->name('payment.checkout');
+    Route::get('/rooms/{uuid}/payment/success', [\App\Http\Controllers\StripeController::class, 'successPartyA'])->name('payment.success');
+
     // Room routes
     Route::get('/rooms', [\App\Http\Controllers\RoomController::class, 'index'])->name('rooms.index');
     Route::get('/rooms/create', [\App\Http\Controllers\RoomController::class, 'create'])->name('rooms.create');
@@ -127,6 +131,16 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
     Route::get('/vault/download/{file}', [VaultController::class, 'download'])->name('vault.download');
 });
+
+// Stripe webhook (no auth, no CSRF)
+Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::class, 'handle'])
+    ->name('webhooks.stripe')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
+// Party B payment page (no auth required)
+Route::get('/pay/{uuid}', [\App\Http\Controllers\StripeController::class, 'partyBPaymentPage'])->name('payment.party-b.checkout');
+Route::get('/pay/{uuid}/checkout', [\App\Http\Controllers\StripeController::class, 'checkoutPartyB'])->name('payment.party-b.pay');
+Route::get('/pay/{uuid}/success', [\App\Http\Controllers\StripeController::class, 'successPartyB'])->name('payment.party-b.success');
 
 // Room access (guest or authenticated)
 Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
