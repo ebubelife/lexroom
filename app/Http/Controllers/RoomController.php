@@ -41,7 +41,7 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category' => 'required|in:tenancy,freelance,business,ecommerce,employment,debt',
+            'category' => 'required|in:tenancy,freelance,business,ecommerce,employment,debt,marriage',
             'title' => 'required|string|max:255',
             'jurisdiction' => 'required|string|max:255',
             'language' => 'required|in:english',

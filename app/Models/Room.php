@@ -149,6 +149,7 @@ class Room extends Model
             'ecommerce' => ['bg' => '#FDF4FF', 'text' => '#7E22CE', 'dark_bg' => 'rgba(147,51,234,0.15)', 'dark_text' => '#D8B4FE'],
             'employment' => ['bg' => '#FFF1F2', 'text' => '#BE123C', 'dark_bg' => 'rgba(225,29,72,0.15)', 'dark_text' => '#FDA4AF'],
             'debt' => ['bg' => '#F0FDF4', 'text' => '#0F766E', 'dark_bg' => 'rgba(20,184,166,0.15)', 'dark_text' => '#5EEAD4'],
+            'marriage' => ['bg' => '#FDF2F8', 'text' => '#DB2777', 'dark_bg' => 'rgba(219,39,119,0.15)', 'dark_text' => '#F9A8D4'],
         ];
 
         return $colors[$this->category] ?? $colors['business'];

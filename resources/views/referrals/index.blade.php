@@ -13,11 +13,12 @@
                 :style="tab === 'overview' ? 'border-color: var(--gold); color: var(--gold);' : 'border-color: transparent; color: var(--text-secondary);'">
             My Referrals
         </button>
-        <button @click="tab = 'leaderboard'"
+        {{-- Leaderboard tab hidden for now — enable from admin later --}}
+        {{-- <button @click="tab = 'leaderboard'"
                 class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
                 :style="tab === 'leaderboard' ? 'border-color: var(--gold); color: var(--gold);' : 'border-color: transparent; color: var(--text-secondary);'">
             Leaderboard
-        </button>
+        </button> --}}
         <button @click="tab = 'howto'"
                 class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
                 :style="tab === 'howto' ? 'border-color: var(--gold); color: var(--gold);' : 'border-color: transparent; color: var(--text-secondary);'">
