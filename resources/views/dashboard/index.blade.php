@@ -114,7 +114,7 @@
                     Continue Session
                 </a>
                 @elseif($session->status === 'pending')
-                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #f59e0b; color: var(--white);">
+                <a href="{{ route('payment.checkout', $session->id) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #f59e0b; color: var(--white);">
                     Complete Payment
                 </a>
                 @else
@@ -188,7 +188,7 @@
                         Enter Room
                     </a>
                     @elseif($room->status === 'pending')
-                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                    <a href="{{ route('payment.checkout', $room->id) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
                         Complete Payment
                     </a>
                     @elseif($room->status === 'completed')
@@ -246,7 +246,7 @@
                                     Enter Room
                                 </a>
                                 @elseif($room->status === 'pending')
-                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                                <a href="{{ route('payment.checkout', $room->id) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
                                     Complete Payment
                                 </a>
                                 @elseif($room->status === 'completed')
