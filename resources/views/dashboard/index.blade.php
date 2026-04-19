@@ -4,7 +4,66 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto" x-data="{ modal: null }">
+
+    {{-- Room Detail Modal --}}
+    <div x-show="modal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="background: rgba(0,0,0,0.5);"
+         @click.self="modal = null"
+         @keydown.escape.window="modal = null">
+        <div class="w-full max-w-lg rounded-2xl shadow-2xl p-6" style="background-color: var(--bg-secondary);" @click.stop>
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <span class="px-2 py-1 rounded text-xs font-medium" x-bind:style="`background-color: ${modal?.badge_bg}; color: ${modal?.badge_text};`" x-text="modal?.category"></span>
+                    <span class="ml-2 px-2 py-1 rounded-full text-xs font-medium" x-bind:style="`background-color: ${modal?.status_bg}; color: ${modal?.status_text};`" x-text="modal?.status"></span>
+                </div>
+                <button @click="modal = null" style="color: var(--text-secondary);">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <h3 class="font-serif text-lg mb-4" style="color: var(--text-primary);" x-text="modal?.title"></h3>
+
+            <div class="space-y-3 mb-5">
+                <div class="flex justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Jurisdiction</span>
+                    <span style="color: var(--text-primary);" x-text="modal?.jurisdiction"></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Duration</span>
+                    <span style="color: var(--text-primary);" x-text="modal?.duration + ' minutes'"></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Payment</span>
+                    <span style="color: var(--text-primary);" x-text="modal?.payment_type"></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Other Party</span>
+                    <span style="color: var(--text-primary);" x-text="modal?.party_b"></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Created</span>
+                    <span style="color: var(--text-primary);" x-text="modal?.created_at"></span>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-lg mb-5 text-sm" style="background-color: var(--bg-primary); color: var(--text-secondary);" x-text="modal?.case_summary"></div>
+
+            <div class="flex gap-3">
+                <template x-if="modal?.status_raw === 'pending'">
+                    <a :href="modal?.checkout_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: #f59e0b;">Complete Payment</a>
+                </template>
+                <template x-if="modal?.status_raw === 'active'">
+                    <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: var(--gold);">Enter Room</a>
+                </template>
+                <template x-if="modal?.status_raw === 'completed'">
+                    <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium" style="border: 1px solid var(--border-color); color: var(--text-primary);">Download Report</a>
+                </template>
+                <button @click="modal = null" class="flex-1 py-2 rounded-lg text-sm font-medium" style="border: 1px solid var(--border-color); color: var(--text-secondary);">Close</button>
+            </div>
+        </div>
+    </div>
     <!-- Welcome Header -->
     <div class="mb-3 animate-fade-up">
         <h1 class="text-2xl lg:text-3xl font-serif mb-1" style="color: var(--text-primary);">
@@ -220,11 +279,28 @@
                         @foreach($myRooms as $room)
                         <tr class="hover-lift" style="border-top: 1px solid var(--border-color);">
                             <td class="px-6 py-4">
-                                <div class="flex items-center">
+                                <div class="flex items-center cursor-pointer group" @click="modal = {
+                                        category: '{{ ucfirst($room->category) }}',
+                                        badge_bg: '{{ $room->category_badge_color['bg'] }}',
+                                        badge_text: '{{ $room->category_badge_color['text'] }}',
+                                        status: '{{ ucfirst(str_replace('_', ' ', $room->status)) }}',
+                                        status_raw: '{{ $room->status }}',
+                                        status_bg: '{{ $room->status_badge_color['bg'] }}',
+                                        status_text: '{{ $room->status_badge_color['text'] }}',
+                                        title: '{{ addslashes($room->title ?? ucfirst($room->category) . ' Dispute') }}',
+                                        case_summary: '{{ addslashes(Str::limit($room->case_summary ?? '', 300)) }}',
+                                        jurisdiction: '{{ $room->jurisdiction }}',
+                                        duration: '{{ $room->duration }}',
+                                        payment_type: '{{ ucfirst($room->payment_type) }}',
+                                        party_b: '{{ addslashes($room->partyB?->name ?? $room->party_b_email ?? 'Pending') }}',
+                                        created_at: '{{ $room->created_at->format('M j, Y') }}',
+                                        checkout_url: '{{ route('payment.checkout', $room->id) }}',
+                                        room_url: '{{ route('rooms.show', $room->uuid) }}',
+                                    }">
                                     <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
                                         {{ ucfirst($room->category) }}
                                     </span>
-                                    <span class="text-sm" style="color: var(--text-primary);">
+                                    <span class="text-sm group-hover:underline" style="color: var(--text-primary);">
                                         {{ $room->case_summary ? Str::limit($room->case_summary, 40) : ucfirst($room->category) . ' Dispute' }}
                                     </span>
                                 </div>
@@ -338,11 +414,28 @@
                         @foreach($invitedRooms as $room)
                         <tr class="hover-lift" style="border-top: 1px solid var(--border-color);">
                             <td class="px-6 py-4">
-                                <div class="flex items-center">
+                                <div class="flex items-center cursor-pointer group" @click="modal = {
+                                        category: '{{ ucfirst($room->category) }}',
+                                        badge_bg: '{{ $room->category_badge_color['bg'] }}',
+                                        badge_text: '{{ $room->category_badge_color['text'] }}',
+                                        status: '{{ ucfirst(str_replace('_', ' ', $room->status)) }}',
+                                        status_raw: '{{ $room->status }}',
+                                        status_bg: '{{ $room->status_badge_color['bg'] }}',
+                                        status_text: '{{ $room->status_badge_color['text'] }}',
+                                        title: '{{ addslashes($room->title ?? ucfirst($room->category) . ' Dispute') }}',
+                                        case_summary: '{{ addslashes(Str::limit($room->case_summary ?? '', 300)) }}',
+                                        jurisdiction: '{{ $room->jurisdiction }}',
+                                        duration: '{{ $room->duration }}',
+                                        payment_type: '{{ ucfirst($room->payment_type) }}',
+                                        party_b: '{{ addslashes($room->partyB?->name ?? $room->party_b_email ?? 'Pending') }}',
+                                        created_at: '{{ $room->created_at->format('M j, Y') }}',
+                                        checkout_url: '{{ route('payment.checkout', $room->id) }}',
+                                        room_url: '{{ route('rooms.show', $room->uuid) }}',
+                                    }">
                                     <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
                                         {{ ucfirst($room->category) }}
                                     </span>
-                                    <span class="text-sm" style="color: var(--text-primary);">
+                                    <span class="text-sm group-hover:underline" style="color: var(--text-primary);">
                                         {{ $room->case_summary ? Str::limit($room->case_summary, 40) : ucfirst($room->category) . ' Dispute' }}
                                     </span>
                                 </div>
