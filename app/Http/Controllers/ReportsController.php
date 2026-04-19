@@ -46,8 +46,10 @@ class ReportsController extends Controller
      * Generate report for a locked room (Party A only).
      * Creates the Report record if it doesn't exist, then generates PDF inline.
      */
-    public function generate(Room $room, ClaudeService $claude)
+    public function generate($uuid, ClaudeService $claude)
     {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+
         if ($room->party_a_id !== auth()->id()) {
             abort(403);
         }

@@ -256,8 +256,8 @@
                     {{-- Download / Generate Report (session ended) --}}
                     @if(in_array($room->status, ['locked', 'completed', 'expired']))
                         @if($room->report)
-                            <a href="{{ route('rooms.generate-report', $room) }}"
-                               class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all"
+                            <a href="{{ route('rooms.generate-report', $room->uuid) }}"
+                               class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all"
                                style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%); color: #0D1B2A;">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -266,8 +266,8 @@
                                 Download Report
                             </a>
                         @else
-                            <a href="{{ route('rooms.generate-report', $room) }}"
-                               class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all"
+                            <a href="{{ route('rooms.generate-report', $room->uuid) }}"
+                               class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all"
                                style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%); color: #0D1B2A;">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
