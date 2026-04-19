@@ -22,8 +22,8 @@ class StripeController extends Controller
      */
     public function checkoutPartyA(Room $room)
     {
-        abort_if($room->party_a_id !== auth()->id(), 403);
-        abort_if($room->party_a_paid, 400, 'Already paid.');
+        abort_if($room->party_a_id != auth()->id(), 403);
+        abort_if($room->party_a_paid == true, 400, 'Already paid.');
 
         Stripe::setApiKey(config('services.stripe.secret'));
 

@@ -52,7 +52,7 @@
 
             <div class="flex gap-3">
                 <template x-if="modal?.status_raw === 'pending'">
-                    <a :href="modal?.checkout_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: #f59e0b;">Complete Payment</a>
+                    <a :href="modal?.checkout_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: #0D1B2A;">Complete Payment</a>
                 </template>
                 <template x-if="modal?.status_raw === 'active'">
                     <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: var(--gold);">Enter Room</a>
@@ -173,7 +173,7 @@
                     Continue Session
                 </a>
                 @elseif($session->status === 'pending')
-                <a href="{{ route('payment.checkout', $session->id) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #f59e0b; color: var(--white);">
+                <a href="{{ route('payment.checkout', $session->id) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #0D1B2A; color: #ffffff;">
                     Complete Payment
                 </a>
                 @else
@@ -247,7 +247,7 @@
                         Enter Room
                     </a>
                     @elseif($room->status === 'pending')
-                    <a href="{{ route('payment.checkout', $room->id) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                    <a href="{{ route('payment.checkout', $room->id) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
                         Complete Payment
                     </a>
                     @elseif($room->status === 'completed')
@@ -322,7 +322,7 @@
                                     Enter Room
                                 </a>
                                 @elseif($room->status === 'pending')
-                                <a href="{{ route('payment.checkout', $room->id) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #f59e0b; color: var(--white);">
+                                <a href="{{ route('payment.checkout', $room->id) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
                                     Complete Payment
                                 </a>
                                 @elseif($room->status === 'completed')
