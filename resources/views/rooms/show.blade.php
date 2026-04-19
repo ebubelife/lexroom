@@ -27,6 +27,117 @@
 @endphp
 
 @section('content')
+{{-- ══════════════════════════════════════════════════════════ --}}
+{{-- PARTY B — SESSION ENDED SCREEN                           --}}
+{{-- Shown when room is locked/expired and visitor has token  --}}
+{{-- ══════════════════════════════════════════════════════════ --}}
+@php
+    $isEnded   = in_array($room->status, ['locked', 'completed', 'expired']);
+    $hasToken  = request('token') && request('token') === $room->invite_token;
+    $isPartyA  = auth()->check() && auth()->id() === $room->party_a_id;
+    $showEndedScreen = $isEnded && $hasToken && !$isPartyA;
+@endphp
+
+@if($showEndedScreen)
+<div class="min-h-screen flex items-center justify-center p-4" style="background: var(--bg-primary);">
+    <div class="w-full max-w-lg">
+
+        {{-- Logo --}}
+        <div class="text-center mb-8">
+            <p class="font-serif text-2xl" style="color: var(--gold);">First Mediator</p>
+            <p class="text-xs mt-1 uppercase tracking-widest" style="color: var(--text-secondary);">Dispute Resolution Platform</p>
+        </div>
+
+        {{-- Ended card --}}
+        <div class="rounded-2xl overflow-hidden" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+
+            {{-- Status banner --}}
+            <div class="px-6 py-4 flex items-center gap-3" style="background: rgba(107,114,128,0.12); border-bottom: 1px solid var(--border-color);">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(107,114,128,0.2);">
+                    <svg class="w-4 h-4" style="color: #9CA3AF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold" style="color: var(--text-primary);">This session has ended</p>
+                    <p class="text-xs" style="color: var(--text-secondary);">The mediation room is now closed</p>
+                </div>
+            </div>
+
+            {{-- Session details --}}
+            <div class="p-6 space-y-4">
+                <div>
+                    <p class="text-xs uppercase tracking-wider mb-3 font-semibold" style="color: var(--text-secondary);">Session Summary</p>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-sm" style="color: var(--text-secondary);">Case ID</span>
+                            <span class="text-sm font-mono font-bold" style="color: var(--gold);">{{ $room->case_id }}</span>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-sm" style="color: var(--text-secondary);">Category</span>
+                            <span class="text-sm font-medium" style="color: var(--text-primary);">{{ ucfirst($room->category) }}</span>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-sm" style="color: var(--text-secondary);">Initiated by</span>
+                            <span class="text-sm font-medium" style="color: var(--text-primary);">{{ $room->partyA?->name ?? 'Party A' }}</span>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-sm" style="color: var(--text-secondary);">Session duration</span>
+                            <span class="text-sm font-medium" style="color: var(--text-primary);">
+                                {{ $room->duration }}min
+                                @if($room->extended_minutes > 0)
+                                    <span style="color: var(--gold);">+{{ $room->extended_minutes }}min</span>
+                                @endif
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-sm" style="color: var(--text-secondary);">Date</span>
+                            <span class="text-sm font-medium" style="color: var(--text-primary);">{{ $room->ended_at?->format('d M Y') ?? $room->updated_at->format('d M Y') }}</span>
+                        </div>
+                        @if($room->case_summary)
+                        <div class="pt-2" style="border-top: 1px solid var(--border-color);">
+                            <p class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-secondary);">Case Summary</p>
+                            <p class="text-sm leading-relaxed" style="color: var(--text-primary);">{{ Str::limit($room->case_summary, 200) }}</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Download button --}}
+                @if($room->report)
+                    <a href="{{ route('rooms.report.party-b-download', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}"
+                       class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity"
+                       style="background: var(--gold); color: #0D1B2A;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Download Mediation Report
+                    </a>
+                    <p class="text-xs text-center" style="color: var(--text-secondary);">
+                        The full AI-generated report including findings and recommendations
+                    </p>
+                @else
+                    <div class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm"
+                         style="background: rgba(107,114,128,0.1); color: var(--text-secondary); border: 1px dashed var(--border-color);">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Report not yet available — check back shortly
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <p class="text-center text-xs mt-6" style="color: var(--text-secondary);">
+            Questions? Contact us at
+            <a href="mailto:hello@firstmediator.com" style="color: var(--gold);">hello@firstmediator.com</a>
+        </p>
+    </div>
+</div>
+@else
+{{-- Normal room view --}}
 <div class="max-w-7xl mx-auto" x-data="liveRoom('{{ $room->uuid }}', '{{ request('token') }}')" x-init="init()">
     <!-- Session Header -->
     <div class="rounded-2xl shadow-lg border p-4 md:p-6 mb-6 transition-all duration-300 hover:shadow-xl"
@@ -1071,4 +1182,5 @@ function liveRoom(roomUuid, token) {
     };
 }
 </script>
+@endif
 @endsection

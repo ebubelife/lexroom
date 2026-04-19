@@ -116,9 +116,8 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     
     // Reports, Wallet, FM Refer routes
     Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
-    Route::get('/reports/{report}', [\App\Http\Controllers\ReportsController::class, 'show'])->name('reports.show');
     Route::get('/reports/{report}/download', [\App\Http\Controllers\ReportsController::class, 'download'])->name('reports.download');
-    Route::post('/rooms/{room}/generate-report', [\App\Http\Controllers\ReportsController::class, 'generate'])->name('rooms.generate-report');
+    Route::get('/rooms/{room}/generate-report', [\App\Http\Controllers\ReportsController::class, 'generate'])->name('rooms.generate-report');
     
     Route::get('/referrals', [\App\Http\Controllers\ReferralController::class, 'index'])->name('referrals.index');
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
@@ -140,6 +139,9 @@ Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::
 Route::get('/pay/{uuid}', [\App\Http\Controllers\StripeController::class, 'partyBPaymentPage'])->name('payment.party-b.checkout');
 Route::get('/pay/{uuid}/checkout', [\App\Http\Controllers\StripeController::class, 'checkoutPartyB'])->name('payment.party-b.pay');
 Route::get('/pay/{uuid}/success', [\App\Http\Controllers\StripeController::class, 'successPartyB'])->name('payment.party-b.success');
+
+// Party B report download — public, token-gated
+Route::get('/rooms/{uuid}/report/download', [\App\Http\Controllers\ReportsController::class, 'partyBDownload'])->name('rooms.report.party-b-download');
 
 // Room access (guest or authenticated)
 Route::get('/rooms/{uuid}', [\App\Http\Controllers\RoomController::class, 'show'])->name('rooms.show');
