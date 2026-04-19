@@ -135,7 +135,7 @@
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
-                    <button x-show="roomSessionStatus === 'active' || roomSessionStatus === 'completed'"
+                    <button x-show="roomSessionStatus === 'active' || roomSessionStatus === 'timer_expired'"
                             @click="showExtendModal = true"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-blue-600 hover:bg-blue-700 text-center">
                         Extend Session
@@ -143,15 +143,7 @@
                     <span x-show="roomSessionStatus === 'pause_requested'" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
                 @endif
 
-                {{-- Global Extend Button for Party A --}}
-                @if(auth()->check() && auth()->id() == $room->party_a_id)
-                    <div x-show="roomSessionStatus === 'active' || roomSessionStatus === 'completed'" class="w-full flex justify-center mt-4">
-                        <button @click="showExtendModal = true"
-                                class="w-full sm:w-auto px-6 py-3 rounded-xl text-white text-sm font-bold shadow-lg transition-all bg-blue-600 hover:bg-blue-700 text-center uppercase tracking-wider">
-                            Extend Session
-                        </button>
-                    </div>
-                @endif
+                {{-- Removed duplicate global extend button --}}
             </div>
         </div>
     </div>
@@ -537,30 +529,38 @@
                     </svg>
                 </div>
                 <h3 class="text-2xl font-serif text-white">Extend Session</h3>
-                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Each 30-min block is $50.</p>
+                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Either party can pay.</p>
+                @if($room->extension_deadline)
+                <p class="text-xs mt-2" style="color: #f59e0b;">Extension window closes {{ $room->extension_deadline->diffForHumans() }}</p>
+                @endif
             </div>
 
-            <div class="space-y-4 mb-8">
-                <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Select Duration</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <template x-for="mins in [30, 60, 90, 120]">
-                        <button @click="extendingMinutes = mins"
-                                :class="extendingMinutes === mins ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+            <form method="POST" action="{{ route('payment.extension', $room->id) }}">
+                @csrf
+                <div class="space-y-4 mb-8">
+                    <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Select Duration</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" @click="extendingMinutes = 30"
+                                :class="extendingMinutes === 30 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
                                 class="p-3 rounded-xl border text-center transition-all">
-                            <span class="block text-sm font-bold text-white" x-text="mins + ' Min'"></span >
-                            <span class="block text-[10px] opacity-60" x-text="'$' + (mins/30 * 50).toLocaleString()"></span>
+                            <span class="block text-sm font-bold text-white">30 Min</span>
+                            <span class="block text-[10px] opacity-60">$2.50</span>
                         </button>
-                    </template>
+                        <button type="button" @click="extendingMinutes = 60"
+                                :class="extendingMinutes === 60 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+                                class="p-3 rounded-xl border text-center transition-all">
+                            <span class="block text-sm font-bold text-white">60 Min</span>
+                            <span class="block text-[10px] opacity-60">$4.50</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
-
-            <button @click="buyTime"
-                    :disabled="isExtending"
-                    class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-all"
-                    :class="isExtending ? 'opacity-50' : 'hover:scale-[1.02] active:scale-95'"
-                    style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-                <span x-text="isExtending ? 'Processing...' : 'Purchase Extension'"></span>
-            </button>
+                <input type="hidden" name="minutes" :value="extendingMinutes">
+                <button type="submit"
+                        class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-all hover:scale-[1.02] active:scale-95"
+                        style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+                    Pay & Extend Session
+                </button>
+            </form>
             <button @click="showExtendModal = false" class="w-full mt-3 text-xs opacity-50 hover:opacity-100 transition-opacity">Cancel</button>
         </div>
     </div>

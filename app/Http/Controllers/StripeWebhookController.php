@@ -40,13 +40,45 @@ class StripeWebhookController extends Controller
         $roomId = $session->metadata->room_id;
         $party  = $session->metadata->party;
         $userId = $session->metadata->user_id;
+        $type   = $session->metadata->type ?? 'session';
 
         $room = Room::find($roomId);
         if (!$room) return;
 
-        // Mark billing as paid
+        // --- Handle extension payment ---
+        if ($type === 'extension') {
+            $minutes = (int) ($session->metadata->extension_minutes ?? 30);
+
+            // Mark billing paid
+            Billing::where('room_id', $roomId)
+                ->where('stripe_session_id', $session->id)
+                ->update([
+                    'status'                   => 'paid',
+                    'stripe_payment_intent_id' => $session->payment_intent,
+                    'paid_at'                  => now(),
+                ]);
+
+            // Add minutes to Redis timer and reactivate room
+            $timerKey = "room:{$room->id}:timer";
+            \Illuminate\Support\Facades\Redis::incrby($timerKey, $minutes * 60);
+
+            $room->update([
+                'status'              => 'active',
+                'extension_minutes'   => $room->extension_minutes + $minutes,
+                'extension_locked_by' => null,
+                'extension_locked_at' => null,
+                'timer_expired_at'    => null,
+                'extension_deadline'  => null,
+            ]);
+
+            Log::info("Room {$room->uuid} extended by {$minutes} minutes");
+            return;
+        }
+
+        // --- Handle regular session payment ---
         Billing::where('room_id', $roomId)
             ->where('party', $party)
+            ->whereNull('paid_at')
             ->update([
                 'status'                    => 'paid',
                 'stripe_session_id'         => $session->id,
@@ -58,13 +90,11 @@ class StripeWebhookController extends Controller
         if ($party === 'party_a') {
             $room->update(['party_a_paid' => true]);
 
-            // If full payment, activate room immediately
             if ($room->payment_type === 'full') {
                 $room->update(['status' => 'pending']);
                 $this->sendPartyBInvite($room);
                 Log::info("Room {$room->uuid} activated — full payment by Party A");
             } else {
-                // Split: wait for Party B, send them payment link
                 $room->update(['status' => 'awaiting_party_b_payment']);
                 $this->sendPartyBPaymentLink($room);
                 Log::info("Room {$room->uuid} awaiting Party B payment");
