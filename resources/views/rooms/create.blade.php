@@ -176,7 +176,7 @@
                                          :style="formData.duration === plan.duration ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                         <div class="text-center">
                                             <h3 class="font-bold text-lg mb-1" style="color: var(--text-primary);" x-text="plan.name"></h3>
-                                            <p class="text-2xl font-bold mb-2" style="color: var(--gold);" x-text="'$' + plan.price.toLocaleString()"></p>
+                                            <p class="text-2xl font-bold mb-2" style="color: var(--gold);" x-text="'{{ $currencySymbol }}' + plan.price.toLocaleString()"></p>
                                             <p class="text-sm" style="color: var(--text-secondary);" x-text="plan.duration + ' minutes'"></p>
                                         </div>
                                     </div>
@@ -200,7 +200,7 @@
                                      :style="formData.payment_type === 'full' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                     <h3 class="font-medium mb-1" style="color: var(--text-primary);">Pay Full Amount</h3>
                                     <p class="text-sm mb-2" style="color: var(--text-secondary);">You cover the entire session cost</p>
-                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'$' + getSelectedPlanPrice().toLocaleString()"></p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'{{ $currencySymbol }}' + getSelectedPlanPrice().toLocaleString()"></p>
                                 </div>
                             </label>
                             <label class="relative cursor-pointer">
@@ -214,7 +214,7 @@
                                      :style="formData.payment_type === 'split' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                     <h3 class="font-medium mb-1" style="color: var(--text-primary);">Split Payment</h3>
                                     <p class="text-sm mb-2" style="color: var(--text-secondary);">Both parties pay half each</p>
-                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'$' + (getSelectedPlanPrice() / 2).toLocaleString() + ' each'"></p>
+                                    <p class="text-lg font-bold" style="color: var(--gold);" x-text="'{{ $currencySymbol }}' + getSelectedPlanSplitPrice().toLocaleString() + ' each'"></p>
                                 </div>
                             </label>
                         </div>
@@ -315,7 +315,7 @@
                             <p class="text-sm font-medium" style="color: var(--text-primary);" x-text="formData.payment_type === 'split' ? 'Split Payment' : 'Full Payment'"></p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-bold" style="color: var(--gold);" x-text="'$' + (formData.payment_type === 'split' ? getSelectedPlanPrice() / 2 : getSelectedPlanPrice()).toLocaleString()"></p>
+                            <p class="text-2xl font-bold" style="color: var(--gold);" x-text="'{{ $currencySymbol }}' + (formData.payment_type === 'split' ? getSelectedPlanSplitPrice() : getSelectedPlanPrice()).toLocaleString()"></p>
                         </div>
                     </div>
                 </div>
@@ -375,9 +375,9 @@ function roomCreation() {
             { value: 'english', label: 'English' }
         ],
         plans: [
-            { name: 'Starter', duration: '30', price: 45 },
-            { name: 'Standard', duration: '60', price: 75 },
-            { name: 'Extended', duration: '90', price: 100 }
+            { name: 'Starter', duration: '30', price: 45, split: 22.50 },
+            { name: 'Standard', duration: '60', price: 80, split: 40 },
+            { name: 'Extended', duration: '90', price: 100, split: 50 }
         ],
         
         init() {
@@ -419,6 +419,11 @@ function roomCreation() {
         getSelectedPlanPrice() {
             const plan = this.plans.find(p => p.duration === this.formData.duration);
             return plan ? plan.price : 0;
+        },
+
+        getSelectedPlanSplitPrice() {
+            const plan = this.plans.find(p => p.duration === this.formData.duration);
+            return plan ? plan.split : 0;
         },
         
         openSummaryModal() {

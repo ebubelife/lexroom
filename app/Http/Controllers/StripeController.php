@@ -41,7 +41,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'gbp',
+                    'currency'     => \App\Models\PlatformSetting::currencyCode(),
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — {$package->name} session ({$label})",
@@ -119,7 +119,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'gbp',
+                    'currency'     => \App\Models\PlatformSetting::currencyCode(),
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — Session Extension (+{$minutes} minutes)",
@@ -175,7 +175,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'gbp',
+                    'currency'     => \App\Models\PlatformSetting::currencyCode(),
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — {$package->name} session (Your half)",
