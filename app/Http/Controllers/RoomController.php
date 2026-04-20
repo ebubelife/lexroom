@@ -36,7 +36,12 @@ class RoomController extends Controller
 
     public function create()
     {
-        return view('rooms.create');
+        $jurisdictions = \App\Models\Jurisdiction::active()
+            ->get()
+            ->groupBy('region')
+            ->map(fn($items) => $items->pluck('name'));
+
+        return view('rooms.create', compact('jurisdictions'));
     }
 
     public function store(Request $request)

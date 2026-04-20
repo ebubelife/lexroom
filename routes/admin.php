@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EvidenceController;
+use App\Http\Controllers\Admin\JurisdictionController;
 use App\Http\Controllers\Admin\ReferralController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\RoomController;
@@ -71,5 +72,11 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
         // Settings & Audit Log
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+        // Jurisdictions
+        Route::get('/jurisdictions', [JurisdictionController::class, 'index'])->name('jurisdictions.index');
+        Route::post('/jurisdictions', [JurisdictionController::class, 'store'])->name('jurisdictions.store');
+        Route::post('/jurisdictions/{jurisdiction}/toggle', [JurisdictionController::class, 'toggle'])->name('jurisdictions.toggle');
+        Route::delete('/jurisdictions/{jurisdiction}', [JurisdictionController::class, 'destroy'])->name('jurisdictions.destroy');
     });
 });

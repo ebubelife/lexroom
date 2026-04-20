@@ -79,41 +79,17 @@
                     <!-- Jurisdiction -->
                     <div>
                         <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Jurisdiction</label>
-                        <select x-model="formData.jurisdiction" 
+                        <select x-model="formData.jurisdiction"
                                 class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
                                 style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                             <option value="">Select jurisdiction...</option>
-                          
-                            <optgroup label="United States">
-                                <option value="New York">New York</option>
-                                <option value="California">California</option>
-                                <option value="Texas">Texas</option>
-                                <option value="Florida">Florida</option>
-                                <option value="Delaware">Delaware</option>
-                                <option value="Other US State">Other US State</option>
-                            </optgroup>
-                            <optgroup label="Canada">
-                                <option value="Ontario">Ontario</option>
-                                <option value="British Columbia">British Columbia</option>
-                                <option value="Quebec">Quebec</option>
-                                <option value="Alberta">Alberta</option>
-                                <option value="Other Canadian Province">Other Canadian Province</option>
-                            </optgroup>
-                            <optgroup label="Europe">
-                                <option value="England & Wales">England & Wales</option>
-                                <option value="Scotland">Scotland</option>
-                                <option value="Ireland">Ireland</option>
-                                <option value="Germany">Germany</option>
-                                <option value="France">France</option>
-                                <option value="Netherlands">Netherlands</option>
-                                <option value="Other European Country">Other European Country</option>
-                            </optgroup>
-                            <optgroup label="Other Regions">
-                                <option value="South Africa">South Africa</option>
-                                <option value="Australia">Australia</option>
-                                <option value="New Zealand">New Zealand</option>
-                                <option value="Other">Other Global Jurisdiction</option>
-                            </optgroup>
+                            @foreach($jurisdictions as $region => $names)
+                                <optgroup label="{{ $region }}">
+                                    @foreach($names as $name)
+                                        <option value="{{ $name }}">{{ $name }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
                         </select>
                     </div>
 
