@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Billing;
 use App\Models\Room;
+use App\Models\SessionPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
@@ -11,24 +12,14 @@ use Stripe\Checkout\Session;
 
 class StripeController extends Controller
 {
-    // Pricing in pence (GBP)
-    const PRICES = [
-        '30' => ['full' => 350,  'split' => 175,  'plan' => 'Starter'],
-        '60' => ['full' => 600,  'split' => 300,  'plan' => 'Standard'],
-        '90' => ['full' => 800,  'split' => 400,  'plan' => 'Extended'],
-    ];
-
-    // Extension pricing in pence (GBP)
+    // Extension pricing in pence (GBP) — admin-editable in future
     const EXTENSION_PRICES = [
-        '30' => 200,  // £2.00
-        '60' => 350,  // £3.50
+        '30' => 2000,  // £20.00
+        '60' => 3500,  // £35.00
     ];
 
-    // Extension window in hours
-    const EXTENSION_WINDOW_HOURS = 24;
-
-    // Extension lock timeout in minutes
-    const EXTENSION_LOCK_MINUTES = 10;
+    const EXTENSION_WINDOW_HOURS  = 24;
+    const EXTENSION_LOCK_MINUTES  = 10;
 
     /**
      * Party A checkout — full or split (their half)
@@ -38,11 +29,13 @@ class StripeController extends Controller
         abort_if($room->party_a_id != auth()->id(), 403);
         abort_if($room->party_a_paid == true, 400, 'Already paid.');
 
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $package = SessionPackage::forDuration($room->duration);
+        abort_if(!$package, 400, 'Session package not found.');
 
-        $prices   = self::PRICES[$room->duration];
-        $amount   = $room->payment_type === 'split' ? $prices['split'] : $prices['full'];
-        $label    = $room->payment_type === 'split' ? 'Your half' : 'Full session';
+        $amount = $room->payment_type === 'split' ? $package->split_price_pence : $package->full_price_pence;
+        $label  = $room->payment_type === 'split' ? 'Your half' : 'Full session';
+
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -51,7 +44,7 @@ class StripeController extends Controller
                     'currency'     => 'gbp',
                     'unit_amount'  => $amount,
                     'product_data' => [
-                        'name' => "FirstMediator — {$prices['plan']} session ({$label})",
+                        'name' => "FirstMediator — {$package->name} session ({$label})",
                     ],
                 ],
                 'quantity' => 1,
@@ -60,10 +53,10 @@ class StripeController extends Controller
             'success_url' => route('payment.success', $room->uuid) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'  => route('rooms.show', $room->uuid),
             'metadata'    => [
-                'room_id'  => $room->id,
-                'party'    => 'party_a',
-                'user_id'  => auth()->id(),
-                'type'     => 'session',
+                'room_id' => $room->id,
+                'party'   => 'party_a',
+                'user_id' => auth()->id(),
+                'type'    => 'session',
             ],
         ]);
 
@@ -171,10 +164,12 @@ class StripeController extends Controller
         abort_if($room->party_b_payment_expires_at < now(), 410, 'Payment link has expired.');
         abort_if($room->party_b_paid, 400, 'Already paid.');
 
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $package = SessionPackage::forDuration($room->duration);
+        abort_if(!$package, 400, 'Session package not found.');
 
-        $prices = self::PRICES[$room->duration];
-        $amount = $prices['split'];
+        $amount = $package->split_price_pence;
+
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -183,7 +178,7 @@ class StripeController extends Controller
                     'currency'     => 'gbp',
                     'unit_amount'  => $amount,
                     'product_data' => [
-                        'name' => "FirstMediator — {$prices['plan']} session (Your half)",
+                        'name' => "FirstMediator — {$package->name} session (Your half)",
                     ],
                 ],
                 'quantity' => 1,
@@ -194,7 +189,7 @@ class StripeController extends Controller
             'metadata'    => [
                 'room_id' => $room->id,
                 'party'   => 'party_b',
-                'user_id' => auth()->user()?->id ?? 0,
+                'user_id' => auth()->user()?->id ?? null,
                 'type'    => 'session',
             ],
         ]);
@@ -241,8 +236,8 @@ class StripeController extends Controller
             return redirect()->route('rooms.show', $uuid);
         }
 
-        $prices = self::PRICES[$room->duration];
-        $amount = $prices['split'] / 100;
+        $package = \App\Models\SessionPackage::forDuration($room->duration);
+        $amount  = $package ? $package->split_price : 0;
 
         return view('payment.party-b', compact('room', 'amount'));
     }

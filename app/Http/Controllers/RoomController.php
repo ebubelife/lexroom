@@ -75,17 +75,16 @@ class RoomController extends Controller
         ]);
 
         // Create pending billing record for Party A
-        $prices = ['30' => 4.50, '60' => 7.50, '90' => 10.00];
-        $plans  = ['30' => 'starter', '60' => 'standard', '90' => 'extended'];
-        $fullAmount = $prices[$validated['duration']];
-        $partyAAmount = $validated['payment_type'] === 'split' ? $fullAmount / 2 : $fullAmount;
+        $package      = \App\Models\SessionPackage::forDuration((int) $validated['duration']);
+        $fullAmount   = $package ? $package->full_price : 0;
+        $partyAAmount = $validated['payment_type'] === 'split' ? ($package ? $package->split_price : 0) : $fullAmount;
 
         Billing::create([
             'room_id' => $room->id,
             'user_id' => auth()->id(),
             'party'   => 'party_a',
             'amount'  => $partyAAmount,
-            'plan'    => $plans[$validated['duration']],
+            'plan'    => $package?->name ?? 'session',
             'status'  => 'pending',
         ]);
 
@@ -95,8 +94,8 @@ class RoomController extends Controller
                 'room_id' => $room->id,
                 'user_id' => null,
                 'party'   => 'party_b',
-                'amount'  => $fullAmount / 2,
-                'plan'    => $plans[$validated['duration']],
+                'amount'  => $package ? $package->split_price : 0,
+                'plan'    => $package?->name ?? 'session',
                 'status'  => 'pending',
             ]);
 
