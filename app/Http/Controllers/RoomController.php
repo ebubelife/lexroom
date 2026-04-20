@@ -49,7 +49,7 @@ class RoomController extends Controller
         $validated = $request->validate([
             'category'        => 'required|in:tenancy,freelance,business,ecommerce,employment,debt,marriage,custom',
             'custom_category' => 'required_if:category,custom|nullable|string|max:60',
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:80',
             'jurisdiction' => 'required|string|max:255',
             'language' => 'required|in:english',
             'case_summary' => 'required|string|min:50|max:2000',

@@ -134,8 +134,12 @@
                 <p class="text-sm mb-6" style="color: var(--text-secondary);">Provide a brief summary and title to help First Mediator understand your dispute before the session</p>
                 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Dispute Title</label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-medium" style="color: var(--text-primary);">Dispute Title</label>
+                        <span class="text-xs" style="color: var(--text-secondary);" x-text="formData.title.length + '/80'"></span>
+                    </div>
                     <input type="text" x-model="formData.title"
+                           maxlength="80"
                            placeholder="e.g. Unpaid Invoice for Logo Design"
                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-gold focus:border-gold"
                            style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
