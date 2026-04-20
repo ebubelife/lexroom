@@ -11,17 +11,17 @@ use Stripe\Checkout\Session;
 
 class StripeController extends Controller
 {
-    // Pricing in cents (USD)
+    // Pricing in pence (GBP)
     const PRICES = [
-        '30' => ['full' => 450,  'split' => 225,  'plan' => 'starter'],
-        '60' => ['full' => 750,  'split' => 375,  'plan' => 'standard'],
-        '90' => ['full' => 1000, 'split' => 500,  'plan' => 'extended'],
+        '30' => ['full' => 350,  'split' => 175,  'plan' => 'Starter'],
+        '60' => ['full' => 600,  'split' => 300,  'plan' => 'Standard'],
+        '90' => ['full' => 800,  'split' => 400,  'plan' => 'Extended'],
     ];
 
-    // Extension pricing in cents
+    // Extension pricing in pence (GBP)
     const EXTENSION_PRICES = [
-        '30' => 250,  // $2.50
-        '60' => 450,  // $4.50
+        '30' => 200,  // £2.00
+        '60' => 350,  // £3.50
     ];
 
     // Extension window in hours
@@ -48,7 +48,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'usd',
+                    'currency'     => 'gbp',
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — {$prices['plan']} session ({$label})",
@@ -126,7 +126,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'usd',
+                    'currency'     => 'gbp',
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — Session Extension (+{$minutes} minutes)",
@@ -180,7 +180,7 @@ class StripeController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency'     => 'usd',
+                    'currency'     => 'gbp',
                     'unit_amount'  => $amount,
                     'product_data' => [
                         'name' => "FirstMediator — {$prices['plan']} session (Your half)",
