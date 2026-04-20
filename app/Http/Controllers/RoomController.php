@@ -47,7 +47,8 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category' => 'required|in:tenancy,freelance,business,ecommerce,employment,debt,marriage',
+            'category'        => 'required|in:tenancy,freelance,business,ecommerce,employment,debt,marriage,custom',
+            'custom_category' => 'required_if:category,custom|nullable|string|max:60',
             'title' => 'required|string|max:255',
             'jurisdiction' => 'required|string|max:255',
             'language' => 'required|in:english',
@@ -61,7 +62,7 @@ class RoomController extends Controller
         $room = Room::create([
             'uuid'          => Str::uuid(),
             'party_a_id'    => auth()->id(),
-            'category'      => $validated['category'],
+            'category'      => $validated['category'] === 'custom' ? $validated['custom_category'] : $validated['category'],
             'title'         => $validated['title'],
             'jurisdiction'  => $validated['jurisdiction'],
             'language'      => $validated['language'],
@@ -92,7 +93,7 @@ class RoomController extends Controller
         if ($validated['payment_type'] === 'split') {
             Billing::create([
                 'room_id' => $room->id,
-                'user_id' => 0, // unknown until Party B pays
+                'user_id' => null,
                 'party'   => 'party_b',
                 'amount'  => $fullAmount / 2,
                 'plan'    => $plans[$validated['duration']],

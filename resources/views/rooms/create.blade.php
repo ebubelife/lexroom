@@ -41,19 +41,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <template x-for="cat in categories" :key="cat.value">
                         <label class="relative cursor-pointer">
-                            <input type="radio" 
-                                   name="category" 
+                            <input type="radio"
+                                   name="category"
                                    :value="cat.value"
                                    x-model="formData.category"
                                    @change="formData.custom_category = ''"
                                    class="sr-only peer">
-                            <div class="p-4 rounded-lg border-2 transition-all peer-checked:border-gold peer-checked:bg-gold/5"
+                            <div class="p-4 rounded-lg border-2 transition-all"
                                  style="background-color: var(--bg-primary); border-color: var(--border-color);"
                                  :style="formData.category === cat.value ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
                                 <div class="flex items-start">
-                                    <div class="p-2 rounded-lg mr-3" :style="`background-color: ${cat.color}20`">
-                                        <svg class="w-6 h-6" :style="`color: ${cat.color}`" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="cat.icon"></path>
+                                    <div class="p-2 rounded-lg mr-3 flex-shrink-0" style="background-color: #0D1B2A;">
+                                        <svg class="w-6 h-6" style="color: #ffffff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1"></path>
                                         </svg>
                                     </div>
                                     <div>
@@ -64,9 +64,39 @@
                             </div>
                         </label>
                     </template>
-                </div>
 
-                <!-- Custom Category removed per spec -->
+                    {{-- Custom Category Card --}}
+                    <label class="relative cursor-pointer">
+                        <input type="radio"
+                               name="category"
+                               value="custom"
+                               x-model="formData.category"
+                               class="sr-only peer">
+                        <div class="p-4 rounded-lg border-2 transition-all h-full"
+                             style="background-color: var(--bg-primary); border-color: var(--border-color);"
+                             :style="formData.category === 'custom' ? 'border-color: var(--gold); background-color: rgba(201, 168, 76, 0.05);' : ''">
+                            <div class="flex items-start">
+                                <div class="p-2 rounded-lg mr-3 flex-shrink-0" style="background-color: #0D1B2A;">
+                                    <svg class="w-6 h-6" style="color: #ffffff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-medium mb-1" style="color: var(--text-primary);">Other / Custom</h3>
+                                    <p class="text-xs mb-2" style="color: var(--text-secondary);">Describe your own dispute type</p>
+                                    <input x-show="formData.category === 'custom'"
+                                           x-model="formData.custom_category"
+                                           type="text"
+                                           placeholder="e.g. Neighbour dispute"
+                                           maxlength="60"
+                                           class="w-full px-3 py-1.5 rounded border text-sm"
+                                           style="background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary);"
+                                           @click.stop>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
 
             </div>
 
