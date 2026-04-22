@@ -12,6 +12,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/pricing', [\App\Http\Controllers\SubscriptionController::class, 'pricing'])->name('pricing');
+
 Route::view('/privacy', 'privacy')->name('privacy');
 Route::view('/about', 'about')->name('about');
 Route::view('/gdpr', 'gdpr')->name('gdpr');
@@ -128,6 +130,12 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     // Vault routes
     Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
     Route::get('/vault/download/{file}', [VaultController::class, 'download'])->name('vault.download');
+
+    // Subscription routes
+    Route::get('/subscription/checkout', [\App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::get('/subscription/topup', [\App\Http\Controllers\SubscriptionController::class, 'topup'])->name('subscription.topup');
+    Route::post('/subscription/cancel', [\App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::get('/subscription/success', [\App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscription.success');
 });
 
 // Stripe webhook (no auth, no CSRF)

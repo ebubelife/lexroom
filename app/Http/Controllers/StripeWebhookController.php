@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Billing;
 use App\Models\Room;
+use App\Models\TopupPackage;
+use App\Models\User;
+use App\Models\UserSubscription;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -12,6 +16,8 @@ use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
+    public function __construct(private SubscriptionService $subscriptionService) {}
+
     public function handle(Request $request)
     {
         $payload   = $request->getContent();
@@ -28,63 +34,141 @@ class StripeWebhookController extends Controller
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 
-        if ($event->type === 'checkout.session.completed') {
-            $this->handleCheckoutCompleted($event->data->object);
-        }
+        match ($event->type) {
+            'checkout.session.completed'      => $this->handleCheckoutCompleted($event->data->object),
+            'invoice.payment_succeeded'       => $this->handleSubscriptionRenewal($event->data->object),
+            'customer.subscription.deleted'   => $this->handleSubscriptionCancelled($event->data->object),
+            'customer.subscription.updated'   => $this->handleSubscriptionUpdated($event->data->object),
+            default                           => null,
+        };
 
         return response()->json(['status' => 'ok']);
     }
 
+    // ─────────────────────────────────────────────────────────────────
+    // checkout.session.completed
+    // ─────────────────────────────────────────────────────────────────
     protected function handleCheckoutCompleted($session): void
     {
-        $roomId = $session->metadata->room_id;
-        $party  = $session->metadata->party;
-        $userId = $session->metadata->user_id;
-        $type   = $session->metadata->type ?? 'session';
+        $type = $session->metadata->type ?? 'session';
+
+        match ($type) {
+            'subscription' => $this->handleSubscriptionCheckout($session),
+            'topup'        => $this->handleTopupCheckout($session),
+            'extension'    => $this->handleExtensionCheckout($session),
+            default        => $this->handleSessionCheckout($session),
+        };
+    }
+
+    protected function handleSubscriptionCheckout($session): void
+    {
+        $userId = $session->metadata->user_id ?? null;
+        $planId = $session->metadata->plan_id ?? null;
+        $cycle  = $session->metadata->billing_cycle ?? 'monthly';
+
+        $user = User::find($userId);
+        $plan = \App\Models\SubscriptionPlan::find($planId);
+
+        if (!$user || !$plan) return;
+
+        // Create subscription record
+        $sub = UserSubscription::create([
+            'user_id'               => $user->id,
+            'plan_id'               => $plan->id,
+            'stripe_subscription_id'=> $session->subscription,
+            'stripe_customer_id'    => $session->customer,
+            'status'                => 'active',
+            'billing_cycle'         => $cycle,
+            'current_period_start'  => now(),
+            'current_period_end'    => match ($cycle) {
+                'quarterly' => now()->addMonths(3),
+                'yearly'    => now()->addYear(),
+                default     => now()->addMonth(),
+            },
+        ]);
+
+        // Grant initial credits
+        $this->subscriptionService->grantCredits(
+            $user,
+            (float) $plan->credits_per_cycle,
+            'subscription_grant',
+            "{$plan->name} Plan — initial grant (£{$plan->credits_per_cycle})"
+        );
+
+        Log::info("Subscription created for user {$user->id}, plan {$plan->name}");
+    }
+
+    protected function handleTopupCheckout($session): void
+    {
+        $userId    = $session->metadata->user_id ?? null;
+        $packageId = $session->metadata->package_id ?? null;
+
+        $user    = User::find($userId);
+        $package = TopupPackage::find($packageId);
+
+        if (!$user || !$package) return;
+
+        $total = $package->totalCredits();
+
+        $this->subscriptionService->grantCredits(
+            $user,
+            $total,
+            'topup',
+            "{$package->label} Top-up — £{$package->price} (+£{$package->bonus_credits} bonus)"
+        );
+
+        Log::info("Top-up completed for user {$user->id}, package {$package->label}, credits {$total}");
+    }
+
+    protected function handleExtensionCheckout($session): void
+    {
+        $roomId  = $session->metadata->room_id;
+        $minutes = (int) ($session->metadata->extension_minutes ?? 30);
 
         $room = Room::find($roomId);
         if (!$room) return;
 
-        // --- Handle extension payment ---
-        if ($type === 'extension') {
-            $minutes = (int) ($session->metadata->extension_minutes ?? 30);
-
-            // Mark billing paid
-            Billing::where('room_id', $roomId)
-                ->where('stripe_session_id', $session->id)
-                ->update([
-                    'status'                   => 'paid',
-                    'stripe_payment_intent_id' => $session->payment_intent,
-                    'paid_at'                  => now(),
-                ]);
-
-            // Add minutes to Redis timer and reactivate room
-            $timerKey = "room:{$room->id}:timer";
-            \Illuminate\Support\Facades\Redis::incrby($timerKey, $minutes * 60);
-
-            $room->update([
-                'status'              => 'active',
-                'extension_minutes'   => $room->extension_minutes + $minutes,
-                'extension_locked_by' => null,
-                'extension_locked_at' => null,
-                'timer_expired_at'    => null,
-                'extension_deadline'  => null,
+        Billing::where('room_id', $roomId)
+            ->where('stripe_session_id', $session->id)
+            ->update([
+                'status'                   => 'paid',
+                'stripe_payment_intent_id' => $session->payment_intent,
+                'paid_at'                  => now(),
             ]);
 
-            Log::info("Room {$room->uuid} extended by {$minutes} minutes");
-            return;
-        }
+        $timerKey = "room:{$room->id}:timer";
+        \Illuminate\Support\Facades\Redis::incrby($timerKey, $minutes * 60);
 
-        // --- Handle regular session payment ---
+        $room->update([
+            'status'              => 'active',
+            'extension_minutes'   => $room->extension_minutes + $minutes,
+            'extension_locked_by' => null,
+            'extension_locked_at' => null,
+            'timer_expired_at'    => null,
+            'extension_deadline'  => null,
+        ]);
+
+        Log::info("Room {$room->uuid} extended by {$minutes} minutes");
+    }
+
+    protected function handleSessionCheckout($session): void
+    {
+        $roomId = $session->metadata->room_id;
+        $party  = $session->metadata->party;
+        $userId = $session->metadata->user_id;
+
+        $room = Room::find($roomId);
+        if (!$room) return;
+
         Billing::where('room_id', $roomId)
             ->where('party', $party)
             ->whereNull('paid_at')
             ->update([
-                'status'                    => 'paid',
-                'stripe_session_id'         => $session->id,
-                'stripe_payment_intent_id'  => $session->payment_intent,
-                'paid_at'                   => now(),
-                'user_id'                   => $userId ?: ($party === 'party_a' ? $room->party_a_id : 0),
+                'status'                   => 'paid',
+                'stripe_session_id'        => $session->id,
+                'stripe_payment_intent_id' => $session->payment_intent,
+                'paid_at'                  => now(),
+                'user_id'                  => $userId ?: ($party === 'party_a' ? $room->party_a_id : 0),
             ]);
 
         if ($party === 'party_a') {
@@ -93,21 +177,68 @@ class StripeWebhookController extends Controller
             if ($room->payment_type === 'full') {
                 $room->update(['status' => 'pending']);
                 $this->sendPartyBInvite($room);
-                Log::info("Room {$room->uuid} activated — full payment by Party A");
             } else {
                 $room->update(['status' => 'awaiting_party_b_payment']);
                 $this->sendPartyBPaymentLink($room);
-                Log::info("Room {$room->uuid} awaiting Party B payment");
             }
         }
 
         if ($party === 'party_b') {
-            $room->update([
-                'party_b_paid' => true,
-                'status'       => 'pending',
-            ]);
-            Log::info("Room {$room->uuid} activated — Party B paid");
+            $room->update(['party_b_paid' => true, 'status' => 'pending']);
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // invoice.payment_succeeded — subscription renewal
+    // ─────────────────────────────────────────────────────────────────
+    protected function handleSubscriptionRenewal($invoice): void
+    {
+        if ($invoice->billing_reason !== 'subscription_cycle') return;
+
+        $sub = UserSubscription::where('stripe_subscription_id', $invoice->subscription)->first();
+        if (!$sub) return;
+
+        // Update period dates from Stripe
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $stripeSub = \Stripe\Subscription::retrieve($invoice->subscription);
+            $sub->update([
+                'status'               => 'active',
+                'current_period_start' => \Carbon\Carbon::createFromTimestamp($stripeSub->current_period_start),
+                'current_period_end'   => \Carbon\Carbon::createFromTimestamp($stripeSub->current_period_end),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to retrieve Stripe subscription: ' . $e->getMessage());
+        }
+
+        $this->subscriptionService->handleRenewal($sub);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // customer.subscription.deleted — cancellation
+    // ─────────────────────────────────────────────────────────────────
+    protected function handleSubscriptionCancelled($stripeSub): void
+    {
+        $sub = UserSubscription::where('stripe_subscription_id', $stripeSub->id)->first();
+        if (!$sub) return;
+
+        $sub->update([
+            'status'       => 'cancelled',
+            'cancelled_at' => now(),
+        ]);
+
+        Log::info("Subscription cancelled for user {$sub->user_id}");
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // customer.subscription.updated — upgrade/downgrade
+    // ─────────────────────────────────────────────────────────────────
+    protected function handleSubscriptionUpdated($stripeSub): void
+    {
+        $sub = UserSubscription::where('stripe_subscription_id', $stripeSub->id)->first();
+        if (!$sub) return;
+
+        $sub->update(['status' => $stripeSub->status]);
     }
 
     protected function sendPartyBInvite(Room $room): void

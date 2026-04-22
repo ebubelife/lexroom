@@ -21,6 +21,13 @@
             :style="activeTab === 'security' ? 'border-color: var(--gold); color: var(--gold);' : 'color: var(--text-secondary);'">
             Security
         </button>
+        <button 
+            @click="activeTab = 'subscription'"
+            :class="activeTab === 'subscription' ? 'border-b-2 font-medium' : ''"
+            class="px-4 py-2 text-sm whitespace-nowrap transition-colors"
+            :style="activeTab === 'subscription' ? 'border-color: var(--gold); color: var(--gold);' : 'color: var(--text-secondary);'">
+            Subscription
+        </button>
     </div>
 
     <!-- Profile Tab -->
@@ -200,6 +207,117 @@
                 Update Password
             </button>
         </form>
+    </div>
+
+    <!-- Subscription Tab -->
+    <div x-show="activeTab === 'subscription'" x-transition>
+
+        {{-- Current plan --}}
+        <div class="rounded-xl border p-4 md:p-6 mb-4"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <h2 class="text-lg font-serif mb-4" style="color: var(--text-primary);">Subscription</h2>
+
+            @if($sub)
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-bold" style="color: var(--text-primary);">{{ $sub->plan->name }}</span>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                  style="background: rgba(74,222,128,0.12); color: #4ADE80;">Active</span>
+                        </div>
+                        <p class="text-sm" style="color: var(--text-secondary);">
+                            {{ ucfirst($sub->billing_cycle) }} · Renews {{ $sub->current_period_end?->format('d M Y') }}
+                        </p>
+                    </div>
+                    <form method="POST" action="{{ route('subscription.cancel') }}">
+                        @csrf
+                        <button type="submit"
+                                onclick="return confirm('Cancel at end of billing period?')"
+                                class="px-4 py-2 rounded-lg text-sm font-medium hover:opacity-80"
+                                style="background: rgba(239,68,68,0.1); color: #F87171; border: 1px solid rgba(239,68,68,0.25);">
+                            Cancel Plan
+                        </button>
+                    </form>
+                </div>
+
+                {{-- Credits bar --}}
+                @php
+                    $balance = auth()->user()->wallet?->credits_balance ?? 0;
+                    $max     = $sub->plan->credits_per_cycle;
+                    $pct     = $max > 0 ? min(100, round(($balance / $max) * 100)) : 0;
+                @endphp
+                <div class="p-4 rounded-xl" style="background: var(--bg-primary); border: 1px solid var(--border-color);">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span style="color: var(--text-secondary);">Credits remaining</span>
+                        <span class="font-bold" style="color: var(--gold);">£{{ number_format($balance, 2) }} / £{{ number_format($max, 2) }}</span>
+                    </div>
+                    <div class="h-2 rounded-full" style="background: var(--border-color);">
+                        <div class="h-2 rounded-full transition-all" style="width: {{ $pct }}%; background: var(--gold);"></div>
+                    </div>
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <p class="text-sm mb-4" style="color: var(--text-secondary);">You don't have an active subscription.</p>
+                    <a href="{{ route('pricing') }}"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold hover:opacity-90"
+                       style="background: var(--gold); color: #0D1B2A;">
+                        View Plans
+                    </a>
+                </div>
+            @endif
+        </div>
+
+        {{-- Top-up packages --}}
+        @if($topups->isNotEmpty())
+        <div class="rounded-xl border p-4 md:p-6 mb-4"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <h3 class="text-base font-semibold mb-4" style="color: var(--text-primary);">Top-up Credits</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                @foreach($topups as $pkg)
+                    <div class="rounded-xl p-3 text-center" style="background: var(--bg-primary); border: 1px solid var(--border-color);">
+                        <p class="text-xs font-semibold mb-1" style="color: var(--text-primary);">{{ $pkg->label }}</p>
+                        <p class="text-xl font-bold" style="color: var(--gold);">£{{ number_format($pkg->price, 0) }}</p>
+                        <p class="text-xs mb-2" style="color: var(--text-secondary);">
+                            £{{ number_format($pkg->credits, 0) }} credits
+                            @if($pkg->bonus_credits > 0)
+                                <span style="color: #4ADE80;">+£{{ number_format($pkg->bonus_credits, 0) }}</span>
+                            @endif
+                        </p>
+                        <form method="GET" action="{{ route('subscription.topup') }}">
+                            <input type="hidden" name="package_id" value="{{ $pkg->id }}">
+                            <button type="submit"
+                                    class="w-full py-1.5 rounded-lg text-xs font-bold hover:opacity-80"
+                                    style="background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.3);">
+                                Buy
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Transaction history --}}
+        @if($transactions->isNotEmpty())
+        <div class="rounded-xl border p-4 md:p-6"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <h3 class="text-base font-semibold mb-4" style="color: var(--text-primary);">Credit History</h3>
+            <div class="space-y-2">
+                @foreach($transactions as $tx)
+                    <div class="flex items-center justify-between py-2 border-b last:border-0"
+                         style="border-color: var(--border-color);">
+                        <div>
+                            <p class="text-sm" style="color: var(--text-primary);">{{ $tx->description }}</p>
+                            <p class="text-xs" style="color: var(--text-secondary);">{{ $tx->created_at->format('d M Y, H:i') }}</p>
+                        </div>
+                        <span class="text-sm font-bold {{ $tx->amount > 0 ? 'text-green-400' : 'text-red-400' }}">
+                            {{ $tx->amount > 0 ? '+' : '' }}£{{ number_format(abs($tx->amount), 2) }}
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
     </div>
 
     @if(session('success'))

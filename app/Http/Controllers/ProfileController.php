@@ -11,7 +11,12 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        return view('settings.index');
+        $user        = auth()->user();
+        $sub         = $user->activeSubscription()->with('plan')->first();
+        $topups      = \App\Models\TopupPackage::where('is_active', true)->orderBy('sort_order')->get();
+        $transactions = \App\Models\CreditTransaction::where('user_id', $user->id)->latest()->limit(10)->get();
+
+        return view('settings.index', compact('sub', 'topups', 'transactions'));
     }
 
     public function update(Request $request)

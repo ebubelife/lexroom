@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\ReferralReward;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\SubscriptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,72 +20,63 @@ class AwardReferralMinutes implements ShouldQueue
 
     public function __construct(public int $roomId) {}
 
-    public function handle(): void
+    public function handle(SubscriptionService $service): void
     {
         $room = Room::find($this->roomId);
-
         if (!$room) return;
 
         $partyA = User::find($room->party_a_id);
-
         if (!$partyA || !$partyA->referred_by_id) return;
 
-        // Check this is their first completed paid session
+        // Only reward on exactly first completed paid session
         $completedSessions = Room::where('party_a_id', $partyA->id)
             ->where('status', 'completed')
             ->count();
 
-        if ($completedSessions !== 1) return; // Only reward on exactly first completion
+        if ($completedSessions !== 1) return;
 
-        // Check referral record exists and is still pending
         $referralRecord = ReferralReward::where('referred_user_id', $partyA->id)
             ->where('status', 'pending')
             ->first();
 
         if (!$referralRecord) return;
 
-        // Get reward amount from config (admin-editable later)
-        $minutesToAward = config('referral.minutes_per_referral', 10);
-
-        // Award minutes to referrer's wallet
         $referrer = User::find($partyA->referred_by_id);
+        if (!$referrer || !$referrer->wallet) return;
 
-        if (!$referrer) return;
+        // Get reward amount from credit settings (admin-editable)
+        $rewardCredits = (float) \App\Models\CreditSetting::get('referral_reward_credits', '2.00');
 
-        $wallet = $referrer->wallet;
+        // Award credits to referrer
+        $service->grantReferralCredits($referrer, $rewardCredits);
 
-        if (!$wallet) return;
-
-        $wallet->addReferralMinutes($minutesToAward);
-
-        // Mark referral as completed
+        // Mark referral completed
         $referralRecord->update([
-            'status' => 'completed',
-            'minutes_awarded' => $minutesToAward,
-            'awarded_at' => now(),
-            'expires_at' => now()->addYear(),
+            'status'          => 'completed',
+            'minutes_awarded' => 0, // legacy field, not used
+            'awarded_at'      => now(),
+            'expires_at'      => now()->addYear(),
         ]);
 
-        // Notify referrer
-        $this->notifyReferrer($referrer, $partyA, $minutesToAward);
+        $this->notifyReferrer($referrer, $partyA, $rewardCredits);
 
-        Log::info("Referral reward awarded", [
-            'referrer_id' => $referrer->id,
+        Log::info("Referral credit reward awarded", [
+            'referrer_id'      => $referrer->id,
             'referred_user_id' => $partyA->id,
-            'minutes' => $minutesToAward,
+            'credits'          => $rewardCredits,
         ]);
     }
 
-    protected function notifyReferrer(User $referrer, User $referredUser, int $minutes): void
+    protected function notifyReferrer(User $referrer, User $referredUser, float $credits): void
     {
         try {
             Mail::send('emails.referral-reward', [
-                'referrer' => $referrer,
+                'referrer'     => $referrer,
                 'referredUser' => $referredUser,
-                'minutes' => $minutes,
-            ], function ($message) use ($referrer, $minutes) {
-                $message->to($referrer->email)
-                    ->subject("🎉 You earned {$minutes} free minutes on FirstMediator!");
+                'credits'      => $credits,
+            ], function ($m) use ($referrer, $credits) {
+                $m->to($referrer->email)
+                  ->subject("🎉 You earned £{$credits} free credits on FirstMediator!");
             });
         } catch (\Exception $e) {
             Log::error('Referral reward email failed', ['error' => $e->getMessage()]);

@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CreditSetting extends Model
+{
+    protected $fillable = ['key', 'value', 'label', 'group'];
+
+    public static function get(string $key, mixed $default = null): mixed
+    {
+        return static::where('key', $key)->value('value') ?? $default;
+    }
+
+    public static function set(string $key, string $value): void
+    {
+        static::where('key', $key)->update(['value' => $value]);
+    }
+}

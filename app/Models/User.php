@@ -172,6 +172,23 @@ class User extends Authenticatable
         return $this->hasMany(Otp::class);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(UserSubscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(UserSubscription::class)
+            ->whereIn('status', ['active', 'trialing'])
+            ->latest();
+    }
+
+    public function creditTransactions()
+    {
+        return $this->hasMany(CreditTransaction::class)->latest();
+    }
+
     public function referrals()
     {
         return $this->hasMany(User::class, 'referred_by_id');

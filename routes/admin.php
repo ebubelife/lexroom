@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EvidenceController;
 use App\Http\Controllers\Admin\JurisdictionController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\CreditSettingsController;
 use App\Http\Controllers\Admin\ReferralController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\RoomController;
@@ -78,5 +80,19 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
         Route::post('/jurisdictions', [JurisdictionController::class, 'store'])->name('jurisdictions.store');
         Route::post('/jurisdictions/{jurisdiction}/toggle', [JurisdictionController::class, 'toggle'])->name('jurisdictions.toggle');
         Route::delete('/jurisdictions/{jurisdiction}', [JurisdictionController::class, 'destroy'])->name('jurisdictions.destroy');
+
+        // Subscription Plans
+        Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::post('/plans/{plan}/toggle', [PlanController::class, 'toggle'])->name('plans.toggle');
+
+        // Credit Settings & Top-ups
+        Route::get('/credits', [CreditSettingsController::class, 'index'])->name('credits.index');
+        Route::put('/credits', [CreditSettingsController::class, 'update'])->name('credits.update');
+        Route::post('/credits/topup', [CreditSettingsController::class, 'storeTopup'])->name('credits.topup.store');
+        Route::put('/credits/topup/{package}', [CreditSettingsController::class, 'updateTopup'])->name('credits.topup.update');
+        Route::post('/credits/topup/{package}/toggle', [CreditSettingsController::class, 'toggleTopup'])->name('credits.topup.toggle');
+        Route::delete('/credits/topup/{package}', [CreditSettingsController::class, 'destroyTopup'])->name('credits.topup.destroy');
     });
 });
