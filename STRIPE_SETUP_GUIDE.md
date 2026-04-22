@@ -31,9 +31,9 @@ Go to **Stripe Dashboard → Products → Add Product** for each plan below.
 
 | Billing | Amount | Interval | Copy the Price ID |
 |---------|--------|----------|-------------------|
-| Monthly | £9.00 | Monthly | `price_xxx...` |
-| Quarterly | £24.00 | Every 3 months | `price_xxx...` |
-| Yearly | £86.00 | Yearly | `price_xxx...` |
+| Monthly | £9.00 | Monthly | `price_1TOx6KDyBV80DlfzTVPIkAc9` |
+| Quarterly | £24.00 | Every 3 months | `price_1TOxBmDyBV80Dlfz8f4v6Gm4` |
+| Yearly | £86.00 | Yearly | `price_1TOxBmDyBV80DlfzGIR0DrGE` |
 
 ---
 
@@ -46,9 +46,9 @@ Go to **Stripe Dashboard → Products → Add Product** for each plan below.
 
 | Billing | Amount | Interval | Copy the Price ID |
 |---------|--------|----------|-------------------|
-| Monthly | £19.00 | Monthly | `price_xxx...` |
-| Quarterly | £51.00 | Every 3 months | `price_xxx...` |
-| Yearly | £182.00 | Yearly | `price_xxx...` |
+| Monthly | £19.00 | Monthly | `price_1TOxCTDyBV80DlfzGgBz1Hur` |
+| Quarterly | £51.00 | Every 3 months | `price_1TOxDBDyBV80Dlfzu7tfyt02` |
+| Yearly | £182.00 | Yearly | `price_1TOxDBDyBV80DlfzQ13yjXJo` |
 
 ---
 
@@ -61,9 +61,9 @@ Go to **Stripe Dashboard → Products → Add Product** for each plan below.
 
 | Billing | Amount | Interval | Copy the Price ID |
 |---------|--------|----------|-------------------|
-| Monthly | £39.00 | Monthly | `price_xxx...` |
-| Quarterly | £105.00 | Every 3 months | `price_xxx...` |
-| Yearly | £374.00 | Yearly | `price_xxx...` |
+| Monthly | £39.00 | Monthly | `price_1TOxDpDyBV80Dlfzu5bLQ4yx` |
+| Quarterly | £105.00 | Every 3 months | `price_1TOxEYDyBV80DlfzGHj6h5Bu` |
+| Yearly | £374.00 | Yearly | `price_1TOxEYDyBV80DlfzICZAFbJl` |
 
 ---
 
@@ -75,10 +75,10 @@ Go to **Stripe Dashboard → Products → Add Product** for each:
 
 | Product Name | Amount | Type | Copy the Price ID |
 |---|---|---|---|
-| `FM Top-up Small` | £5.00 | One-time | `price_xxx...` |
-| `FM Top-up Medium` | £10.00 | One-time | `price_xxx...` |
-| `FM Top-up Large` | £25.00 | One-time | `price_xxx...` |
-| `FM Top-up XL` | £50.00 | One-time | `price_xxx...` |
+| `FM Top-up Small` | £5.00 | One-time | `price_1TOxKDDyBV80Dlfz70fa1EzF` |
+| `FM Top-up Medium` | £10.00 | One-time | `price_1TOxKyDyBV80DlfzgBdp4Gr6` |
+| `FM Top-up Large` | £25.00 | One-time | `price_1TOxLVDyBV80DlfzfnQKVR7s` |
+| `FM Top-up XL` | £50.00 | One-time | `price_1TOxM5DyBV80Dlfz7YLlaxWz` |
 
 > For each: Add Product → set name → Add a price → One time → set amount → Save
 
