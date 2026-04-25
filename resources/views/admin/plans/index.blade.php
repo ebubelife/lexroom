@@ -159,5 +159,109 @@
     </div>
     @endforeach
 
+    {{-- Add Plan Modal --}}
+    <div x-show="addModal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+         style="background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);">
+        <div class="w-full max-w-2xl rounded-2xl p-6 space-y-6 my-8"
+             style="background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);"
+             @click.away="addModal = false">
+            
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold text-white">Create New Subscription Plan</h3>
+                <button @click="addModal = false" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form method="POST" action="{{ route('admin.plans.store') }}" class="space-y-4">
+                @csrf
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" required placeholder="e.g. Pro Plan"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Slug <span class="text-red-500">*</span></label>
+                        <input type="text" name="slug" required placeholder="e.g. pro-plan"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none font-mono"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Credits per cycle (£) <span class="text-red-500">*</span></label>
+                        <input type="number" name="credits_per_cycle" step="0.01" required placeholder="0.00"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Monthly price (£) <span class="text-red-500">*</span></label>
+                        <input type="number" name="price_monthly" step="0.01" required placeholder="0.00"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Quarterly price (£) <span class="text-red-500">*</span></label>
+                        <input type="number" name="price_quarterly" step="0.01" required placeholder="0.00"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Yearly price (£) <span class="text-red-500">*</span></label>
+                        <input type="number" name="price_yearly" step="0.01" required placeholder="0.00"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Description</label>
+                        <input type="text" name="description" placeholder="Brief description of the plan"
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Stripe Monthly Price ID</label>
+                        <input type="text" name="stripe_monthly_price_id" placeholder="price_..."
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none font-mono"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Stripe Quarterly Price ID</label>
+                        <input type="text" name="stripe_quarterly_price_id" placeholder="price_..."
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none font-mono"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Stripe Yearly Price ID</label>
+                        <input type="text" name="stripe_yearly_price_id" placeholder="price_..."
+                               class="w-full px-3 py-2 rounded-lg text-sm outline-none font-mono"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-secondary);">Features (one per line)</label>
+                        <textarea name="features" rows="4" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
+                                  class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                                  style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" @click="addModal = false"
+                            class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                            style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-secondary);">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                            style="background: var(--gold); color: #0D1B2A;">
+                        Create Plan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection
