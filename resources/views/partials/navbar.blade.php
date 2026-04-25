@@ -6,13 +6,13 @@
         src="{{ asset('assets/images/logos/fm-darkmode.png') }}" 
         alt="FirstMediator" 
         class="logo-text logo-dark"
-        style="height: 60px; width: auto; display: var(--logo-dark-display) !important;"
+        style="height: 110px; width: auto; display: var(--logo-dark-display) !important;"
       >
       <img 
         src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
         alt="First Mediator" 
         class="logo-text logo-light"
-        style="height: 60px; width: auto; display: var(--logo-light-display) !important;"
+        style="height: 110px; width: auto; display: var(--logo-light-display) !important;"
       >
     </a>
     <ul class="nav-links">

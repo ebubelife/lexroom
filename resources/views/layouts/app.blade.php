@@ -277,7 +277,7 @@
         style="background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);"
     >
         <!-- Logo -->
-        <div class="flex items-center justify-center h-16 px-6 flex-shrink-0" style="border-bottom: 1px solid var(--border-color);">
+        <div class="flex items-center justify-center h-24 px-6 flex-shrink-0" style="border-bottom: 1px solid var(--border-color);">
             <a href="{{ route('dashboard') }}" class="flex items-center">
                 <img 
                     src="{{ asset('assets/images/logos/fm-lightmode.png') }}" 
