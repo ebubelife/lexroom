@@ -9,18 +9,29 @@
         <div class="lg:col-span-2">
             <div class="p-8 rounded-xl" style="background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);">
                 <p class="text-sm font-medium text-white mb-2">Available Balance</p>
-                <h2 class="text-4xl font-bold text-white mb-4">${{ number_format($balance) }}</h2>
-                <p class="text-sm text-white opacity-90">Enough for {{ floor($balance / 7500) }} standard sessions</p>
+                <h2 class="text-4xl font-bold text-white mb-4">£{{ number_format($balance, 2) }}</h2>
+                <p class="text-sm text-white opacity-90">Enough for {{ $balance >= 6 ? floor($balance / 6) : 0 }} standard (60-min) sessions</p>
             </div>
         </div>
         <div class="p-6 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
-            <p class="text-sm font-medium mb-2" style="color: var(--text-secondary);">Quick Top-up</p>
-            <button class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: var(--gold); color: var(--white);">
-                Add $10,000
-            </button>
-            <button class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-opacity-10 hover:bg-gray-500" style="border: 1px solid var(--border-color); color: var(--text-primary);">
-                Custom Amount
-            </button>
+            <p class="text-sm font-medium mb-3" style="color: var(--text-secondary);">Quick Top-up</p>
+            @if($topups->isNotEmpty())
+                <div class="space-y-3">
+                    @foreach($topups->take(2) as $pkg)
+                        <form method="GET" action="{{ route('subscription.topup') }}">
+                            <input type="hidden" name="package_id" value="{{ $pkg->id }}">
+                            <button type="submit" class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-0" 
+                                    style="background-color: var(--gold); color: #0D1B2A;">
+                                Add £{{ number_format($pkg->price, 0) }} (+£{{ number_format($pkg->credits + $pkg->bonus_credits, 0) }} credits)
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            @endif
+            <a href="{{ route('pricing') }}" class="block w-full px-4 py-3 mt-3 rounded-lg text-sm font-medium text-center transition-colors hover:bg-opacity-10 hover:bg-gray-500" 
+               style="border: 1px solid var(--border-color); color: var(--text-primary);">
+                View All Plans
+            </a>
         </div>
     </div>
 
@@ -29,22 +40,31 @@
         
         <!-- Mobile Card View -->
         <div class="block md:hidden space-y-3">
-            @foreach($transactions as $transaction)
-            <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
-                <div class="flex items-start justify-between mb-2">
-                    <div class="flex-1">
-                        <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">{{ $transaction['description'] }}</p>
-                        <p class="text-xs" style="color: var(--text-secondary);">{{ $transaction['date'] }}</p>
+            @forelse($transactions as $transaction)
+                @php
+                    $isCredit = $transaction->amount > 0;
+                    $typeColor = $isCredit ? '#15803D' : '#DC2626';
+                    $amountSign = $isCredit ? '+' : '';
+                @endphp
+                <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">{{ $transaction->description }}</p>
+                            <p class="text-xs" style="color: var(--text-secondary);">{{ $transaction->created_at->format('M d, Y') }}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $typeColor }}; color: white;">
+                            {{ ucfirst(str_replace('_', ' ', $transaction->type)) }}
+                        </span>
                     </div>
-                    <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $transaction['type_color'] }}; color: white;">
-                        {{ $transaction['type'] }}
-                    </span>
+                    <div class="text-right">
+                        <p class="text-lg font-bold" style="color: {{ $typeColor }};">{{ $amountSign }}£{{ number_format(abs($transaction->amount), 2) }}</p>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-lg font-bold" style="color: {{ $transaction['amount_color'] }};">{{ $transaction['amount'] }}</p>
+            @empty
+                <div class="p-8 text-center rounded-xl" style="background-color: var(--bg-secondary); border: 1px dashed var(--border-color);">
+                    <p style="color: var(--text-secondary);">No transactions yet.</p>
                 </div>
-            </div>
-            @endforeach
+            @endforelse
         </div>
 
         <!-- Desktop Table View -->
@@ -59,20 +79,31 @@
                     </tr>
                 </thead>
                 <tbody style="background-color: var(--bg-primary);">
-                    @foreach($transactions as $transaction)
-                    <tr style="border-top: 1px solid var(--border-color);">
-                        <td class="px-6 py-4 text-sm" style="color: var(--text-secondary);">{{ $transaction['date'] }}</td>
-                        <td class="px-6 py-4 text-sm" style="color: var(--text-primary);">{{ $transaction['description'] }}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $transaction['type_color'] }}; color: white;">
-                                {{ $transaction['type'] }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-right font-medium" style="color: {{ $transaction['amount_color'] }};">
-                            {{ $transaction['amount'] }}
-                        </td>
-                    </tr>
-                    @endforeach
+                    @forelse($transactions as $transaction)
+                        @php
+                            $isCredit = $transaction->amount > 0;
+                            $typeColor = $isCredit ? '#15803D' : '#DC2626';
+                            $amountSign = $isCredit ? '+' : '';
+                        @endphp
+                        <tr style="border-top: 1px solid var(--border-color);">
+                            <td class="px-6 py-4 text-sm" style="color: var(--text-secondary);">{{ $transaction->created_at->format('M d, Y') }}</td>
+                            <td class="px-6 py-4 text-sm" style="color: var(--text-primary);">{{ $transaction->description }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $typeColor }}; color: white;">
+                                    {{ ucfirst(str_replace('_', ' ', $transaction->type)) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-right font-medium" style="color: {{ $typeColor }};">
+                                {{ $amountSign }}£{{ number_format(abs($transaction->amount), 2) }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-10 text-center text-sm" style="color: var(--text-secondary);">
+                                No transactions found.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

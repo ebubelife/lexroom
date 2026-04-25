@@ -8,51 +8,21 @@ class WalletController extends Controller
 {
     public function index()
     {
-        $balance = 15000;
+        $user = auth()->user();
         
-        $transactions = [
-            [
-                'date' => 'Dec 18, 2024',
-                'description' => 'Wallet Top-up',
-                'type' => 'Credit',
-                'type_color' => '#15803D',
-                'amount' => '+₦10,000',
-                'amount_color' => '#15803D',
-            ],
-            [
-                'date' => 'Dec 15, 2024',
-                'description' => 'Tenancy Dispute Session',
-                'type' => 'Debit',
-                'type_color' => '#DC2626',
-                'amount' => '-₦7,500',
-                'amount_color' => '#DC2626',
-            ],
-            [
-                'date' => 'Dec 12, 2024',
-                'description' => 'Referral Bonus - John Doe',
-                'type' => 'Credit',
-                'type_color' => '#15803D',
-                'amount' => '+₦1,000',
-                'amount_color' => '#15803D',
-            ],
-            [
-                'date' => 'Dec 10, 2024',
-                'description' => 'Freelance Dispute Session',
-                'type' => 'Debit',
-                'type_color' => '#DC2626',
-                'amount' => '-₦3,750',
-                'amount_color' => '#DC2626',
-            ],
-            [
-                'date' => 'Dec 8, 2024',
-                'description' => 'Wallet Top-up',
-                'type' => 'Credit',
-                'type_color' => '#15803D',
-                'amount' => '+₦20,000',
-                'amount_color' => '#15803D',
-            ],
-        ];
+        // Ensure user has a wallet
+        $wallet = $user->wallet ?: $user->wallet()->create(['credits_balance' => 0]);
+        $balance = (float) $wallet->totalBalance();
+        
+        $transactions = $user->creditTransactions()
+            ->latest()
+            ->take(50)
+            ->get();
 
-        return view('wallet.index', compact('balance', 'transactions'));
+        $topups = \App\Models\TopupPackage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('wallet.index', compact('balance', 'transactions', 'topups'));
     }
 }
