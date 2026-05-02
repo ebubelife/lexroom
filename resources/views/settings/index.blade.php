@@ -4,7 +4,7 @@
 @section('page-title', 'Settings')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-3 md:px-0" x-data="settingsPage()">
+<div class="max-w-4xl mx-auto px-3 md:px-0" x-data="{ activeTab: 'profile' }">
 
     {{-- Tabs --}}
     <div class="flex space-x-1 mb-6 overflow-x-auto" style="border-bottom: 1px solid var(--border-color);">
@@ -29,7 +29,7 @@
     </div>
 
     {{-- ===== PROFILE TAB ===== --}}
-    <div x-show="activeTab === 'profile'">
+    <div x-show="activeTab === 'profile'" x-cloak>
         <div class="rounded-xl shadow-sm border p-4 md:p-6 mb-6"
              style="background-color: var(--bg-secondary); border-color: var(--border-color);">
 
@@ -110,7 +110,7 @@
     </div>
 
     {{-- ===== SECURITY TAB ===== --}}
-    <div x-show="activeTab === 'security'">
+    <div x-show="activeTab === 'security'" x-cloak>
         <div class="rounded-xl shadow-sm border p-4 md:p-6"
              style="background-color: var(--bg-secondary); border-color: var(--border-color);">
 
@@ -178,7 +178,7 @@
     </div>
 
     {{-- ===== SUBSCRIPTION TAB ===== --}}
-    <div x-show="activeTab === 'subscription'">
+    <div x-show="activeTab === 'subscription'" x-cloak>
 
         {{-- Current plan --}}
         <div class="rounded-xl border p-4 md:p-6 mb-4"
@@ -296,12 +296,6 @@
 </div>
 
 <script>
-function settingsPage() {
-    return {
-        activeTab: 'profile',
-    }
-}
-
 async function uploadAvatar(input) {
     const file = input.files[0];
     if (!file) return;
@@ -320,14 +314,16 @@ async function uploadAvatar(input) {
         if (data.success) {
             const preview = document.getElementById('avatar-preview');
             const initials = document.getElementById('avatar-initials');
-            if (preview) preview.src = data.url;
-            if (initials) initials.style.display = 'none';
-            if (!preview) {
+            if (preview) {
+                preview.src = data.url;
+            } else {
+                const container = document.querySelector('.rounded-full.overflow-hidden');
+                if (initials) initials.remove();
                 const img = document.createElement('img');
                 img.id = 'avatar-preview';
                 img.src = data.url;
                 img.className = 'w-full h-full object-cover';
-                document.querySelector('.rounded-full.overflow-hidden').appendChild(img);
+                container.appendChild(img);
             }
             showToast('Photo updated!', 'success');
         } else {
