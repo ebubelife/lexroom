@@ -53,11 +53,9 @@ class Setting extends Model
                 'otp_expiry_minutes'     => ['label' => 'OTP Expiry (minutes)',     'type' => 'integer', 'description' => 'How long OTP codes remain valid'],
             ],
             'Payments' => [
-                'price_30min'            => ['label' => 'Price — 30 min session ($)', 'type' => 'integer', 'description' => 'Full session price in USD cents'],
-                'price_60min'            => ['label' => 'Price — 60 min session ($)', 'type' => 'integer', 'description' => 'Full session price in USD cents'],
-                'price_90min'            => ['label' => 'Price — 90 min session ($)', 'type' => 'integer', 'description' => 'Full session price in USD cents'],
-                'extension_price_30min'  => ['label' => 'Extension — 30 min ($)',     'type' => 'integer', 'description' => 'Extension price in USD cents'],
-                'extension_price_60min'  => ['label' => 'Extension — 60 min ($)',     'type' => 'integer', 'description' => 'Extension price in USD cents'],
+                // Session prices are managed in Admin → Settings → Session Packages tab
+                // (session_packages table) — not here
+                'default_currency' => ['label' => 'Default Currency', 'type' => 'string', 'description' => 'Platform currency code: gbp, usd, eur, cad, aud'],
             ],
             'Referrals' => [
                 'referral_minutes_per_reward'   => ['label' => 'Minutes Per Referral',       'type' => 'integer', 'description' => 'Minutes awarded per successful referral'],
