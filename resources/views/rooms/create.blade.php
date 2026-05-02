@@ -378,9 +378,7 @@ function roomCreation() {
         languages: [
             { value: 'english', label: 'English' }
         ],
-        plans: [
-{!! json_encode($packages) !!}
-        ],
+        plans: {!! json_encode($packages) !!},
         
         init() {
             // Initialize

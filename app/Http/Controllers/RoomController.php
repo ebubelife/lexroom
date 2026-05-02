@@ -47,9 +47,10 @@ class RoomController extends Controller
             ->map(fn($p) => [
                 'name'     => $p->name,
                 'duration' => (string) $p->duration_minutes,
-                'price'    => $p->full_price,
-                'split'    => $p->split_price,
-            ]);
+                'price'    => (float) $p->full_price,
+                'split'    => (float) $p->split_price,
+            ])
+            ->values();
 
         return view('rooms.create', compact('jurisdictions', 'packages'));
     }
