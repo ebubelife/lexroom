@@ -106,7 +106,7 @@
         <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
             <div class="px-5 py-3" style="border-bottom: 1px solid var(--border-color);">
                 <h2 class="text-sm font-semibold">Session Packages</h2>
-                <p class="text-xs mt-0.5" style="color: var(--text-secondary);">Prices are entered in pence/cents. £45 = 4500</p>
+                <p class="text-xs mt-0.5" style="color: var(--text-secondary);">Enter prices in pounds (£). e.g. 45 = £45.00</p>
             </div>
 
             <div class="divide-y" style="border-color: var(--border-color);">
@@ -126,14 +126,14 @@
                                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                     </div>
                     <div class="w-32">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (pence)</label>
-                        <input type="number" name="full_price_pence" value="{{ $package->full_price_pence }}" min="1"
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (£)</label>
+                        <input type="number" name="full_price" value="{{ $package->full_price_pence / 100 }}" min="0.01" step="0.01"
                                class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
                                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                     </div>
                     <div class="w-32">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (pence)</label>
-                        <input type="number" name="split_price_pence" value="{{ $package->split_price_pence }}" min="1"
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (£)</label>
+                        <input type="number" name="split_price" value="{{ $package->split_price_pence / 100 }}" min="0.01" step="0.01"
                                class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
                                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                     </div>
@@ -171,14 +171,14 @@
                            style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                 </div>
                 <div class="w-32">
-                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (pence)</label>
-                    <input type="number" name="full_price_pence" placeholder="15000" min="1" required
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (£)</label>
+                    <input type="number" name="full_price" placeholder="45.00" min="0.01" step="0.01" required
                            class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
                            style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                 </div>
                 <div class="w-32">
-                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (pence)</label>
-                    <input type="number" name="split_price_pence" placeholder="7500" min="1" required
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (£)</label>
+                    <input type="number" name="split_price" placeholder="22.50" min="0.01" step="0.01" required
                            class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
                            style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
                 </div>

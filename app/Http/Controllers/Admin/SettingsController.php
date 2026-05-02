@@ -63,13 +63,18 @@ class SettingsController extends Controller
     public function updatePackage(Request $request, SessionPackage $package)
     {
         $request->validate([
-            'name'              => 'required|string|max:50',
-            'duration_minutes'  => 'required|integer|min:1',
-            'full_price_pence'  => 'required|integer|min:1',
-            'split_price_pence' => 'required|integer|min:1',
+            'name'             => 'required|string|max:50',
+            'duration_minutes' => 'required|integer|min:1',
+            'full_price'       => 'required|numeric|min:0.01',
+            'split_price'      => 'required|numeric|min:0.01',
         ]);
 
-        $package->update($request->only(['name', 'duration_minutes', 'full_price_pence', 'split_price_pence']));
+        $package->update([
+            'name'              => $request->name,
+            'duration_minutes'  => $request->duration_minutes,
+            'full_price_pence'  => (int) round($request->full_price * 100),
+            'split_price_pence' => (int) round($request->split_price * 100),
+        ]);
 
         auth('admin')->user()->log('updated_session_package', 'SessionPackage', $package->id);
 
@@ -79,17 +84,17 @@ class SettingsController extends Controller
     public function storePackage(Request $request)
     {
         $request->validate([
-            'name'              => 'required|string|max:50',
-            'duration_minutes'  => 'required|integer|min:1',
-            'full_price_pence'  => 'required|integer|min:1',
-            'split_price_pence' => 'required|integer|min:1',
+            'name'             => 'required|string|max:50',
+            'duration_minutes' => 'required|integer|min:1',
+            'full_price'       => 'required|numeric|min:0.01',
+            'split_price'      => 'required|numeric|min:0.01',
         ]);
 
         $package = SessionPackage::create([
             'name'              => $request->name,
             'duration_minutes'  => $request->duration_minutes,
-            'full_price_pence'  => $request->full_price_pence,
-            'split_price_pence' => $request->split_price_pence,
+            'full_price_pence'  => (int) round($request->full_price * 100),
+            'split_price_pence' => (int) round($request->split_price * 100),
             'is_active'         => true,
             'sort_order'        => SessionPackage::max('sort_order') + 1,
         ]);
