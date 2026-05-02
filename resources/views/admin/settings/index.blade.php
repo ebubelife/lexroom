@@ -15,6 +15,13 @@
                     : 'color: var(--text-secondary);'">
             ⚙ Platform Settings
         </button>
+        <button @click="activeTab = 'packages'"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                :style="activeTab === 'packages'
+                    ? 'background: var(--gold); color: #0D1B2A;'
+                    : 'color: var(--text-secondary);'">
+            💳 Session Packages
+        </button>
         <button @click="activeTab = 'audit'"
                 class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
                 :style="activeTab === 'audit'
@@ -90,6 +97,95 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    {{-- ==================== SESSION PACKAGES TAB ==================== --}}
+    <div x-show="activeTab === 'packages'" x-cloak class="space-y-4">
+
+        {{-- Existing packages --}}
+        <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+            <div class="px-5 py-3" style="border-bottom: 1px solid var(--border-color);">
+                <h2 class="text-sm font-semibold">Session Packages</h2>
+                <p class="text-xs mt-0.5" style="color: var(--text-secondary);">Prices are entered in pence/cents. £45 = 4500</p>
+            </div>
+
+            <div class="divide-y" style="border-color: var(--border-color);">
+                @foreach($packages as $package)
+                <form method="POST" action="{{ route('admin.settings.packages.update', $package) }}" class="flex flex-wrap items-center gap-3 px-5 py-4">
+                    @csrf @method('PUT')
+                    <div class="flex-1 min-w-[120px]">
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Name</label>
+                        <input type="text" name="name" value="{{ $package->name }}"
+                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="w-24">
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Minutes</label>
+                        <input type="number" name="duration_minutes" value="{{ $package->duration_minutes }}" min="1"
+                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="w-32">
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (pence)</label>
+                        <input type="number" name="full_price_pence" value="{{ $package->full_price_pence }}" min="1"
+                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="w-32">
+                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (pence)</label>
+                        <input type="number" name="split_price_pence" value="{{ $package->split_price_pence }}" min="1"
+                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <div class="flex items-end gap-2 pt-4">
+                        <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
+                                style="background: var(--gold); color: #0D1B2A;">Save</button>
+                        <form method="POST" action="{{ route('admin.settings.packages.destroy', $package) }}" onsubmit="return confirm('Delete this package?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
+                                    style="background: rgba(220,38,38,0.1); color: #DC2626; border: 1px solid rgba(220,38,38,0.2);">Delete</button>
+                        </form>
+                    </div>
+                </form>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Add new package --}}
+        <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+            <div class="px-5 py-3" style="border-bottom: 1px solid var(--border-color);">
+                <h2 class="text-sm font-semibold">Add New Package</h2>
+            </div>
+            <form method="POST" action="{{ route('admin.settings.packages.store') }}" class="flex flex-wrap items-end gap-3 px-5 py-4">
+                @csrf
+                <div class="flex-1 min-w-[120px]">
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Name</label>
+                    <input type="text" name="name" placeholder="e.g. Premium" required
+                           class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                           style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+                <div class="w-24">
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Minutes</label>
+                    <input type="number" name="duration_minutes" placeholder="120" min="1" required
+                           class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                           style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+                <div class="w-32">
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (pence)</label>
+                    <input type="number" name="full_price_pence" placeholder="15000" min="1" required
+                           class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                           style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+                <div class="w-32">
+                    <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (pence)</label>
+                    <input type="number" name="split_price_pence" placeholder="7500" min="1" required
+                           class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                           style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+                <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
+                        style="background: var(--gold); color: #0D1B2A;">Add Package</button>
+            </form>
+        </div>
     </div>
 
     {{-- ==================== AUDIT LOG TAB ==================== --}}

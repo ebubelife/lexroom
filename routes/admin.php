@@ -74,6 +74,9 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
         // Settings & Audit Log
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::put('/settings/packages/{package}', [SettingsController::class, 'updatePackage'])->name('settings.packages.update');
+        Route::post('/settings/packages', [SettingsController::class, 'storePackage'])->name('settings.packages.store');
+        Route::delete('/settings/packages/{package}', [SettingsController::class, 'destroyPackage'])->name('settings.packages.destroy');
 
         // Jurisdictions
         Route::get('/jurisdictions', [JurisdictionController::class, 'index'])->name('jurisdictions.index');
