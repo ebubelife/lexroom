@@ -4,59 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Lawyer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class FmReferController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $query = Lawyer::where('active', true)->where('verified', true);
 
-        // Calculate real stats
-        $stats = [
-            'total' => $user->referrals()->count(),
-            'successful' => $user->referrals()->whereExists(function($query) {
-                $query->select(\DB::raw(1))
-                    ->from('rooms')
-                    ->whereColumn('rooms.party_a_id', 'users.id')
-                    ->orWhereColumn('rooms.party_b_id', 'users.id')
-                    ->where('rooms.status', 'completed');
-            })->count(),
-            'earned' => $user->referrals()->whereExists(function($query) {
-                $query->select(\DB::raw(1))
-                    ->from('rooms')
-                    ->whereColumn('rooms.party_a_id', 'users.id')
-                    ->orWhereColumn('rooms.party_b_id', 'users.id')
-                    ->where('rooms.status', 'completed');
-            })->count() * 1000,
-        ];
+        if ($request->filled('jurisdiction')) {
+            $query->where('jurisdiction', $request->jurisdiction);
+        }
 
-        $referralLink = route('register') . '?ref=' . $user->referral_code;
-        
-        $referrals = $user->referrals()->latest()->get()->map(function($referral) {
-            $hasCompleted = \App\Models\Room::where(function($q) use ($referral) {
-                $q->where('party_a_id', $referral->id)
-                  ->orWhere('party_b_id', $referral->id);
-            })->where('status', 'completed')->exists();
-            return [
-                'name' => $referral->name,
-                'date' => $referral->created_at->format('M d, Y'),
-                'status' => $hasCompleted ? 'Successful' : 'Pending',
-                'status_color' => $hasCompleted ? '#16A34A' : '#D97706',
-                'reward' => $hasCompleted ? '$1,000' : '$0',
-            ];
-        });
+        if ($request->filled('speciality')) {
+            $query->where('speciality', $request->speciality);
+        }
 
-        return view('fmrefer.index', compact('stats', 'referralLink', 'referrals'));
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $lawyers      = $query->orderBy('years_experience', 'desc')->paginate(12);
+        $jurisdictions = ['Nigeria', 'UK', 'South Africa', 'Ghana'];
+        $specialities  = ['Tenancy', 'Freelance', 'Business', 'E-commerce', 'Debt', 'Employment', 'Marriage'];
+
+        return view('fmrefer.index', compact('lawyers', 'jurisdictions', 'specialities'));
     }
 
     public function show(Lawyer $lawyer)
     {
-        if (!$lawyer->active || !$lawyer->verified) {
-            abort(404);
-        }
-
+        abort_if(!$lawyer->active || !$lawyer->verified, 404);
         return view('fmrefer.show', compact('lawyer'));
     }
 
@@ -67,12 +43,9 @@ class FmReferController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        // Send notification to lawyer
-        // TODO: Implement email notification
-
         return response()->json([
             'success' => true,
-            'message' => 'Your request has been sent to the lawyer. They will contact you within 48-72 hours.',
+            'message' => 'Your request has been sent. The lawyer will contact you within 48-72 hours.',
         ]);
     }
 }
