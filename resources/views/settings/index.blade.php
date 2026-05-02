@@ -51,24 +51,23 @@
                     formData.append('profile_image', file);
 
                     try {
-                        const response = await axios.post('{{ route('settings.avatar') }}', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            },
-                            onUploadProgress: (progressEvent) => {
-                                this.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                            }
+                        const res = await fetch('{{ route('settings.avatar') }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                            body: formData
                         });
+                        const data = await res.json();
 
-                        if (response.data.success) {
-                            showToast(response.data.message, 'success');
-                            // Update all avatars on the page
-                            const newUrl = response.data.url;
+                        if (data.success) {
+                            showToast(data.message, 'success');
+                            const newUrl = data.url;
                             this.imagePreview = newUrl;
                             document.querySelectorAll('img[alt=\'{{ auth()->user()->name }}\']').forEach(img => img.src = newUrl);
+                        } else {
+                            showToast(data.message || 'Could not update photo', 'error');
                         }
                     } catch (error) {
-                        showToast(error.response?.data?.message || 'oops! could not update', 'error');
+                        showToast('Could not update photo', 'error');
                     } finally {
                         this.isUploading = false;
                         this.uploadProgress = 0;
@@ -172,7 +171,7 @@
     </div>
 
     <!-- Security Tab -->
-    <div x-show="activeTab === 'security'" x-transition>
+    <div x-show="activeTab === 'security'">
         <form action="{{ route('settings.password') }}" method="POST" 
               class="rounded-xl shadow-sm border p-4 md:p-6"
               style="background-color: var(--bg-secondary); border-color: var(--border-color);">
@@ -210,7 +209,7 @@
     </div>
 
     <!-- Subscription Tab -->
-    <div x-show="activeTab === 'subscription'" x-transition>
+    <div x-show="activeTab === 'subscription'">
 
         {{-- Current plan --}}
         <div class="rounded-xl border p-4 md:p-6 mb-4"
