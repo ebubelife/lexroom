@@ -39,6 +39,29 @@ class RoomController extends Controller
         return view('admin.rooms.index', compact('rooms', 'statuses', 'categories'));
     }
 
+    public function archived(Request $request)
+    {
+        $query = Room::onlyTrashed()
+            ->orWhereNotNull('archived_at')
+            ->with(['partyA', 'partyB'])
+            ->withCount(['messages', 'evidenceFiles'])
+            ->latest('deleted_at');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('case_id', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
+                  ->orWhereHas('partyA', fn($u) => $u->where('email', 'like', "%{$search}%")->orWhere('name', 'like', "%{$search}%"))
+                  ->orWhereHas('partyB', fn($u) => $u->where('email', 'like', "%{$search}%")->orWhere('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $rooms = $query->paginate(25)->withQueryString();
+        $categories = ['tenancy', 'freelance', 'business', 'ecommerce', 'employment', 'debt'];
+
+        return view('admin.rooms.archived', compact('rooms', 'categories'));
+    }
+
     public function show(Room $room)
     {
         $room->load([
@@ -99,5 +122,33 @@ class RoomController extends Controller
         $room->delete();
 
         return redirect()->route('admin.rooms.index')->with('success', "Room {$caseId} deleted.");
+    }
+
+    public function archive(Room $room)
+    {
+        $room->update(['archived_at' => now()]);
+        auth('admin')->user()->log('archived_room', 'Room', $room->id, ['case_id' => $room->case_id]);
+
+        return back()->with('success', "Room {$room->case_id} archived.");
+    }
+
+    public function restore($id)
+    {
+        $room = Room::withTrashed()->findOrFail($id);
+        $room->restore();
+        $room->update(['archived_at' => null]);
+        auth('admin')->user()->log('restored_room', 'Room', $room->id, ['case_id' => $room->case_id]);
+
+        return back()->with('success', "Room {$room->case_id} restored.");
+    }
+
+    public function forceDelete($id)
+    {
+        $room = Room::withTrashed()->findOrFail($id);
+        $caseId = $room->case_id;
+        auth('admin')->user()->log('permanently_deleted_room', 'Room', $room->id, ['case_id' => $caseId]);
+        $room->forceDelete();
+
+        return back()->with('success', "Room {$caseId} permanently deleted.");
     }
 }

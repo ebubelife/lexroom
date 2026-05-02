@@ -154,6 +154,15 @@
                     ➕ Add Time
                 </button>
 
+                <form method="POST" action="{{ route('admin.rooms.archive', $room) }}">
+                    @csrf
+                    <button type="submit"
+                            class="w-full py-2 rounded-lg text-xs font-medium hover:opacity-80 text-left px-3"
+                            style="background: rgba(168,85,247,0.08); color: #C084FC; border: 1px solid rgba(168,85,247,0.2);">
+                        📦 Archive Room
+                    </button>
+                </form>
+
                 <button @click="deleteModal = true"
                         class="w-full py-2 rounded-lg text-xs font-medium hover:opacity-80 text-left px-3"
                         style="background: rgba(239,68,68,0.08); color: #F87171; border: 1px solid rgba(239,68,68,0.2);">

@@ -40,11 +40,15 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
 
         // Rooms
         Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+        Route::get('/rooms/archived', [RoomController::class, 'archived'])->name('rooms.archived');
         Route::get('/rooms/{room}', [RoomController::class, 'show'])->name('rooms.show');
         Route::post('/rooms/{room}/force-lock', [RoomController::class, 'forceLock'])->name('rooms.force-lock');
         Route::post('/rooms/{room}/force-expire', [RoomController::class, 'forceExpire'])->name('rooms.force-expire');
         Route::post('/rooms/{room}/add-time', [RoomController::class, 'addTime'])->name('rooms.add-time');
+        Route::post('/rooms/{room}/archive', [RoomController::class, 'archive'])->name('rooms.archive');
+        Route::post('/rooms/{id}/restore', [RoomController::class, 'restore'])->name('rooms.restore');
         Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+        Route::delete('/rooms/{id}/force-delete', [RoomController::class, 'forceDelete'])->name('rooms.force-delete');
 
         // Billing
         Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');

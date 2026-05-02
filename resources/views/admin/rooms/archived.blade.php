@@ -1,64 +1,42 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Rooms')
-@section('page-title', 'Rooms')
+@section('title', 'Archived Rooms')
+@section('page-title', 'Archived Rooms')
 
 @section('content')
 <div class="space-y-4">
 
     {{-- Toolbar --}}
-    <div class="flex items-center justify-between mb-4">
-        <form method="GET" action="{{ route('admin.rooms.index') }}" class="flex flex-col sm:flex-row gap-3 flex-1">
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            placeholder="Search case ID, title, party name or email…"
-            class="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
-            style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary);"
-        >
+    <div class="flex items-center justify-between">
+        <form method="GET" action="{{ route('admin.rooms.archived') }}" class="flex flex-col sm:flex-row gap-3 flex-1">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Search case ID, title, party name or email…"
+                class="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
+                style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary);"
+            >
 
-        <select name="status"
-                class="px-3 py-2 rounded-lg text-sm outline-none"
-                style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary);">
-            <option value="">All statuses</option>
-            @foreach($statuses as $s)
-                <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
-                    {{ ucwords(str_replace('_', ' ', $s)) }}
-                </option>
-            @endforeach
-        </select>
+            <button type="submit"
+                    class="px-4 py-2 rounded-lg text-sm font-medium flex-shrink-0"
+                    style="background: var(--gold); color: #0D1B2A;">
+                Search
+            </button>
 
-        <select name="category"
-                class="px-3 py-2 rounded-lg text-sm outline-none"
-                style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary);">
-            <option value="">All categories</option>
-            @foreach($categories as $c)
-                <option value="{{ $c }}" {{ request('category') === $c ? 'selected' : '' }}>
-                    {{ ucfirst($c) }}
-                </option>
-            @endforeach
-        </select>
-
-        <button type="submit"
-                class="px-4 py-2 rounded-lg text-sm font-medium flex-shrink-0"
-                style="background: var(--gold); color: #0D1B2A;">
-            Filter
-        </button>
-
-        @if(request()->hasAny(['search', 'status', 'category']))
-            <a href="{{ route('admin.rooms.index') }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium flex-shrink-0 text-center"
-               style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-secondary);">
-                Clear
-            </a>
-        @endif
+            @if(request('search'))
+                <a href="{{ route('admin.rooms.archived') }}"
+                   class="px-4 py-2 rounded-lg text-sm font-medium flex-shrink-0 text-center"
+                   style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-secondary);">
+                    Clear
+                </a>
+            @endif
         </form>
 
-        <a href="{{ route('admin.rooms.archived') }}"
+        <a href="{{ route('admin.rooms.index') }}"
            class="ml-3 px-4 py-2 rounded-lg text-sm font-medium flex-shrink-0"
-           style="background: rgba(168,85,247,0.12); color: #C084FC; border: 1px solid rgba(168,85,247,0.25);">
-            📦 Archived
+           style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary);">
+            ← Active Rooms
         </a>
     </div>
 
@@ -66,7 +44,7 @@
     <div class="rounded-xl overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
         <div class="px-4 py-3" style="border-bottom: 1px solid var(--border-color);">
             <p class="text-sm" style="color: var(--text-secondary);">
-                {{ number_format($rooms->total()) }} room{{ $rooms->total() !== 1 ? 's' : '' }}
+                {{ number_format($rooms->total()) }} archived room{{ $rooms->total() !== 1 ? 's' : '' }}
             </p>
         </div>
 
@@ -80,10 +58,8 @@
                         <th>Party B</th>
                         <th>Category</th>
                         <th>Status</th>
-                        <th>Payment</th>
-                        <th>Msgs</th>
-                        <th>Files</th>
-                        <th>Created</th>
+                        <th>Archived</th>
+                        <th>Deleted</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -96,20 +72,14 @@
                             <td class="text-sm max-w-[140px] truncate">{{ $room->title ?? '—' }}</td>
                             <td>
                                 @if($room->partyA)
-                                    <a href="{{ route('admin.users.show', $room->partyA) }}"
-                                       class="text-sm hover:underline" style="color: var(--text-primary);">
-                                        {{ $room->partyA->name }}
-                                    </a>
+                                    <span class="text-sm">{{ $room->partyA->name }}</span>
                                 @else
                                     <span style="color: var(--text-secondary);">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($room->partyB)
-                                    <a href="{{ route('admin.users.show', $room->partyB) }}"
-                                       class="text-sm hover:underline" style="color: var(--text-primary);">
-                                        {{ $room->partyB->name }}
-                                    </a>
+                                    <span class="text-sm">{{ $room->partyB->name }}</span>
                                 @elseif($room->party_b_email)
                                     <span class="text-xs" style="color: var(--text-secondary);">{{ $room->party_b_email }}</span>
                                 @else
@@ -139,37 +109,54 @@
                                     {{ ucwords(str_replace('_', ' ', $room->status)) }}
                                 </span>
                             </td>
-                            <td>
-                                <div class="flex flex-col gap-0.5">
-                                    <span class="text-xs {{ $room->party_a_paid ? 'text-green-400' : 'text-red-400' }}">
-                                        A {{ $room->party_a_paid ? '✓' : '✗' }}
-                                    </span>
-                                    <span class="text-xs {{ $room->party_b_paid ? 'text-green-400' : 'text-red-400' }}">
-                                        B {{ $room->party_b_paid ? '✓' : '✗' }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="text-sm text-center" style="color: var(--text-secondary);">
-                                {{ $room->messages_count }}
-                            </td>
-                            <td class="text-sm text-center" style="color: var(--text-secondary);">
-                                {{ $room->evidence_files_count }}
+                            <td class="text-xs" style="color: var(--text-secondary);">
+                                {{ $room->archived_at ? $room->archived_at->format('d M Y') : '—' }}
                             </td>
                             <td class="text-xs" style="color: var(--text-secondary);">
-                                {{ $room->created_at->format('d M Y') }}
+                                {{ $room->deleted_at ? $room->deleted_at->format('d M Y') : '—' }}
                             </td>
                             <td>
-                                <a href="{{ route('admin.rooms.show', $room) }}"
-                                   class="text-xs px-3 py-1.5 rounded-lg font-medium hover:opacity-80"
-                                   style="background: rgba(201,168,76,0.12); color: var(--gold);">
-                                    View
-                                </a>
+                                <div class="flex gap-2" x-data="{ showConfirm: false }">
+                                    <button @click="showConfirm = !showConfirm"
+                                            class="text-xs px-3 py-1.5 rounded-lg font-medium hover:opacity-80"
+                                            style="background: rgba(59,130,246,0.12); color: #60A5FA;">
+                                        Actions
+                                    </button>
+
+                                    <div x-show="showConfirm" 
+                                         x-cloak
+                                         @click.away="showConfirm = false"
+                                         class="absolute mt-8 right-4 rounded-lg shadow-lg p-2 space-y-1 z-10"
+                                         style="background: var(--bg-card); border: 1px solid var(--border-color); min-width: 150px;">
+                                        
+                                        <form method="POST" action="{{ route('admin.rooms.restore', $room->id) }}" class="w-full">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="w-full text-left px-3 py-2 rounded text-xs hover:opacity-80"
+                                                    style="background: rgba(74,222,128,0.12); color: #4ADE80;">
+                                                ✓ Restore
+                                            </button>
+                                        </form>
+
+                                        <form method="POST" 
+                                              action="{{ route('admin.rooms.force-delete', $room->id) }}"
+                                              onsubmit="return confirm('PERMANENTLY DELETE {{ $room->case_id }}? This cannot be undone!')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="w-full text-left px-3 py-2 rounded text-xs hover:opacity-80"
+                                                    style="background: rgba(239,68,68,0.12); color: #F87171;">
+                                                ✗ Delete Forever
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="text-center py-12" style="color: var(--text-secondary);">
-                                No rooms found.
+                            <td colspan="9" class="text-center py-12" style="color: var(--text-secondary);">
+                                No archived rooms found.
                             </td>
                         </tr>
                     @endforelse

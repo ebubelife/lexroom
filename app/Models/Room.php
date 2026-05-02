@@ -4,18 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Room extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category', 'title',
         'jurisdiction', 'language', 'duration', 'extended_minutes', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'started_at', 'ended_at', 'party_b_clocked_in_at',
-        'pause_requested_at', 'paused_at', 'total_paused_seconds'
+        'pause_requested_at', 'paused_at', 'total_paused_seconds', 'archived_at'
     ];
 
     protected $casts = [
@@ -24,6 +25,7 @@ class Room extends Model
         'party_b_clocked_in_at' => 'datetime',
         'pause_requested_at' => 'datetime',
         'paused_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
     protected static function boot()
