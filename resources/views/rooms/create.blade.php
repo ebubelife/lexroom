@@ -379,9 +379,7 @@ function roomCreation() {
             { value: 'english', label: 'English' }
         ],
         plans: [
-            { name: 'Starter', duration: '30', price: 45, split: 22.50 },
-            { name: 'Standard', duration: '60', price: 80, split: 40 },
-            { name: 'Extended', duration: '90', price: 100, split: 50 }
+{!! json_encode($packages) !!}
         ],
         
         init() {

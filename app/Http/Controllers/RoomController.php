@@ -41,7 +41,17 @@ class RoomController extends Controller
             ->groupBy('region')
             ->map(fn($items) => $items->pluck('name'));
 
-        return view('rooms.create', compact('jurisdictions'));
+        $packages = \App\Models\SessionPackage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn($p) => [
+                'name'     => $p->name,
+                'duration' => (string) $p->duration_minutes,
+                'price'    => $p->full_price,
+                'split'    => $p->split_price,
+            ]);
+
+        return view('rooms.create', compact('jurisdictions', 'packages'));
     }
 
     public function store(Request $request)
@@ -53,7 +63,7 @@ class RoomController extends Controller
             'jurisdiction' => 'required|string|max:255',
             'language' => 'required|in:english',
             'case_summary' => 'required|string|min:50|max:2000',
-            'duration' => 'required|in:30,60,90',
+            'duration' => ['required', 'integer', \Illuminate\Validation\Rule::in(\App\Models\SessionPackage::where('is_active', true)->pluck('duration_minutes'))],
             'payment_type' => 'required|in:full,split',
             'party_b_email' => 'required|email|max:255',
         ]);
