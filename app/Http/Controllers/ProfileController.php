@@ -11,10 +11,28 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $user        = auth()->user();
-        $sub         = $user->activeSubscription()->with('plan')->first();
-        $topups      = \App\Models\TopupPackage::where('is_active', true)->orderBy('sort_order')->get();
-        $transactions = \App\Models\CreditTransaction::where('user_id', $user->id)->latest()->limit(10)->get();
+        $user         = auth()->user();
+
+        try {
+            $sub = $user->activeSubscription()->with('plan')->first();
+        } catch (\Exception $e) {
+            \Log::error('Settings sub error: ' . $e->getMessage());
+            $sub = null;
+        }
+
+        try {
+            $topups = \App\Models\TopupPackage::where('is_active', true)->orderBy('sort_order')->get();
+        } catch (\Exception $e) {
+            \Log::error('Settings topups error: ' . $e->getMessage());
+            $topups = collect();
+        }
+
+        try {
+            $transactions = \App\Models\CreditTransaction::where('user_id', $user->id)->latest()->limit(10)->get();
+        } catch (\Exception $e) {
+            \Log::error('Settings transactions error: ' . $e->getMessage());
+            $transactions = collect();
+        }
 
         return view('settings.index', compact('sub', 'topups', 'transactions'));
     }
