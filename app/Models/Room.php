@@ -16,7 +16,7 @@ class Room extends Model
         'jurisdiction', 'language', 'duration', 'extended_minutes', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'started_at', 'ended_at', 'party_b_clocked_in_at',
-        'pause_requested_at', 'paused_at', 'total_paused_seconds', 'archived_at'
+        'pause_requested_at', 'paused_at', 'total_paused_seconds', 'archived_at', 'user_deleted_at'
     ];
 
     protected $casts = [
@@ -26,6 +26,7 @@ class Room extends Model
         'pause_requested_at' => 'datetime',
         'paused_at' => 'datetime',
         'archived_at' => 'datetime',
+        'user_deleted_at' => 'datetime',
     ];
 
     protected static function boot()

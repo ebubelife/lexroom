@@ -21,6 +21,7 @@ class RoomController extends Controller
 
         $baseQuery = fn($userId, $col) => Room::with('evidenceFiles')
             ->where($col, $userId)
+            ->whereNull('user_deleted_at')
             ->when($search, fn($q) => $q->where(function ($q) use ($search) {
                 $q->where('case_summary', 'like', "%{$search}%")
                   ->orWhere('category', 'like', "%{$search}%");
@@ -32,6 +33,27 @@ class RoomController extends Controller
         $invitedRooms = $baseQuery($user->id, 'party_b_id')->paginate(9, ['*'], 'invited_rooms');
 
         return view('rooms.index', compact('myRooms', 'invitedRooms'));
+    }
+
+    public function trash(Request $request)
+    {
+        $user = auth()->user();
+        $search = $request->get('q');
+
+        $trashedRooms = Room::with('evidenceFiles')
+            ->where(function($q) use ($user) {
+                $q->where('party_a_id', $user->id)
+                  ->orWhere('party_b_id', $user->id);
+            })
+            ->whereNotNull('user_deleted_at')
+            ->when($search, fn($q) => $q->where(function ($q) use ($search) {
+                $q->where('case_summary', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            }))
+            ->latest('user_deleted_at')
+            ->paginate(12);
+
+        return view('rooms.trash', compact('trashedRooms'));
     }
 
     public function create()
@@ -67,6 +89,7 @@ class RoomController extends Controller
             'duration' => ['required', 'integer', \Illuminate\Validation\Rule::in(\App\Models\SessionPackage::where('is_active', true)->pluck('duration_minutes'))],
             'payment_type' => 'required|in:full,split',
             'party_b_email' => 'required|email|max:255',
+            'save_as_draft' => 'nullable|boolean',
         ]);
 
         // Create room
@@ -81,9 +104,19 @@ class RoomController extends Controller
             'duration'      => $validated['duration'],
             'payment_type'  => $validated['payment_type'],
             'party_b_email' => $validated['party_b_email'],
-            'status'        => 'pending',
+            'status'        => $request->boolean('save_as_draft') ? 'draft' : 'pending',
             'invite_token'  => Str::random(64),
         ]);
+
+        // If draft, return early
+        if ($request->boolean('save_as_draft')) {
+            return response()->json([
+                'success' => true,
+                'draft'   => true,
+                'room_id' => $room->id,
+                'message' => 'Case saved as draft!'
+            ]);
+        }
 
         // Create pending billing record for Party A
         $package      = \App\Models\SessionPackage::forDuration((int) $validated['duration']);
@@ -225,15 +258,30 @@ class RoomController extends Controller
     {
         $user = auth()->user();
         
-        // Ensure only Party A (the creator) can delete it
+        // Ensure only Party A (the creator) can trash it
         if ($user && $room->party_a_id !== $user->id) {
             return redirect()->route('rooms.index')->with('error', 'Unauthorized action.');
         }
 
-        // Proceed to delete the room
-        $room->delete();
+        // Move to trash (user soft delete)
+        $room->update(['user_deleted_at' => now()]);
 
-        return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
+        return redirect()->route('rooms.index')->with('success', 'Case moved to trash.');
+    }
+
+    public function restore($id)
+    {
+        $room = Room::findOrFail($id);
+        $user = auth()->user();
+
+        // Ensure only Party A can restore
+        if ($room->party_a_id !== $user->id) {
+            return redirect()->route('rooms.trash')->with('error', 'Unauthorized action.');
+        }
+
+        $room->update(['user_deleted_at' => null]);
+
+        return redirect()->route('rooms.trash')->with('success', 'Case restored successfully.');
     }
 
     public function resendInvite(Request $request, $uuid)

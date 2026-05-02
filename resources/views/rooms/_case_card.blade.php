@@ -72,7 +72,7 @@
         </div>
 
         {{-- Footer Action --}}
-        <div class="mt-auto border-t border-white border-opacity-5 pt-4">
+        <div class="mt-auto border-t border-white border-opacity-5 pt-4 space-y-2">
             @php
                 $btnStyle = $room->status === 'active' 
                     ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%); color: white;' 
@@ -83,7 +83,8 @@
                style="{{ $btnStyle }}">
                 
                 <span>
-                    @if($room->status === 'active') Enter Room
+                    @if($room->status === 'draft') Continue Draft
+                    @elseif($room->status === 'active') Enter Room
                     @elseif($room->status === 'pending') Review Case
                     @elseif($room->status === 'completed') View Report
                     @else Case Details
@@ -94,6 +95,16 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
             </a>
+
+            @if($role === 'creator')
+            <form method="POST" action="{{ route('rooms.destroy', $room) }}" onsubmit="return confirm('Move this case to trash?')" class="w-full">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:opacity-80" style="background-color: rgba(220,38,38,0.08); color: #DC2626; border: 1px solid rgba(220,38,38,0.15);">
+                    🗑 Move to Trash
+                </button>
+            </form>
+            @endif
         </div>
     </div>
 </div>

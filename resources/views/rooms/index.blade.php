@@ -12,10 +12,16 @@
             <h1 class="text-2xl font-serif" style="color: var(--text-primary);">All Cases</h1>
             <p class="text-sm mt-0.5" style="color: var(--text-secondary);">Every dispute you've opened or been invited to</p>
         </div>
-        <a href="{{ route('rooms.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity" style="background-color: var(--gold); color: var(--white);">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            New Case
-        </a>
+        <div class="flex gap-2">
+            <a href="{{ route('rooms.trash') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity" style="background-color: rgba(220,38,38,0.12); color: #DC2626; border: 1px solid rgba(220,38,38,0.25);">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Trash
+            </a>
+            <a href="{{ route('rooms.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity" style="background-color: var(--gold); color: var(--white);">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                New Case
+            </a>
+        </div>
     </div>
 
     {{-- Search + Filter Bar --}}
