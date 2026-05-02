@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EvidenceController;
 use App\Http\Controllers\Admin\JurisdictionController;
+use App\Http\Controllers\Admin\LawyerController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\CreditSettingsController;
 use App\Http\Controllers\Admin\ReferralController;
@@ -77,6 +78,15 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
         Route::put('/settings/packages/{package}', [SettingsController::class, 'updatePackage'])->name('settings.packages.update');
         Route::post('/settings/packages', [SettingsController::class, 'storePackage'])->name('settings.packages.store');
         Route::delete('/settings/packages/{package}', [SettingsController::class, 'destroyPackage'])->name('settings.packages.destroy');
+
+        // Lawyers
+        Route::get('/lawyers', [LawyerController::class, 'index'])->name('lawyers.index');
+        Route::get('/lawyers/create', [LawyerController::class, 'create'])->name('lawyers.create');
+        Route::post('/lawyers', [LawyerController::class, 'store'])->name('lawyers.store');
+        Route::get('/lawyers/{lawyer}/edit', [LawyerController::class, 'edit'])->name('lawyers.edit');
+        Route::put('/lawyers/{lawyer}', [LawyerController::class, 'update'])->name('lawyers.update');
+        Route::post('/lawyers/{lawyer}/toggle', [LawyerController::class, 'toggle'])->name('lawyers.toggle');
+        Route::delete('/lawyers/{lawyer}', [LawyerController::class, 'destroy'])->name('lawyers.destroy');
 
         // Jurisdictions
         Route::get('/jurisdictions', [JurisdictionController::class, 'index'])->name('jurisdictions.index');

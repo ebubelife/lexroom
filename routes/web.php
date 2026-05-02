@@ -124,8 +124,8 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/referrals', [\App\Http\Controllers\ReferralController::class, 'index'])->name('referrals.index');
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
     Route::get('/fmrefer', [\App\Http\Controllers\FmReferController::class, 'index'])->name('fmrefer.index');
-    Route::get('/fmrefer/{lawyer}', [\App\Http\Controllers\FmReferController::class, 'show'])->name('fmrefer.show');
-    Route::post('/fmrefer/{lawyer}/contact', [\App\Http\Controllers\FmReferController::class, 'contact'])->name('fmrefer.contact');
+    Route::get('/fmrefer/{lawyer}', [\App\Http\Controllers\EscalationController::class, 'show'])->name('fmrefer.show');
+    Route::post('/fmrefer/{lawyer}/escalate', [\App\Http\Controllers\EscalationController::class, 'store'])->name('escalation.store');
 
     // Vault routes
     Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
