@@ -111,42 +111,44 @@
 
             <div class="divide-y" style="border-color: var(--border-color);">
                 @foreach($packages as $package)
-                <form method="POST" action="{{ route('admin.settings.packages.update', $package) }}" class="flex flex-wrap items-center gap-3 px-5 py-4">
-                    @csrf @method('PUT')
-                    <div class="flex-1 min-w-[120px]">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Name</label>
-                        <input type="text" name="name" value="{{ $package->name }}"
-                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
-                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
-                    </div>
-                    <div class="w-24">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Minutes</label>
-                        <input type="number" name="duration_minutes" value="{{ $package->duration_minutes }}" min="1"
-                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
-                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
-                    </div>
-                    <div class="w-32">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (£)</label>
-                        <input type="number" name="full_price" value="{{ $package->full_price_pence / 100 }}" min="0.01" step="0.01"
-                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
-                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
-                    </div>
-                    <div class="w-32">
-                        <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (£)</label>
-                        <input type="number" name="split_price" value="{{ $package->split_price_pence / 100 }}" min="0.01" step="0.01"
-                               class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
-                               style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
-                    </div>
-                    <div class="flex items-end gap-2 pt-4">
-                        <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
-                                style="background: var(--gold); color: #0D1B2A;">Save</button>
-                        <form method="POST" action="{{ route('admin.settings.packages.destroy', $package) }}" onsubmit="return confirm('Delete this package?')">
-                            @csrf @method('DELETE')
+                <div class="flex flex-wrap items-center gap-3 px-5 py-4">
+                    <form method="POST" action="{{ route('admin.settings.packages.update', $package) }}" class="flex flex-wrap items-center gap-3 flex-1">
+                        @csrf @method('PUT')
+                        <div class="flex-1 min-w-[120px]">
+                            <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Name</label>
+                            <input type="text" name="name" value="{{ $package->name }}"
+                                   class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                        </div>
+                        <div class="w-24">
+                            <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Minutes</label>
+                            <input type="number" name="duration_minutes" value="{{ $package->duration_minutes }}" min="1"
+                                   class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                        </div>
+                        <div class="w-32">
+                            <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Full Price (£)</label>
+                            <input type="number" name="full_price" value="{{ $package->full_price_pence / 100 }}" min="0.01" step="0.01"
+                                   class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                        </div>
+                        <div class="w-32">
+                            <label class="text-xs mb-1 block" style="color: var(--text-secondary);">Split Price (£)</label>
+                            <input type="number" name="split_price" value="{{ $package->split_price_pence / 100 }}" min="0.01" step="0.01"
+                                   class="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                        </div>
+                        <div class="pt-4">
                             <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
-                                    style="background: rgba(220,38,38,0.1); color: #DC2626; border: 1px solid rgba(220,38,38,0.2);">Delete</button>
-                        </form>
-                    </div>
-                </form>
+                                    style="background: var(--gold); color: #0D1B2A;">Save</button>
+                        </div>
+                    </form>
+                    <form method="POST" action="{{ route('admin.settings.packages.destroy', $package) }}" onsubmit="return confirm('Delete this package?')" class="pt-4">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold hover:opacity-90"
+                                style="background: rgba(220,38,38,0.1); color: #DC2626; border: 1px solid rgba(220,38,38,0.2);">Delete</button>
+                    </form>
+                </div>
                 @endforeach
             </div>
         </div>
