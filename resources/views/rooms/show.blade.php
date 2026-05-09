@@ -223,16 +223,24 @@
                 <!-- Action Buttons -->
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
                     <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
-                        <button @click="openStartModal"
-                                :disabled="!clockedIn && isPartyA"
-                                class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
-                                :class="(clockedIn || isPartyB) ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
-                                :style="(clockedIn || isPartyB) ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
-                            <span x-text="isPartyB ? 'Waiting for Party A to Start...' : (clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...'))"></span>
-                        </button>
-                        <button x-show="!clockedIn && isPartyA" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
-                            Resend / Correct Invite Email
-                        </button>
+                        <!-- Party A: Show Start Session button -->
+                        <div x-show="isPartyA">
+                            <button @click="openStartModal"
+                                    :disabled="!clockedIn"
+                                    class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
+                                    :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+                                    :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
+                                <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
+                            </button>
+                            <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                                Resend / Correct Invite Email
+                            </button>
+                        </div>
+                        
+                        <!-- Party B: Show waiting message (not a button) -->
+                        <div x-show="isPartyB" class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest text-center" style="background: #4B5563;">
+                            Waiting for Party A to Start...
+                        </div>
                     </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
