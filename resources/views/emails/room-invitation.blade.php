@@ -162,18 +162,45 @@
             <p class="message">
                 <strong>What happens next?</strong>
             </p>
-            <ul class="message" style="padding-left: 20px;">
-                <li>Click the button below to join the session</li>
-                <li>You can join as a guest (no account required)</li>
-                <li>Present your side of the dispute to First Mediator, our AI mediator</li>
-                <li>Upload any supporting evidence or documents</li>
-                <li>Receive a detailed mediation report at the end</li>
-            </ul>
+            
+            @if($needsPayment)
+                <!-- Split Payment Flow -->
+                <div style="background-color: #FFF7ED; border: 2px solid #C9A84C; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: 600; color: #0D1B2A;">
+                        ⚠️ Payment Required
+                    </p>
+                    <p style="margin: 0; font-size: 14px; color: #4a5568; line-height: 1.6;">
+                        This is a <strong>split payment session</strong>. You need to pay your share (£{{ number_format($room->billing()->where('party', 'party_b')->first()?->amount ?? 0, 2) }}) before you can join the mediation.
+                    </p>
+                </div>
+                
+                <ul class="message" style="padding-left: 20px;">
+                    <li><strong>Step 1:</strong> Click the button below to complete your payment</li>
+                    <li><strong>Step 2:</strong> Once paid, you'll be able to join the session</li>
+                    <li><strong>Step 3:</strong> Present your side of the dispute</li>
+                    <li><strong>Step 4:</strong> Upload any supporting evidence</li>
+                    <li><strong>Step 5:</strong> Receive a detailed mediation report</li>
+                </ul>
 
-            <!-- CTA Button -->
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="{{ $roomLink }}" class="cta-button">Join Mediation Session</a>
-            </div>
+                <!-- Payment CTA Button -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{{ $paymentLink }}" class="cta-button">Complete Payment & Join Session</a>
+                </div>
+            @else
+                <!-- Full Payment Already Done -->
+                <ul class="message" style="padding-left: 20px;">
+                    <li>Click the button below to join the session</li>
+                    <li>You can join as a guest (no account required)</li>
+                    <li>Present your side of the dispute to First Mediator, our AI mediator</li>
+                    <li>Upload any supporting evidence or documents</li>
+                    <li>Receive a detailed mediation report at the end</li>
+                </ul>
+
+                <!-- CTA Button -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{{ $roomLink }}" class="cta-button">Join Mediation Session</a>
+                </div>
+            @endif
 
             <div class="divider"></div>
 
