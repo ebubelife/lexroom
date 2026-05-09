@@ -175,16 +175,25 @@ class StripeWebhookController extends Controller
             $room->update(['party_a_paid' => true]);
 
             if ($room->payment_type === 'full') {
-                $room->update(['status' => 'pending']);
+                // Full payment - Party B can join immediately
+                $room->update(['status' => 'pending', 'party_b_paid' => true]);
                 $this->sendPartyBInvite($room);
             } else {
+                // Split payment - Party B needs to pay
                 $room->update(['status' => 'awaiting_party_b_payment']);
                 $this->sendPartyBPaymentLink($room);
             }
         }
 
         if ($party === 'party_b') {
-            $room->update(['party_b_paid' => true, 'status' => 'pending']);
+            $updates = ['party_b_paid' => true, 'status' => 'pending'];
+            
+            // If Party B is logged in and not yet assigned, assign them
+            if ($userId && !$room->party_b_id) {
+                $updates['party_b_id'] = $userId;
+            }
+            
+            $room->update($updates);
         }
     }
 
