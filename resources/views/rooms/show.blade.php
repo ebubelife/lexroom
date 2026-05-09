@@ -224,7 +224,7 @@
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
                     <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
                         <!-- Party A: Show Start Session button -->
-                        <div x-show="isPartyA">
+                        <div x-show="isPartyA" class="w-full flex flex-col items-center">
                             <button @click="openStartModal"
                                     :disabled="!clockedIn"
                                     class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
@@ -234,6 +234,10 @@
                             </button>
                             <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
+                            </button>
+                            <!-- Debug: Manual clock-in for testing -->
+                            <button x-show="!clockedIn" @click="clockIn" class="text-[9px] uppercase tracking-wider mt-1 opacity-50 hover:opacity-100" style="color: #666;">
+                                [Debug: Clock In Party B]
                             </button>
                         </div>
                         
@@ -730,7 +734,7 @@ function liveRoom(roomUuid, token) {
         timerInterval: null,
         isPolling: false,
         isPartyA: parseInt('{{ (auth()->check() && auth()->id() == $room->party_a_id) ? "1" : "0" }}') === 1,
-        isPartyB: parseInt('{{ ((auth()->check() && auth()->id() == $room->party_b_id) || (request()->hasValidSignature() && request('token') === $room->invite_token && (!auth()->check() || auth()->id() != $room->party_a_id))) ? "1" : "0" }}') === 1,
+        isPartyB: parseInt('{{ ((auth()->check() && auth()->id() == $room->party_b_id) || (auth()->check() && $room->party_b_email && auth()->user()->email === $room->party_b_email && auth()->id() != $room->party_a_id) || (request()->hasValidSignature() && request('token') === $room->invite_token && (!auth()->check() || auth()->id() != $room->party_a_id))) ? "1" : "0" }}') === 1,
         clockedIn: parseInt('{{ $room->party_b_clocked_in_at ? "1" : "0" }}') === 1,
         inviteUrl: "{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}",
         
