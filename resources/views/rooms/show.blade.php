@@ -287,7 +287,7 @@
     </div>
 
     <!-- Clock-In Overlay for Party B (Google Meet/Zoom Style) -->
-    <template x-if="isPartyB && !clockedIn && roomStatus === 'pending'">
+    <template x-if="isPartyB && !clockedIn && (roomStatus === 'pending' || roomStatus === 'awaiting_party_b_payment')">
         <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black bg-opacity-95 backdrop-blur-xl overflow-y-auto">
             <div class="max-w-5xl w-full flex flex-col gap-8 my-auto py-8">
                 <!-- Branding Header -->

@@ -22,19 +22,16 @@
             </p>
 
             @auth
-                <a href="{{ route('rooms.show', $room->uuid) }}"
+                <a href="{{ $roomUrl }}"
                    style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none;">
                     Enter Session Room
                 </a>
             @else
-                <p style="color: #6B6B68; font-size: 14px; margin-bottom: 16px;">Create an account or log in to access your session.</p>
-                <a href="{{ route('register') }}"
+                <p style="color: #6B6B68; font-size: 14px; margin-bottom: 16px;">You can now access the session using the link below (no account required).</p>
+                <a href="{{ $roomUrl }}"
                    style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none;">
-                    Create Account
+                    Enter Session Room
                 </a>
-                <p style="margin-top: 12px;">
-                    <a href="{{ route('login') }}" style="color: #6B6B68; font-size: 13px;">Already have an account? Log in</a>
-                </p>
             @endauth
         </div>
     </div>

@@ -216,7 +216,14 @@ class StripeController extends Controller
     public function successPartyB(Request $request, $uuid)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
-        return view('payment.success-party-b', compact('room'));
+        
+        // Generate a signed URL for Party B to access the room
+        $roomUrl = \Illuminate\Support\Facades\URL::signedRoute('rooms.show', [
+            'uuid' => $room->uuid,
+            'token' => $room->invite_token
+        ], now()->addDays(7));
+        
+        return view('payment.success-party-b', compact('room', 'roomUrl'));
     }
 
     /**

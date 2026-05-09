@@ -231,27 +231,12 @@ class RoomController extends Controller
         
         // Check if user is Party B (already assigned)
         if ($user && $room->party_b_id == $user->id) {
-            // If split payment and Party B hasn't paid, redirect to payment
-            if ($room->payment_type === 'split' && !$room->party_b_paid) {
-                return redirect()->route('payment.party-b.checkout', [
-                    'uuid' => $uuid,
-                    'token' => $room->party_b_payment_token
-                ]);
-            }
             return view('rooms.show', compact('room'));
         }
         
         // Check if user's email matches Party B email (invited but not assigned yet)
         // BUT only if they are not already Party A!
         if ($user && $room->party_b_email && $user->email === $room->party_b_email && $user->id !== $room->party_a_id) {
-            // If split payment and Party B hasn't paid, redirect to payment
-            if ($room->payment_type === 'split' && !$room->party_b_paid) {
-                return redirect()->route('payment.party-b.checkout', [
-                    'uuid' => $uuid,
-                    'token' => $room->party_b_payment_token
-                ]);
-            }
-            
             // Auto-assign Party B if not already assigned
             if (!$room->party_b_id) {
                 $room->update(['party_b_id' => $user->id]);
@@ -259,12 +244,8 @@ class RoomController extends Controller
             return view('rooms.show', compact('room'));
         }
         
-        // Check for valid signed invite link (for non-logged-in users)
+        // Check for valid signed invite link (for non-logged-in users or Party B with token)
         if (request()->hasValidSignature() && request('token') === $room->invite_token) {
-            // If split payment and Party B hasn't paid, show payment required message
-            if ($room->payment_type === 'split' && !$room->party_b_paid) {
-                return redirect()->route('login')->with('error', 'Please log in or create an account to complete payment and join this session.');
-            }
             return view('rooms.show', compact('room'));
         } elseif (request()->has('signature') && !request()->hasValidSignature()) {
             return redirect()->route('login')->with('error', 'Your invitation link is invalid or has expired.');
