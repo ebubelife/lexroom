@@ -290,6 +290,7 @@ class StripeWebhookController extends Controller
                 $m->to($room->party_b_email)
                   ->subject('Action Required — Complete your payment to join the mediation session');
             });
+            Log::info("Successfully sent Party B payment link to {$room->party_b_email}");
         } catch (\Exception $e) {
             Log::error('Failed to send Party B payment link: ' . $e->getMessage());
         }

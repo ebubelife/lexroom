@@ -149,13 +149,9 @@ class RoomController extends Controller
             ]);
         }
 
-        // Send invitation email to Party B
-        try {
-            Mail::to($validated['party_b_email'])->send(new RoomInvitation($room));
-            \Log::info("Successfully sent invitation email to Party B: " . $validated['party_b_email']);
-        } catch (\Exception $e) {
-            \Log::error('Failed to send Room Invitation to Party B: ' . $e->getMessage());
-        }
+        // DO NOT send invitation email to Party B here
+        // For split payment: Party B will get payment link AFTER Party A pays (via webhook)
+        // For full payment: Party B will get invite AFTER Party A pays (via webhook)
 
         // Send confirmation email to Party A
         try {
