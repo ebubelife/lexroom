@@ -18,7 +18,7 @@
             <div style="font-size: 56px; margin-bottom: 16px;">⏰</div>
             <h1 class="font-serif" style="color: #0D1B2A; font-size: 24px; margin-bottom: 8px;">Payment Link Expired</h1>
             <p style="color: #6B6B68; font-size: 14px; margin-bottom: 24px;">
-                This payment link expired on {{ $room->party_b_payment_expires_at->format('M d, Y') }}. Please contact the other party to request a new session.
+                This payment link has expired. Please contact {{ $room->partyA?->name ?? 'the other party' }} to request a new invitation.
             </p>
             <a href="{{ route('login') }}"
                style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none;">

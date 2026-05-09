@@ -50,7 +50,7 @@
             </a>
 
             <p style="text-align: center; font-size: 12px; color: #6B6B68; margin-top: 16px;">
-                Secured by Stripe. Link expires {{ $room->party_b_payment_expires_at->diffForHumans() }}.
+                Secured by Stripe. Link expires {{ $room->party_b_payment_expires_at?->diffForHumans() ?? 'soon' }}.
             </p>
         </div>
     </div>

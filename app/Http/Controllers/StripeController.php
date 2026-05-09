@@ -226,12 +226,19 @@ class StripeController extends Controller
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
 
+        // Check if token is provided
+        if (!$request->has('token')) {
+            abort(403, 'Payment token required.');
+        }
+
         abort_if($room->party_b_payment_token !== $request->token, 403, 'Invalid payment link.');
 
-        if ($room->party_b_payment_expires_at < now()) {
+        // Check if token has expired or is null
+        if (!$room->party_b_payment_expires_at || $room->party_b_payment_expires_at < now()) {
             return view('payment.expired', compact('room'));
         }
 
+        // If already paid, redirect to room
         if ($room->party_b_paid) {
             return redirect()->route('rooms.show', $uuid);
         }
