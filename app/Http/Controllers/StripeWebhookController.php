@@ -173,14 +173,33 @@ class StripeWebhookController extends Controller
 
         if ($party === 'party_a') {
             $room->update(['party_a_paid' => true]);
+            
+            Log::info("Party A payment completed for room {$room->uuid}", [
+                'payment_type' => $room->payment_type,
+                'party_b_email' => $room->party_b_email,
+            ]);
 
             if ($room->payment_type === 'full') {
                 // Full payment - Party B can join immediately
                 $room->update(['status' => 'pending', 'party_b_paid' => true]);
+                Log::info("Sending Party B invite for full payment room {$room->uuid}");
                 $this->sendPartyBInvite($room);
             } else {
                 // Split payment - Party B needs to pay
+                // Ensure payment token and expiry are set
+                if (!$room->party_b_payment_token) {
+                    $room->update([
+                        'party_b_payment_token' => \Illuminate\Support\Str::random(64),
+                        'party_b_payment_expires_at' => now()->addDays(7),
+                    ]);
+                    $room->refresh();
+                }
+                
                 $room->update(['status' => 'awaiting_party_b_payment']);
+                Log::info("Sending Party B payment link for split payment room {$room->uuid}", [
+                    'has_token' => !empty($room->party_b_payment_token),
+                    'has_expiry' => !empty($room->party_b_payment_expires_at),
+                ]);
                 $this->sendPartyBPaymentLink($room);
             }
         }

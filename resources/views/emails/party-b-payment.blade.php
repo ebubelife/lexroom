@@ -19,7 +19,9 @@
             <p style="margin: 0; font-size: 14px;">Category: {{ ucfirst($room->category) }}</p>
             <p style="margin: 0; font-size: 14px;">Duration: {{ $room->duration }} minutes</p>
             <p style="margin: 0; font-size: 14px;">Jurisdiction: {{ $room->jurisdiction }}</p>
+            @if($room->party_b_payment_expires_at)
             <p style="margin: 0; font-size: 14px;">Payment link expires: {{ $room->party_b_payment_expires_at->format('M d, Y') }}</p>
+            @endif
         </div>
 
         <div style="text-align: center; margin: 30px 0;">

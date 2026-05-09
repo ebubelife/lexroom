@@ -22,6 +22,28 @@ class StripeController extends Controller
     const EXTENSION_LOCK_MINUTES  = 10;
 
     /**
+     * Party A payment page (before checkout)
+     */
+    public function partyAPaymentPage(Room $room)
+    {
+        abort_if($room->party_a_id != auth()->id(), 403);
+        
+        // If already paid, redirect to room
+        if ($room->party_a_paid) {
+            return redirect()->route('rooms.show', $room->uuid)
+                ->with('info', 'You have already completed payment for this session.');
+        }
+
+        $package = SessionPackage::forDuration($room->duration);
+        abort_if(!$package, 400, 'Session package not found.');
+
+        $amount = $room->payment_type === 'split' ? $package->split_price : $package->full_price;
+        $label  = $room->payment_type === 'split' ? 'Your half' : 'Full session';
+
+        return view('payment.party-a', compact('room', 'amount', 'label'));
+    }
+
+    /**
      * Party A checkout — full or split (their half)
      */
     public function checkoutPartyA(Room $room)

@@ -99,6 +99,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Stripe checkout (Party A)
+    Route::get('/rooms/{room}/payment', [\App\Http\Controllers\StripeController::class, 'partyAPaymentPage'])->name('payment.page');
     Route::get('/rooms/{room}/checkout', [\App\Http\Controllers\StripeController::class, 'checkoutPartyA'])->name('payment.checkout');
     Route::post('/rooms/{room}/checkout/extension', [\App\Http\Controllers\StripeController::class, 'checkoutExtension'])->name('payment.extension');
     Route::get('/rooms/{uuid}/payment/success', [\App\Http\Controllers\StripeController::class, 'successPartyA'])->name('payment.success');

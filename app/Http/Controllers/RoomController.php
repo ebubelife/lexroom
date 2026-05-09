@@ -169,7 +169,7 @@ class RoomController extends Controller
         return response()->json([
             'success'     => true,
             'room_id'     => $room->id,
-            'payment_url' => route('payment.checkout', $room->id),
+            'payment_url' => route('payment.page', $room->id),
             'message'     => 'Room created successfully!'
         ]);
     }
