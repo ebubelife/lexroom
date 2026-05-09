@@ -228,8 +228,23 @@ class StripeController extends Controller
 
         // Check if token is provided
         if (!$request->has('token')) {
+            \Log::warning("Party B payment access without token for room {$uuid}");
             abort(403, 'Payment token required.');
         }
+
+        // Check if room has a payment token set
+        if (!$room->party_b_payment_token) {
+            \Log::error("Room {$uuid} has no party_b_payment_token set");
+            abort(500, 'Payment link not configured. Please contact the session creator.');
+        }
+
+        // Log for debugging
+        \Log::info("Party B payment page access", [
+            'room_uuid' => $uuid,
+            'provided_token' => $request->token,
+            'stored_token' => $room->party_b_payment_token,
+            'tokens_match' => $room->party_b_payment_token === $request->token,
+        ]);
 
         abort_if($room->party_b_payment_token !== $request->token, 403, 'Invalid payment link.');
 

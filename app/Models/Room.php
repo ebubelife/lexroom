@@ -15,6 +15,7 @@ class Room extends Model
         'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category', 'title',
         'jurisdiction', 'language', 'duration', 'extended_minutes', 'status',
         'payment_type', 'case_summary', 'invite_token',
+        'party_b_payment_token', 'party_b_payment_expires_at', 'party_a_paid', 'party_b_paid',
         'started_at', 'ended_at', 'party_b_clocked_in_at',
         'pause_requested_at', 'paused_at', 'total_paused_seconds', 'archived_at', 'user_deleted_at'
     ];
@@ -27,6 +28,9 @@ class Room extends Model
         'paused_at' => 'datetime',
         'archived_at' => 'datetime',
         'user_deleted_at' => 'datetime',
+        'party_b_payment_expires_at' => 'datetime',
+        'party_a_paid' => 'boolean',
+        'party_b_paid' => 'boolean',
     ];
 
     protected static function boot()
