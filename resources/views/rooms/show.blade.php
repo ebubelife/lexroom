@@ -210,7 +210,7 @@
                     <div class="h-8 w-px bg-white bg-opacity-10 hidden sm:block"></div>
                     <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm" 
                           :style="getStatusStyle(roomSessionStatus)">
-                        <span x-text="roomSessionStatus"></span>
+                        <span x-text="getStatusLabel(roomSessionStatus)"></span>
                     </span>
                 </div>
 
@@ -224,13 +224,13 @@
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
                     <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
                         <button @click="openStartModal"
-                                :disabled="!clockedIn"
+                                :disabled="!clockedIn && isPartyA"
                                 class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
-                                :class="clockedIn ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
-                                :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
-                            <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
+                                :class="(clockedIn || isPartyB) ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+                                :style="(clockedIn || isPartyB) ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
+                            <span x-text="isPartyB ? 'Waiting for Party A to Start...' : (clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...'))"></span>
                         </button>
-                        <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                        <button x-show="!clockedIn && isPartyA" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                             Resend / Correct Invite Email
                         </button>
                     </div>
@@ -898,7 +898,15 @@ function liveRoom(roomUuid, token) {
                 
                 self.roomSessionStatus = data.status;
                 self.lexProcessing = data.lex_processing;
+                
+                // Check if Party B just clocked in
+                var wasNotClockedIn = !self.clockedIn;
                 self.clockedIn = !!data.party_b_clocked_in_at;
+                
+                // Notify Party A when Party B joins
+                if (self.isPartyA && wasNotClockedIn && self.clockedIn) {
+                    window.showToast('Party B has joined the session! You can now start.', 'success');
+                }
 
                 if (self.roomSessionStatus === 'active') {
                     if (!self.timerSynced) {
@@ -1199,12 +1207,26 @@ function liveRoom(roomUuid, token) {
         getStatusStyle: function(currentSessionStatus) {
             var styles = {
                 'pending': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
+                'awaiting_party_b_payment': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
                 'active': 'background-color: rgba(34, 197, 94, 0.1); color: #15803D;',
                 'completed': 'background-color: rgba(107, 107, 104, 0.1); color: #6B6B68;',
                 'pause_requested': 'background-color: rgba(185, 28, 28, 0.1); color: #B91C1C;',
                 'paused': 'background-color: rgba(75, 85, 99, 0.1); color: #4B5563;'
             };
             return styles[currentSessionStatus] || styles.pending;
+        },
+        
+        getStatusLabel: function(currentSessionStatus) {
+            var labels = {
+                'pending': 'PENDING',
+                'awaiting_party_b_payment': 'AWAITING PAYMENT',
+                'active': 'ACTIVE',
+                'completed': 'COMPLETED',
+                'pause_requested': 'PAUSE REQUESTED',
+                'paused': 'PAUSED',
+                'timer_expired': 'TIME EXPIRED'
+            };
+            return labels[currentSessionStatus] || currentSessionStatus.toUpperCase();
         }
     };
 }
