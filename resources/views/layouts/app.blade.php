@@ -8,6 +8,14 @@
     <title>@yield('title', 'Dashboard — First Mediator')</title>
     <meta name="description" content="@yield('description', 'First Mediator dashboard - manage your dispute sessions and mediation reports')">
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#C9A84C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FirstMediator">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg">
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/FM_Icon.svg') }}">
 
@@ -21,6 +29,9 @@
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- PWA Install Prompt -->
+    <script src="/js/pwa-install.js" defer></script>
 
     <style>
         :root {
@@ -552,6 +563,19 @@
             // Initialize theme display
             updateTheme();
         });
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
