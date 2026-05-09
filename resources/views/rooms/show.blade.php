@@ -222,9 +222,9 @@
                 
                 <!-- Action Buttons -->
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
-                    <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
+                    <div x-show="roomSessionStatus === 'pending'" x-cloak class="w-full sm:w-auto flex flex-col items-center">
                         <!-- Party A: Show Start Session button (takes priority if user is both) -->
-                        <div x-show="isPartyA" class="w-full flex flex-col items-center">
+                        <div x-show="isPartyA" x-cloak class="w-full flex flex-col items-center">
                             <button @click="openStartModal"
                                     :disabled="!clockedIn"
                                     class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center"
@@ -238,7 +238,7 @@
                         </div>
                         
                         <!-- Party B: Show Join Session button (only if NOT Party A) -->
-                        <div x-show="isPartyB && !isPartyA" class="w-full flex flex-col items-center">
+                        <div x-show="isPartyB && !isPartyA" x-cloak class="w-full flex flex-col items-center">
                             <button @click="clockIn" 
                                     x-show="!clockedIn"
                                     class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center hover:scale-105 active:scale-95 cursor-pointer"
