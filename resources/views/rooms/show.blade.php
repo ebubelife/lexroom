@@ -235,15 +235,19 @@
                             <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
                             </button>
-                            <!-- Debug: Manual clock-in for testing -->
-                            <button x-show="!clockedIn" @click="clockIn" class="text-[9px] uppercase tracking-wider mt-1 opacity-50 hover:opacity-100" style="color: #666;">
-                                [Debug: Clock In Party B]
-                            </button>
                         </div>
                         
-                        <!-- Party B: Show waiting message (only if NOT Party A) -->
-                        <div x-show="isPartyB && !isPartyA" class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest text-center" style="background: #4B5563;">
-                            Waiting for Party A to Start...
+                        <!-- Party B: Show Join Session button (only if NOT Party A) -->
+                        <div x-show="isPartyB && !isPartyA" class="w-full flex flex-col items-center">
+                            <button @click="clockIn" 
+                                    x-show="!clockedIn"
+                                    class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest shadow-lg transition-all text-center hover:scale-105 active:scale-95 cursor-pointer"
+                                    style="background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);">
+                                Join Session
+                            </button>
+                            <div x-show="clockedIn" class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest text-center" style="background: #4B5563;">
+                                Waiting for Party A to Start...
+                            </div>
                         </div>
                     </div>
                     
