@@ -222,7 +222,7 @@
                 
                 <!-- Action Buttons -->
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
-                    <div x-show="roomSessionStatus === 'pending'" x-cloak class="w-full sm:w-auto flex flex-col items-center">
+                    <div x-show="roomSessionStatus === 'pending' || roomSessionStatus === 'awaiting_party_b_payment'" x-cloak class="w-full sm:w-auto flex flex-col items-center">
                         <!-- Party A: Show Start Session button (takes priority if user is both) -->
                         <div x-show="isPartyA" x-cloak class="w-full flex flex-col items-center">
                             <button @click="openStartModal"
@@ -252,22 +252,22 @@
                     </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
-                    <button x-show="roomSessionStatus === 'active'"
+                    <button x-show="roomSessionStatus === 'active'" x-cloak
                             @click="showPauseModal = true"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
-                    <button x-show="roomSessionStatus === 'paused'"
+                    <button x-show="roomSessionStatus === 'paused'" x-cloak
                             @click="resumeSession"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
                     </button>
-                    <button x-show="roomSessionStatus === 'active' || roomSessionStatus === 'timer_expired'"
+                    <button x-show="roomSessionStatus === 'active' || roomSessionStatus === 'timer_expired'" x-cloak
                             @click="showExtendModal = true"
                             class="w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-blue-600 hover:bg-blue-700 text-center">
                         Extend Session
                     </button>
-                    <span x-show="roomSessionStatus === 'pause_requested'" class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
+                    <span x-show="roomSessionStatus === 'pause_requested'" x-cloak class="w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
 
                     {{-- Download / Generate Report (session ended) --}}
                     @if(in_array($room->status, ['locked', 'completed', 'expired']))
