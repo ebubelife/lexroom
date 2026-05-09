@@ -223,7 +223,7 @@
                 <!-- Action Buttons -->
                 @if(auth()->check() && auth()->id() == $room->party_a_id)
                     <div x-show="roomSessionStatus === 'pending'" class="w-full sm:w-auto flex flex-col items-center">
-                        <!-- Party A: Show Start Session button -->
+                        <!-- Party A: Show Start Session button (takes priority if user is both) -->
                         <div x-show="isPartyA" class="w-full flex flex-col items-center">
                             <button @click="openStartModal"
                                     :disabled="!clockedIn"
@@ -241,8 +241,8 @@
                             </button>
                         </div>
                         
-                        <!-- Party B: Show waiting message (not a button) -->
-                        <div x-show="isPartyB" class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest text-center" style="background: #4B5563;">
+                        <!-- Party B: Show waiting message (only if NOT Party A) -->
+                        <div x-show="isPartyB && !isPartyA" class="w-full px-6 py-3 rounded-xl text-white text-sm font-bold uppercase tracking-widest text-center" style="background: #4B5563;">
                             Waiting for Party A to Start...
                         </div>
                     </div>
