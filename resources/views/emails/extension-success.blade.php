@@ -40,7 +40,7 @@
                 <p style="margin: 10px 0 0 0; color: #6c757d;">Continue your mediation with additional time</p>
             </div>
 
-            <div class="amount">£{{ number_format($amount, 2) }}</div>
+            <div class="amount">{{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format($amount, 2) }}</div>
 
             <div class="case-details">
                 <h3 style="margin-top: 0; color: #0D1B2A;">Session Details</h3>

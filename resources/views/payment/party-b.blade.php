@@ -40,13 +40,13 @@
                 <div style="border-top: 1px solid #E8C96A; margin: 12px 0;"></div>
                 <div style="display: flex; justify-content: space-between;">
                     <span style="color: #0D1B2A; font-weight: 600;">Your share</span>
-                    <span style="color: #C9A84C; font-weight: 700; font-size: 18px;">${{ number_format($amount, 2) }}</span>
+                    <span style="color: #C9A84C; font-weight: 700; font-size: 18px;">{{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format($amount, 2) }}</span>
                 </div>
             </div>
 
             <a href="{{ route('payment.party-b.pay', ['uuid' => $room->uuid, 'token' => request('token')]) }}"
                style="display: block; background: #C9A84C; color: white; padding: 14px; text-align: center; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 16px;">
-                Pay ${{ number_format($amount, 2) }} & Join Session
+                Pay {{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format($amount, 2) }} & Join Session
             </a>
 
             <p style="text-align: center; font-size: 12px; color: #6B6B68; margin-top: 16px;">

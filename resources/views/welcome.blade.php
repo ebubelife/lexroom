@@ -704,7 +704,7 @@ footer {
       </a>
       <a href="#how" class="btn-ghost" style="font-size:16px; padding: 14px 24px;">See how it works</a>
     </div>
-    <p class="hero-note reveal reveal-delay-4">Setup in 15 minutes · Starts from $45 · PDF report included</p>
+    <p class="hero-note reveal reveal-delay-4">Setup in 15 minutes · Starts from £45 · PDF report included</p>
 
     <!-- Browser Mockup -->
     <div class="hero-mockup reveal reveal-delay-4">
@@ -869,7 +869,7 @@ footer {
         <div class="trust-label">Average time to set up and start a session</div>
       </div>
       <div class="trust-item reveal reveal-delay-2">
-        <div class="trust-stat">$<span>45</span></div>
+        <div class="trust-stat">£<span>45</span></div>
         <div class="trust-label">Starting price — a fraction of any legal consultation</div>
       </div>
       <div class="trust-item reveal reveal-delay-3">
@@ -895,7 +895,7 @@ footer {
     <div class="pricing-grid">
       <div class="pricing-card reveal reveal-delay-1">
         <div class="pricing-name">Starter</div>
-        <div class="pricing-amount"><sup>$</sup>45</div>
+        <div class="pricing-amount"><sup>£</sup>45</div>
         <div class="pricing-period">30 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -909,7 +909,7 @@ footer {
       <div class="pricing-card featured reveal reveal-delay-2">
         <div class="pricing-badge">Most popular</div>
         <div class="pricing-name">Standard</div>
-        <div class="pricing-amount"><sup>$</sup>75</div>
+        <div class="pricing-amount"><sup>£</sup>75</div>
         <div class="pricing-period">60 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -923,7 +923,7 @@ footer {
       </div>
       <div class="pricing-card reveal reveal-delay-3">
         <div class="pricing-name">Extended</div>
-        <div class="pricing-amount"><sup>$</sup>100</div>
+        <div class="pricing-amount"><sup>£</sup>100</div>
         <div class="pricing-period">90 minute session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
@@ -1016,7 +1016,7 @@ footer {
           </svg>
         </a>
       </div>
-      <p class="hero-note reveal reveal-delay-4" style="margin-top:20px">No subscription · Starts from $45 · Setup in 15 minutes</p>
+      <p class="hero-note reveal reveal-delay-4" style="margin-top:20px">No subscription · Starts from £45 · Setup in 15 minutes</p>
     </div>
   </div>
 </section>

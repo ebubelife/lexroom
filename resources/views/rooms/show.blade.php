@@ -724,13 +724,13 @@
                                 :class="extendingMinutes === 30 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
                                 class="p-3 rounded-xl border text-center transition-all">
                             <span class="block text-sm font-bold text-white">30 Min</span>
-                            <span class="block text-[10px] opacity-60">$2.50</span>
+                            <span class="block text-[10px] opacity-60">{{ \App\Models\PlatformSetting::currencySymbol() }}20.00</span>
                         </button>
                         <button type="button" @click="extendingMinutes = 60"
                                 :class="extendingMinutes === 60 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
                                 class="p-3 rounded-xl border text-center transition-all">
                             <span class="block text-sm font-bold text-white">60 Min</span>
-                            <span class="block text-[10px] opacity-60">$4.50</span>
+                            <span class="block text-[10px] opacity-60">{{ \App\Models\PlatformSetting::currencySymbol() }}35.00</span>
                         </button>
                     </div>
                 </div>

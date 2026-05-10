@@ -34,7 +34,7 @@
                 Your payment has been successfully processed for the mediation session.
             </p>
 
-            <div class="amount">£{{ number_format($amount, 2) }}</div>
+            <div class="amount">{{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format($amount, 2) }}</div>
 
             <div class="case-details">
                 <h3 style="margin-top: 0; color: #0D1B2A;">Session Details</h3>

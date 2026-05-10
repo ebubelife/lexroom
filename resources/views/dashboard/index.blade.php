@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div>
-                <p class="text-2xl lg:text-3xl font-bold mb-0.5" style="color: var(--text-primary);">${{ number_format($stats['credits']) }}</p>
+                <p class="text-2xl lg:text-3xl font-bold mb-0.5" style="color: var(--text-primary);">{{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format($stats['credits']) }}</p>
                 <p class="text-xs lg:text-sm font-medium" style="color: var(--text-secondary);">Credits Balance</p>
             </div>
         </div>
@@ -528,7 +528,7 @@
             Create your first Room
         </a>
         <p class="mt-4 text-sm" style="color: var(--text-secondary);">
-            Starts from $45 · Setup in 15 minutes · PDF report included
+            Starts from £45 · Setup in 15 minutes · PDF report included
         </p>
     </div>
     @endif
