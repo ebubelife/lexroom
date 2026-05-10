@@ -443,7 +443,7 @@
                 @auth
                     <!-- Wallet Credits -->
                     <a href="{{ route('wallet.index') }}" class="hidden sm:flex px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
-                        ${{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
+                        {{ \App\Models\PlatformSetting::currencySymbol() }}{{ number_format(auth()->user()->wallet?->credits_balance ?? 0) }} credits
                     </a>
 
                     <!-- Create Room Button -->
