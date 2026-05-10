@@ -16,7 +16,8 @@ class SettingsSeeder extends Seeder
             ['key' => 'max_file_upload_mb',              'value' => '20',                           'type' => 'integer', 'description' => 'Maximum evidence file size in megabytes'],
             ['key' => 'otp_expiry_minutes',              'value' => '10',                           'type' => 'integer', 'description' => 'How long OTP codes remain valid'],
 
-            // Payments (in USD cents)
+            // Payments
+            ['key' => 'default_currency',                'value' => 'gbp',                          'type' => 'string',  'description' => 'Platform currency code: gbp, usd, eur, cad, aud'],
             ['key' => 'price_30min',                     'value' => '450',                          'type' => 'integer', 'description' => 'Full session price in USD cents'],
             ['key' => 'price_60min',                     'value' => '750',                          'type' => 'integer', 'description' => 'Full session price in USD cents'],
             ['key' => 'price_90min',                     'value' => '1000',                         'type' => 'integer', 'description' => 'Full session price in USD cents'],

@@ -33,12 +33,12 @@ class PlatformSetting extends Model
             'aud' => 'A$',
         ];
 
-        $currency = static::get('default_currency', 'gbp');
+        $currency = \App\Models\Setting::get('default_currency', 'gbp');
         return $symbols[$currency] ?? '£';
     }
 
     public static function currencyCode(): string
     {
-        return static::get('default_currency', 'gbp');
+        return \App\Models\Setting::get('default_currency', 'gbp');
     }
 }
