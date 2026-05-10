@@ -23,15 +23,35 @@
 
             @auth
                 <a href="{{ $roomUrl }}"
-                   style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none;">
+                   style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none; margin-bottom: 16px;">
                     Enter Session Room
                 </a>
+                <p style="color: #6B6B68; font-size: 12px;">Session linked to your account automatically</p>
             @else
-                <p style="color: #6B6B68; font-size: 14px; margin-bottom: 16px;">You can now access the session using the link below (no account required).</p>
-                <a href="{{ $roomUrl }}"
-                   style="display: inline-block; background: #C9A84C; color: white; padding: 12px 30px; border-radius: 10px; font-weight: 600; text-decoration: none;">
-                    Enter Session Room
-                </a>
+                <div style="margin-bottom: 24px;">
+                    <p style="color: #6B6B68; font-size: 14px; margin-bottom: 16px;">Choose how you'd like to continue:</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="{{ route('register') }}?email={{ urlencode($room->party_b_email) }}&room={{ $room->uuid }}"
+                           style="display: block; background: #C9A84C; color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; text-align: center;">
+                            Create Account & Link Session
+                        </a>
+                        
+                        <a href="{{ route('login') }}?room={{ $room->uuid }}"
+                           style="display: block; background: #0D1B2A; color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; text-align: center;">
+                            Login to Existing Account
+                        </a>
+                        
+                        <a href="{{ $roomUrl }}"
+                           style="display: block; background: #F5F5F5; color: #6B6B68; padding: 12px 20px; border-radius: 10px; font-weight: 500; text-decoration: none; text-align: center; border: 1px solid #E5E5E5;">
+                            Continue as Guest
+                        </a>
+                    </div>
+                </div>
+                
+                <p style="color: #6B6B68; font-size: 12px; line-height: 1.4;">
+                    💡 <strong>Create an account</strong> to track this session in your dashboard and receive updates.
+                </p>
             @endauth
         </div>
     </div>

@@ -110,7 +110,7 @@
                 type="email" 
                 id="email" 
                 name="email" 
-                value="{{ old('email') }}" 
+                value="{{ old('email', $prefillEmail ?? '') }}" 
                 required 
                 class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-opacity-50 transition-colors"
                 style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); focus:ring-color: var(--gold);"

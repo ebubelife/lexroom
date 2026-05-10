@@ -393,9 +393,16 @@
                 @foreach($invitedRooms as $room)
                 <div class="p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
-                            {{ ucfirst($room->category) }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
+                                {{ ucfirst($room->category) }}
+                            </span>
+                            @if($room->party_b_user_id == auth()->id())
+                                <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: rgba(201,168,76,0.1); color: var(--gold);">
+                                    Party B
+                                </span>
+                            @endif
+                        </div>
                         <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $room->status_badge_color['bg'] }}; color: {{ $room->status_badge_color['text'] }};">
                             {{ ucfirst(str_replace('_', ' ', $room->status)) }}
                         </span>
@@ -464,6 +471,11 @@
                                     <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: {{ $room->category_badge_color['bg'] }}; color: {{ $room->category_badge_color['text'] }};">
                                         {{ ucfirst($room->category) }}
                                     </span>
+                                    @if($room->party_b_user_id == auth()->id())
+                                        <span class="px-2 py-1 rounded text-xs font-medium mr-3" style="background-color: rgba(201,168,76,0.1); color: var(--gold);">
+                                            Party B
+                                        </span>
+                                    @endif
                                     <span class="text-sm group-hover:underline" style="color: var(--text-primary);">
                                         {{ $room->case_summary ? Str::limit($room->case_summary, 40) : ucfirst($room->category) . ' Dispute' }}
                                     </span>

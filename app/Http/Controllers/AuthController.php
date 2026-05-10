@@ -21,7 +21,15 @@ class AuthController extends Controller
         if ($request->has('ref')) {
             session(['referred_by_code' => $request->ref]);
         }
-        return view('auth.register');
+        
+        // Handle Party B room linking
+        if ($request->has('room')) {
+            session(['party_b_room_uuid' => $request->room]);
+        }
+        
+        return view('auth.register', [
+            'prefillEmail' => $request->email
+        ]);
     }
 
     public function register(Request $request)
@@ -70,13 +78,21 @@ class AuthController extends Controller
 
         Auth::login($user);
         
+        // Handle Party B room linking after registration
+        $this->handlePartyBRoomLinking($user);
+        
         // Immediately send email OTP
         \App\Http\Controllers\OtpController::generateAndSendEmailOtp($user);
         return redirect()->route('verification.notice');
     }
 
-    public function showLogin()
+    public function showLogin(Request $request)
     {
+        // Handle Party B room linking
+        if ($request->has('room')) {
+            session(['party_b_room_uuid' => $request->room]);
+        }
+        
         return view('auth.login');
     }
 
@@ -91,6 +107,9 @@ class AuthController extends Controller
             $request->session()->regenerate();
             
             $user = Auth::user();
+            
+            // Handle Party B room linking after login
+            $this->handlePartyBRoomLinking($user);
             
             // Check if user needs verification
             if (!$user->isFullyVerified()) {
@@ -234,5 +253,36 @@ class AuthController extends Controller
 
         // Google users don't need phone verification anymore
         return redirect()->intended('/dashboard');
+    }
+    
+    /**
+     * Handle Party B room linking after registration or login
+     */
+    private function handlePartyBRoomLinking(User $user)
+    {
+        if (!session()->has('party_b_room_uuid')) {
+            return;
+        }
+        
+        $roomUuid = session('party_b_room_uuid');
+        $room = \App\Models\Room::where('uuid', $roomUuid)->first();
+        
+        if (!$room) {
+            session()->forget('party_b_room_uuid');
+            return;
+        }
+        
+        // Validate email match for security
+        if ($room->party_b_email !== $user->email) {
+            session()->forget('party_b_room_uuid');
+            session()->flash('error', 'Email mismatch. Please ask Party A to resend invitation to your account email.');
+            return;
+        }
+        
+        // Link the room to the user
+        $room->update(['party_b_user_id' => $user->id]);
+        
+        session()->forget('party_b_room_uuid');
+        session()->flash('success', 'Session linked to your account successfully!');
     }
 }

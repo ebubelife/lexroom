@@ -19,8 +19,11 @@ class DashboardController extends Controller
             ->latest()
             ->paginate(10);
 
-        // Rooms where user is Party B (exclude trashed)
-        $invitedRooms = Room::where('party_b_id', $user->id)
+        // Rooms where user is Party B (exclude trashed) - includes both party_b_id and party_b_user_id
+        $invitedRooms = Room::where(function($q) use ($user) {
+                $q->where('party_b_id', $user->id)
+                  ->orWhere('party_b_user_id', $user->id);
+            })
             ->whereNull('user_deleted_at')
             ->with(['partyA'])
             ->latest()
@@ -29,7 +32,8 @@ class DashboardController extends Controller
         // Active/pending sessions needing attention (exclude trashed)
         $activeSessions = Room::where(function($q) use ($user) {
                 $q->where('party_a_id', $user->id)
-                  ->orWhere('party_b_id', $user->id);
+                  ->orWhere('party_b_id', $user->id)
+                  ->orWhere('party_b_user_id', $user->id);
             })
             ->whereNull('user_deleted_at')
             ->whereIn('status', ['active', 'pending', 'waiting_for_party_b'])
@@ -41,13 +45,19 @@ class DashboardController extends Controller
         // Real Stats (exclude trashed)
         $stats = [
             'total'    => Room::where(function($q) use ($user) {
-                              $q->where('party_a_id', $user->id)->orWhere('party_b_id', $user->id);
+                              $q->where('party_a_id', $user->id)
+                                ->orWhere('party_b_id', $user->id)
+                                ->orWhere('party_b_user_id', $user->id);
                           })->whereNull('user_deleted_at')->count(),
             'active'   => Room::where(function($q) use ($user) {
-                              $q->where('party_a_id', $user->id)->orWhere('party_b_id', $user->id);
+                              $q->where('party_a_id', $user->id)
+                                ->orWhere('party_b_id', $user->id)
+                                ->orWhere('party_b_user_id', $user->id);
                           })->whereNull('user_deleted_at')->whereIn('status', ['active', 'pending'])->count(),
             'resolved' => Room::where(function($q) use ($user) {
-                              $q->where('party_a_id', $user->id)->orWhere('party_b_id', $user->id);
+                              $q->where('party_a_id', $user->id)
+                                ->orWhere('party_b_id', $user->id)
+                                ->orWhere('party_b_user_id', $user->id);
                           })->whereNull('user_deleted_at')->where('status', 'completed')->count(),
             'credits'  => $user->wallet?->credits_balance ?? 0,
         ];

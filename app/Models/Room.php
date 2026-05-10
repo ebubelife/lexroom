@@ -12,7 +12,7 @@ class Room extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'category', 'title',
+        'uuid', 'case_id', 'party_a_id', 'party_b_id', 'party_b_email', 'party_b_user_id', 'category', 'title',
         'jurisdiction', 'language', 'duration', 'extended_minutes', 'status',
         'payment_type', 'case_summary', 'invite_token',
         'party_b_payment_token', 'party_b_payment_expires_at', 'party_a_paid', 'party_b_paid',
@@ -112,6 +112,11 @@ class Room extends Model
     public function partyB()
     {
         return $this->belongsTo(User::class, 'party_b_id');
+    }
+
+    public function partyBUser()
+    {
+        return $this->belongsTo(User::class, 'party_b_user_id');
     }
 
     public function billing()
