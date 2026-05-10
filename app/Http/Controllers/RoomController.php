@@ -74,7 +74,9 @@ class RoomController extends Controller
             ])
             ->values();
 
-        return view('rooms.create', compact('jurisdictions', 'packages'));
+        return view('rooms.create', compact('jurisdictions', 'packages'))->with([
+            'currencySymbol' => \App\Models\PlatformSetting::currencySymbol()
+        ]);
     }
 
     public function store(Request $request)
