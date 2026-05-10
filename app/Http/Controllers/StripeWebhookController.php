@@ -168,7 +168,7 @@ class StripeWebhookController extends Controller
                 'stripe_session_id'        => $session->id,
                 'stripe_payment_intent_id' => $session->payment_intent,
                 'paid_at'                  => now(),
-                'user_id'                  => $userId ?: ($party === 'party_a' ? $room->party_a_id : 0),
+                'user_id'                  => $userId ?: ($party === 'party_a' ? $room->party_a_id : null),
             ]);
 
         if ($party === 'party_a') {
