@@ -124,9 +124,13 @@ class StripeWebhookController extends Controller
     {
         $roomId  = $session->metadata->room_id;
         $minutes = (int) ($session->metadata->extension_minutes ?? 30);
+        $userId  = $session->metadata->user_id;
 
         $room = Room::find($roomId);
         if (!$room) return;
+
+        // Get the payment amount from session
+        $amountPaid = $session->amount_total / 100; // Convert from pence to pounds
 
         Billing::where('room_id', $roomId)
             ->where('stripe_session_id', $session->id)
@@ -148,6 +152,10 @@ class StripeWebhookController extends Controller
             'extension_deadline'  => null,
         ]);
 
+        // Send extension payment success email
+        $party = $room->party_a_id == $userId ? 'party_a' : 'party_b';
+        $this->sendExtensionSuccessEmail($room, $party, $amountPaid, $minutes);
+
         Log::info("Room {$room->uuid} extended by {$minutes} minutes");
     }
 
@@ -159,6 +167,9 @@ class StripeWebhookController extends Controller
 
         $room = Room::find($roomId);
         if (!$room) return;
+
+        // Get the payment amount from session
+        $amountPaid = $session->amount_total / 100; // Convert from pence to pounds
 
         Billing::where('room_id', $roomId)
             ->where('party', $party)
@@ -173,6 +184,9 @@ class StripeWebhookController extends Controller
 
         if ($party === 'party_a') {
             $room->update(['party_a_paid' => true]);
+            
+            // Send payment success email to Party A
+            $this->sendPaymentSuccessEmail($room, 'party_a', $amountPaid);
             
             Log::info("Party A payment completed for room {$room->uuid}", [
                 'payment_type' => $room->payment_type,
@@ -213,6 +227,9 @@ class StripeWebhookController extends Controller
             }
             
             $room->update($updates);
+            
+            // Send payment success email to Party B
+            $this->sendPaymentSuccessEmail($room, 'party_b', $amountPaid);
         }
     }
 
@@ -293,6 +310,43 @@ class StripeWebhookController extends Controller
             Log::info("Successfully sent Party B payment link to {$room->party_b_email}");
         } catch (\Exception $e) {
             Log::error('Failed to send Party B payment link: ' . $e->getMessage());
+        }
+    }
+
+    protected function sendPaymentSuccessEmail(Room $room, string $party, float $amount): void
+    {
+        try {
+            $email = $party === 'party_a' ? $room->partyA?->email : $room->party_b_email;
+            
+            if (!$email) {
+                Log::warning("No email found for {$party} in room {$room->uuid}");
+                return;
+            }
+
+            Mail::to($email)->send(new \App\Mail\PaymentSuccess($room, $party, $amount));
+            Log::info("Payment success email sent to {$party} ({$email}) for room {$room->uuid}");
+        } catch (\Exception $e) {
+            Log::error("Failed to send payment success email to {$party}: " . $e->getMessage());
+        }
+    }
+
+    protected function sendExtensionSuccessEmail(Room $room, string $party, float $amount, int $minutes): void
+    {
+        try {
+            $email = $party === 'party_a' ? $room->partyA?->email : $room->party_b_email;
+            
+            if (!$email) {
+                Log::warning("No email found for {$party} in room {$room->uuid}");
+                return;
+            }
+
+            Mail::send('emails.extension-success', compact('room', 'party', 'amount', 'minutes'), function ($m) use ($email, $room, $minutes) {
+                $m->to($email)
+                  ->subject("Session Extended — {$room->case_id} (+{$minutes} minutes)");
+            });
+            Log::info("Extension success email sent to {$party} ({$email}) for room {$room->uuid}");
+        } catch (\Exception $e) {
+            Log::error("Failed to send extension success email to {$party}: " . $e->getMessage());
         }
     }
 }

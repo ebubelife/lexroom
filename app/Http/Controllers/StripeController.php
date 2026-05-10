@@ -72,7 +72,7 @@ class StripeController extends Controller
                 'quantity' => 1,
             ]],
             'mode'        => 'payment',
-            'success_url' => route('payment.success', $room->uuid) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('payment.success', $room->uuid),
             'cancel_url'  => route('rooms.show', $room->uuid),
             'metadata'    => [
                 'room_id' => $room->id,
@@ -150,7 +150,7 @@ class StripeController extends Controller
                 'quantity' => 1,
             ]],
             'mode'        => 'payment',
-            'success_url' => route('payment.success', $room->uuid) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('payment.success', $room->uuid),
             'cancel_url'  => route('rooms.show', $room->uuid),
             'metadata'    => [
                 'room_id'            => $room->id,
@@ -206,7 +206,7 @@ class StripeController extends Controller
                 'quantity' => 1,
             ]],
             'mode'        => 'payment',
-            'success_url' => route('payment.party-b.success', $uuid) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('payment.party-b.success', $uuid),
             'cancel_url'  => route('payment.party-b.checkout', ['uuid' => $uuid, 'token' => $request->token]),
             'metadata'    => [
                 'room_id' => $room->id,

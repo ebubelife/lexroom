@@ -174,17 +174,27 @@
                     </div>
                     <div class="flex items-center gap-2 p-2 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
                         <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <div>
+                        <div class="flex-1">
                             <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Initiator</p>
-                            <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyA)->name ?? 'Unknown' }}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyA)->name ?? 'Unknown' }}</p>
+                                @if($room->party_a_paid)
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(34, 197, 94, 0.1); color: #15803D;">PAID</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 p-2 rounded-lg bg-black bg-opacity-5 dark:bg-white dark:bg-opacity-5">
                         <svg class="w-4 h-4 opacity-60" style="color: var(--text-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <div>
+                        <div class="flex-1">
                             <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Invited Party</p>
                             <div class="flex items-center gap-2">
                                 <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
+                                @if($room->party_b_paid)
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(34, 197, 94, 0.1); color: #15803D;">PAID</span>
+                                @elseif($room->payment_type === 'split' && $room->party_a_paid)
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(245, 158, 11, 0.1); color: #B45309;">PENDING</span>
+                                @endif
                                 @if(auth()->check() && auth()->id() === $room->party_a_id && $room->status === 'pending')
                                     <button @click="copyInviteLink" 
                                             class="p-1 rounded bg-gold bg-opacity-10 hover:bg-opacity-20 transition-all group"
@@ -360,6 +370,22 @@
                                 <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
                                     <span class="text-xs opacity-50">Est. Duration</span>
                                     <span class="text-xs font-bold text-white">{{ $room->duration }} Mins</span>
+                                </div>
+                                <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
+                                    <span class="text-xs opacity-50">Payment Status</span>
+                                    <div class="flex items-center gap-1">
+                                        @if($room->payment_type === 'full')
+                                            @if($room->party_a_paid)
+                                                <span class="text-xs font-bold text-green-400">PAID</span>
+                                            @else
+                                                <span class="text-xs font-bold text-yellow-400">PENDING</span>
+                                            @endif
+                                        @else
+                                            <span class="text-xs font-bold {{ $room->party_a_paid ? 'text-green-400' : 'text-yellow-400' }}">A:{{ $room->party_a_paid ? 'PAID' : 'PENDING' }}</span>
+                                            <span class="text-xs opacity-30">/</span>
+                                            <span class="text-xs font-bold {{ $room->party_b_paid ? 'text-green-400' : 'text-yellow-400' }}">B:{{ $room->party_b_paid ? 'PAID' : 'PENDING' }}</span>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(255,255,255,0.05);">
                                     <span class="text-xs opacity-50">Security Level</span>
