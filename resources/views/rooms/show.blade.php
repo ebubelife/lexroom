@@ -190,7 +190,9 @@
                             <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--text-secondary);">Invited Party</p>
                             <div class="flex items-center gap-2">
                                 <p class="text-xs font-bold" style="color: var(--text-primary);">{{ optional($room->partyB)->name ?? $room->party_b_email ?? 'Unknown' }}</p>
-                                @if($room->party_b_paid)
+                                @if($room->party_b_paid && $room->party_b_clocked_in_at)
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(34, 197, 94, 0.1); color: #15803D;">JOINED</span>
+                                @elseif($room->party_b_paid)
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(34, 197, 94, 0.1); color: #15803D;">PAID</span>
                                 @elseif($room->payment_type === 'split' && $room->party_a_paid)
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(245, 158, 11, 0.1); color: #B45309;">PENDING</span>

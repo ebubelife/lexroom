@@ -34,7 +34,18 @@ class ProfileController extends Controller
             $transactions = collect();
         }
 
-        return view('settings.index', compact('sub', 'topups', 'transactions'));
+        try {
+            $payments = \App\Models\Billing::where('user_id', $user->id)
+                ->with('room')
+                ->latest()
+                ->limit(20)
+                ->get();
+        } catch (\Exception $e) {
+            \Log::error('Settings payments error: ' . $e->getMessage());
+            $payments = collect();
+        }
+
+        return view('settings.index', compact('sub', 'topups', 'transactions', 'payments'));
     }
 
     public function update(Request $request)

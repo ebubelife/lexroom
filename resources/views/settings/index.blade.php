@@ -26,6 +26,12 @@
                 :style="activeTab === 'subscription' ? 'border-color: var(--gold); color: var(--gold);' : 'color: var(--text-secondary);'">
             Subscription
         </button>
+        <button @click="activeTab = 'payments'"
+                class="px-4 py-2 text-sm whitespace-nowrap transition-colors"
+                :class="activeTab === 'payments' ? 'border-b-2 font-medium' : ''"
+                :style="activeTab === 'payments' ? 'border-color: var(--gold); color: var(--gold);' : 'color: var(--text-secondary);'">
+            Payment History
+        </button>
     </div>
 
     {{-- ===== PROFILE TAB ===== --}}
@@ -291,6 +297,65 @@
             <p class="text-sm" style="color: var(--text-secondary);">No credit history yet.</p>
         </div>
         @endif
+    </div>
+
+    {{-- ===== PAYMENT HISTORY TAB ===== --}}
+    <div x-show="activeTab === 'payments'" x-cloak>
+        <div class="rounded-xl border p-4 md:p-6"
+             style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <h2 class="text-lg font-serif mb-4" style="color: var(--text-primary);">Payment History</h2>
+
+            @if($payments->isNotEmpty())
+                <div class="space-y-3">
+                    @foreach($payments as $payment)
+                        <div class="flex items-center justify-between p-4 rounded-lg border"
+                             style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-sm font-medium" style="color: var(--text-primary);">
+                                        {{ $payment->room ? $payment->room->case_id : 'Session Payment' }}
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                          style="background: {{ $payment->status === 'paid' ? 'rgba(74,222,128,0.12)' : ($payment->status === 'pending' ? 'rgba(251,191,36,0.12)' : 'rgba(239,68,68,0.12)') }}; color: {{ $payment->status === 'paid' ? '#4ADE80' : ($payment->status === 'pending' ? '#F59E0B' : '#F87171') }};">
+                                        {{ ucfirst($payment->status) }}
+                                    </span>
+                                </div>
+                                <p class="text-xs mb-1" style="color: var(--text-secondary);">
+                                    {{ ucfirst(str_replace('_', ' ', $payment->plan)) }} Plan · {{ ucfirst($payment->party) }}
+                                </p>
+                                <p class="text-xs" style="color: var(--text-secondary);">
+                                    {{ $payment->created_at->format('d M Y, H:i') }}
+                                    @if($payment->paid_at)
+                                        · Paid {{ $payment->paid_at->format('d M Y, H:i') }}
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-lg font-bold" style="color: var(--gold);">
+                                    £{{ number_format($payment->amount, 2) }}
+                                </span>
+                                @if($payment->stripe_payment_intent_id)
+                                    <p class="text-xs" style="color: var(--text-secondary);">
+                                        {{ substr($payment->stripe_payment_intent_id, 0, 12) }}...
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                         style="background-color: rgba(201,168,76,0.1);">
+                        <svg class="w-8 h-8" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm mb-2" style="color: var(--text-primary);">No payment history yet</p>
+                    <p class="text-xs" style="color: var(--text-secondary);">Your session payments will appear here</p>
+                </div>
+            @endif
+        </div>
     </div>
 
 </div>
