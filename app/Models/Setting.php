@@ -55,7 +55,13 @@ class Setting extends Model
             'Payments' => [
                 // Session prices are managed in Admin → Settings → Session Packages tab
                 // (session_packages table) — not here
-                'default_currency' => ['label' => 'Default Currency', 'type' => 'string', 'description' => 'Platform currency code: gbp, usd, eur, cad, aud'],
+                'default_currency' => ['label' => 'Default Currency', 'type' => 'select', 'description' => 'Platform currency code', 'options' => [
+                    'gbp' => 'GBP (£) - British Pound',
+                    'usd' => 'USD ($) - US Dollar', 
+                    'eur' => 'EUR (€) - Euro',
+                    'cad' => 'CAD (CA$) - Canadian Dollar',
+                    'aud' => 'AUD (A$) - Australian Dollar'
+                ]],
             ],
             'Referrals' => [
                 'referral_minutes_per_reward'   => ['label' => 'Minutes Per Referral',       'type' => 'integer', 'description' => 'Minutes awarded per successful referral'],

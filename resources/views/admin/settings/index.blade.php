@@ -71,6 +71,12 @@
                                                 <div style="position:absolute;top:2px;left:{{ $isOn ? '22px' : '2px' }};width:18px;height:18px;background:white;border-radius:9999px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>
                                             </div>
                                         </label>
+                                    @elseif($meta['type'] === 'select')
+                                        <select name="{{ $key }}" class="w-56 px-3 py-1.5 rounded-lg text-sm outline-none" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                                            @foreach($meta['options'] as $value => $label)
+                                                <option value="{{ $value }}" {{ $current === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                            @endforeach
+                                        </select>
                                     @elseif($meta['type'] === 'integer')
                                         <input type="number" name="{{ $key }}" value="{{ $current }}"
                                                min="0"
