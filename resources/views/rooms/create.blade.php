@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Create a Room — First Mediator')
-@section('page-title', 'Create a Room')
+@section('page-title', 'Create a Room — First Mediator')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
