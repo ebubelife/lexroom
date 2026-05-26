@@ -58,7 +58,9 @@ class ChatController extends Controller
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, (int) $remainingSeconds, 7200);
         } else {
-            $remainingSeconds = (int) (Cache::get($timerKey) ?? $totalSeconds);
+            // For pending/awaiting status, always show full time and clear any cached values
+            $remainingSeconds = $totalSeconds;
+            Cache::forget($timerKey);
         }
 
         // Get current phase
