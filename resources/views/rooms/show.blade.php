@@ -16,12 +16,17 @@
     $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
     $remainingSeconds = 0;
     if (in_array($room->status, ['active', 'pause_requested'])) {
-        $elapsed = now()->diffInSeconds($room->started_at) - (int)$room->total_paused_seconds;
+        $elapsed = (int) now()->diffInSeconds($room->started_at, false);
+        if ($elapsed < 0) $elapsed = 0; // Handle future timestamps
+        $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
     } elseif ($room->status === 'paused' && $room->paused_at) {
-        $elapsed = $room->paused_at->diffInSeconds($room->started_at) - (int)$room->total_paused_seconds;
+        $elapsed = (int) $room->paused_at->diffInSeconds($room->started_at, false);
+        if ($elapsed < 0) $elapsed = 0;
+        $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
-    } elseif ($room->status === 'pending') {
+    } else {
+        // For pending, awaiting_party_b_payment, or any other status - show full time
         $remainingSeconds = $totalSeconds;
     }
 @endphp
