@@ -19,6 +19,15 @@
         $elapsed = (int) now()->diffInSeconds($room->started_at);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
+        
+        // Debug logging
+        \Log::info('Timer calculation', [
+            'total_seconds' => $totalSeconds,
+            'started_at' => $room->started_at->toDateTimeString(),
+            'now' => now()->toDateTimeString(),
+            'elapsed' => $elapsed,
+            'remaining' => $remainingSeconds,
+        ]);
     } elseif ($room->status === 'paused' && $room->paused_at && $room->started_at) {
         $elapsed = (int) $room->paused_at->diffInSeconds($room->started_at);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
