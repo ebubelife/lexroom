@@ -15,14 +15,12 @@
     // Calculate remaining seconds for JS init
     $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
     $remainingSeconds = 0;
-    if (in_array($room->status, ['active', 'pause_requested'])) {
-        $elapsed = (int) now()->diffInSeconds($room->started_at, false);
-        if ($elapsed < 0) $elapsed = 0; // Handle future timestamps
+    if (in_array($room->status, ['active', 'pause_requested']) && $room->started_at) {
+        $elapsed = (int) now()->diffInSeconds($room->started_at);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
-    } elseif ($room->status === 'paused' && $room->paused_at) {
-        $elapsed = (int) $room->paused_at->diffInSeconds($room->started_at, false);
-        if ($elapsed < 0) $elapsed = 0;
+    } elseif ($room->status === 'paused' && $room->paused_at && $room->started_at) {
+        $elapsed = (int) $room->paused_at->diffInSeconds($room->started_at);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
     } else {
