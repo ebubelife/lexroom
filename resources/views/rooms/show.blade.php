@@ -430,6 +430,9 @@
                 <div class="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4" id="chat-messages" x-ref="chatContainer">
                     <template x-for="message in messages" :key="message.id">
                         <div>
+                            <!-- Debug: Uncomment to see sender_type -->
+                            <!-- <div class="text-xs text-gray-500" x-text="'Sender: ' + message.sender_type"></div> -->
+                            
                             <!-- FM Message -->
                             <div x-show="message.sender_type === 'lex'" class="w-full">
                                 <div class="p-3 md:p-4 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border-left: 4px solid var(--gold);">
@@ -444,7 +447,7 @@
                             </div>
 
                             <!-- Party A Message (Blue - Left) -->
-                            <div x-show="message.sender_type === 'party_a'" class="flex justify-start">
+                            <div x-show="message.sender_type === 'party_a'" x-cloak class="flex justify-start">
                                 <div class="max-w-[85%] md:max-w-[70%]">
                                     <div class="flex items-center mb-1">
                                         <div class="w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2"
@@ -459,7 +462,7 @@
                             </div>
 
                             <!-- Party B Message (Purple - Right) -->
-                            <div x-show="message.sender_type === 'party_b'" class="flex justify-end">
+                            <div x-show="message.sender_type === 'party_b'" x-cloak class="flex justify-end">
                                 <div class="max-w-[85%] md:max-w-[70%]">
                                     <div class="flex items-center justify-end mb-1">
                                         <span class="text-xs font-medium mr-2" style="color: var(--text-secondary);">Party B</span>
