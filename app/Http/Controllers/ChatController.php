@@ -50,12 +50,16 @@ class ChatController extends Controller
         if ($room->status === 'completed') {
             $remainingSeconds = 0;
         } elseif ($startedAt && in_array($room->status, ['active', 'pause_requested'])) {
-            $elapsed = (int) now()->diffInSeconds($startedAt);
+            $startTime = $startedAt->timestamp;
+            $currentTime = now()->timestamp;
+            $elapsed = max(0, $currentTime - $startTime);
             $elapsed = $elapsed - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, (int) $remainingSeconds, 7200);
         } elseif ($startedAt && $room->status === 'paused' && $room->paused_at) {
-            $elapsed = (int) $room->paused_at->diffInSeconds($startedAt);
+            $startTime = $startedAt->timestamp;
+            $pauseTime = $room->paused_at->timestamp;
+            $elapsed = max(0, $pauseTime - $startTime);
             $elapsed = $elapsed - (int) $room->total_paused_seconds;
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, (int) $remainingSeconds, 7200);

@@ -16,20 +16,16 @@
     $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
     $remainingSeconds = 0;
     if (in_array($room->status, ['active', 'pause_requested']) && $room->started_at) {
-        $elapsed = (int) now()->diffInSeconds($room->started_at);
+        // Calculate elapsed time - ensure positive value
+        $startTime = $room->started_at->timestamp;
+        $currentTime = now()->timestamp;
+        $elapsed = max(0, $currentTime - $startTime);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
-        
-        // Debug logging
-        \Log::info('Timer calculation', [
-            'total_seconds' => $totalSeconds,
-            'started_at' => $room->started_at->toDateTimeString(),
-            'now' => now()->toDateTimeString(),
-            'elapsed' => $elapsed,
-            'remaining' => $remainingSeconds,
-        ]);
     } elseif ($room->status === 'paused' && $room->paused_at && $room->started_at) {
-        $elapsed = (int) $room->paused_at->diffInSeconds($room->started_at);
+        $startTime = $room->started_at->timestamp;
+        $pauseTime = $room->paused_at->timestamp;
+        $elapsed = max(0, $pauseTime - $startTime);
         $elapsed = $elapsed - (int)$room->total_paused_seconds;
         $remainingSeconds = max(0, $totalSeconds - $elapsed);
     } else {
