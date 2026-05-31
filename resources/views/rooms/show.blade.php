@@ -504,29 +504,27 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                </div>
                 
-                <!-- Verdict Generating Card -->
-                <div x-show="roomSessionStatus === 'completed' && (!pendingExtension || pendingExtension.status !== 'pending_party_b')" x-cloak class="mt-4 p-6 rounded-2xl shadow-lg border relative overflow-hidden mx-4 mb-4" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
-                    <div class="absolute inset-0 opacity-10 bg-repeat bg-center" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23c9a84c\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
-                    <div class="relative z-10 text-center">
-                        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse" style="background-color: rgba(201, 168, 76, 0.1);">
-                            <svg class="w-8 h-8" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-serif mb-2" style="color: var(--text-primary);">Mediation Concluded</h3>
-                        <p class="text-sm opacity-80" style="color: var(--text-secondary);">
-                            First Mediator AI is now reviewing the transcripts and evidence. The final verdict and settlement report will be generated shortly and sent to your email.
-                        </p>
-                        <div class="mt-6 flex justify-center space-x-2">
-                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0s;"></span>
-                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.2s;"></span>
-                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.4s;"></span>
+                    <!-- Verdict Generating Card (inside scroll area) -->
+                    <div x-show="roomSessionStatus === 'completed' && (!pendingExtension || pendingExtension.status !== 'pending_party_b')" x-cloak class="mt-4 p-6 rounded-2xl shadow-lg border relative overflow-hidden" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                        <div class="absolute inset-0 opacity-10 bg-repeat bg-center" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23c9a84c\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse" style="background-color: rgba(201, 168, 76, 0.1);">
+                                <svg class="w-8 h-8" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-serif mb-2" style="color: var(--text-primary);">Mediation Concluded</h3>
+                            <p class="text-sm opacity-80" style="color: var(--text-secondary);">
+                                First Mediator AI is now reviewing the transcripts and evidence. The final verdict and settlement report will be generated shortly and sent to your email.
+                            </p>
+                            <div class="mt-6 flex justify-center space-x-2">
+                                <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0s;"></span>
+                                <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.2s;"></span>
+                                <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.4s;"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Message Input -->
                 <div class="border-t p-3 md:p-4" style="border-color: var(--border-color);">
                     <div class="flex items-center space-x-2">
                         <input type="text" 
