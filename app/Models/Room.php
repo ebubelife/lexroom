@@ -144,6 +144,23 @@ class Room extends Model
         return $this->hasMany(\App\Models\SessionExtension::class);
     }
 
+    public function extensionRequests()
+    {
+        return $this->hasMany(\App\Models\SessionExtensionRequest::class);
+    }
+
+    public function hasPendingExtension()
+    {
+        return $this->extensionRequests()
+            ->whereIn('status', ['pending_party_b', 'pending_top_up'])
+            ->exists();
+    }
+
+    public function extensionCount()
+    {
+        return $this->extensions()->where('status', 'paid')->count();
+    }
+
     /**
      * Total duration including extensions (in minutes)
      */

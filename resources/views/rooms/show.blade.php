@@ -236,7 +236,14 @@
 
                 <!-- Timer -->
                 <div class="text-right justify-self-end lg:mt-0">
-                    <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter" style="color: var(--gold);" x-text="roomSessionStatus === 'completed' ? '00:00' : formatTime(remainingSeconds)"></div>
+                    <div class="text-2xl md:text-4xl font-bold font-mono tracking-tighter transition-colors duration-300" 
+                         :class="{
+                             'text-yellow-500': remainingSeconds <= 600 && remainingSeconds > 300,
+                             'text-orange-500': remainingSeconds <= 300 && remainingSeconds > 60,
+                             'text-red-500 animate-pulse': remainingSeconds <= 60 && remainingSeconds > 0
+                         }"
+                         :style="(remainingSeconds > 600 || roomSessionStatus === 'completed') ? 'color: var(--gold);' : ''"
+                         x-text="roomSessionStatus === 'completed' ? '00:00' : formatTime(remainingSeconds)"></div>
                     <p class="text-[10px] uppercase tracking-wider opacity-60 mt-[-4px]" style="color: var(--text-secondary);">Time Remaining</p>
                 </div>
                 
@@ -498,6 +505,26 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                
+                <!-- Verdict Generating Card -->
+                <div x-show="roomSessionStatus === 'completed' && (!pendingExtension || pendingExtension.status !== 'pending_party_b')" x-cloak class="mt-4 p-6 rounded-2xl shadow-lg border relative overflow-hidden mx-4 mb-4" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                    <div class="absolute inset-0 opacity-10 bg-repeat bg-center" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23c9a84c\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+                    <div class="relative z-10 text-center">
+                        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse" style="background-color: rgba(201, 168, 76, 0.1);">
+                            <svg class="w-8 h-8" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-serif mb-2" style="color: var(--text-primary);">Mediation Concluded</h3>
+                        <p class="text-sm opacity-80" style="color: var(--text-secondary);">
+                            First Mediator AI is now reviewing the transcripts and evidence. The final verdict and settlement report will be generated shortly and sent to your email.
+                        </p>
+                        <div class="mt-6 flex justify-center space-x-2">
+                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0s;"></span>
+                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.2s;"></span>
+                            <span class="w-3 h-3 rounded-full animate-bounce" style="background-color: var(--gold); animation-delay: 0.4s;"></span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Message Input -->
                 <div class="border-t p-3 md:p-4" style="border-color: var(--border-color);">
@@ -676,6 +703,21 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Split Payment Request Prompt for Party B -->
+        <div x-show="pendingExtension && pendingExtension.status === 'pending_party_b' && isPartyB" x-cloak class="fixed top-4 right-4 z-[120] bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-4 rounded shadow-2xl max-w-sm">
+            <div class="font-bold mb-1">Extension Split Request</div>
+            <p class="text-sm mb-3">Party A has requested to extend the session by <span x-text="pendingExtension.minutes"></span> minutes and offered to split the cost ($<span x-text="(pendingExtension.total_amount / 2).toFixed(2)"></span> each).</p>
+            <div class="flex gap-2">
+                <button @click="acceptSplit" class="flex-1 px-3 py-2 bg-yellow-600 text-white rounded text-sm font-bold hover:bg-yellow-700">Accept ($<span x-text="(pendingExtension.total_amount / 2).toFixed(2)"></span>)</button>
+                <button @click="declineSplit" class="flex-1 px-3 py-2 bg-gray-200 text-gray-800 rounded text-sm font-bold hover:bg-gray-300">Decline</button>
+            </div>
+        </div>
+        
+        <!-- Grace Period Banner -->
+        <div x-show="roomSessionStatus === 'completed' && pendingExtension && pendingExtension.status === 'pending_party_b'" x-cloak class="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-black text-center p-2 font-bold text-sm shadow-md animate-pulse">
+            ⚠️ Timer expired. A 2-minute grace period is active while waiting for Party B to accept the extension split.
+        </div>
     </div>
 
     <!-- Resend/Correct Invite Modal -->
@@ -722,39 +764,54 @@
                     </svg>
                 </div>
                 <h3 class="text-2xl font-serif text-white">Extend Session</h3>
-                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. Either party can pay.</p>
-                @if($room->extension_deadline)
-                <p class="text-xs mt-2" style="color: #f59e0b;">Extension window closes {{ $room->extension_deadline->diffForHumans() }}</p>
-                @endif
+                <p class="text-xs opacity-70 mt-2">Purchase more time to continue the mediation. You can pay in full or request to split the cost.</p>
             </div>
 
-            <form method="POST" action="{{ route('payment.extension', $room->id) }}">
-                @csrf
-                <div class="space-y-4 mb-8">
-                    <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Select Duration</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button" @click="extendingMinutes = 30"
-                                :class="extendingMinutes === 30 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
-                                class="p-3 rounded-xl border text-center transition-all">
-                            <span class="block text-sm font-bold text-white">30 Min</span>
-                            <span class="block text-[10px] opacity-60">{{ \App\Models\PlatformSetting::currencySymbol() }}20.00</span>
-                        </button>
-                        <button type="button" @click="extendingMinutes = 60"
-                                :class="extendingMinutes === 60 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
-                                class="p-3 rounded-xl border text-center transition-all">
-                            <span class="block text-sm font-bold text-white">60 Min</span>
-                            <span class="block text-[10px] opacity-60">{{ \App\Models\PlatformSetting::currencySymbol() }}35.00</span>
-                        </button>
-                    </div>
+            <div class="space-y-4 mb-6">
+                <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Select Duration</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" @click="extendingMinutes = 30"
+                            :class="extendingMinutes === 30 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+                            class="p-3 rounded-xl border text-center transition-all">
+                        <span class="block text-sm font-bold text-white">30 Min</span>
+                        <span class="block text-[10px] opacity-60">$50.00</span>
+                    </button>
+                    <button type="button" @click="extendingMinutes = 60"
+                            :class="extendingMinutes === 60 ? 'border-blue-500 bg-blue-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+                            class="p-3 rounded-xl border text-center transition-all">
+                        <span class="block text-sm font-bold text-white">60 Min</span>
+                        <span class="block text-[10px] opacity-60">$100.00</span>
+                    </button>
                 </div>
-                <input type="hidden" name="minutes" :value="extendingMinutes">
-                <button type="submit"
-                        class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-all hover:scale-[1.02] active:scale-95"
-                        style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-                    Pay & Extend Session
-                </button>
-            </form>
-            <button @click="showExtendModal = false" class="w-full mt-3 text-xs opacity-50 hover:opacity-100 transition-opacity">Cancel</button>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <label class="block text-xs uppercase tracking-widest font-bold opacity-50 mb-2">Payment Method</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" @click="paymentType = 'full'"
+                            :class="paymentType === 'full' ? 'border-green-500 bg-green-500 bg-opacity-10' : 'border-gray-700 hover:border-gray-500'"
+                            class="p-3 rounded-xl border text-center transition-all">
+                        <span class="block text-sm font-bold text-white">Pay in Full</span>
+                        <span class="block text-[10px] opacity-60">You pay all</span>
+                    </button>
+                    <button type="button" @click="if(partyBOnline) paymentType = 'split'"
+                            :disabled="!partyBOnline"
+                            :class="[paymentType === 'split' ? 'border-green-500 bg-green-500 bg-opacity-10' : 'border-gray-700', !partyBOnline ? 'opacity-50 cursor-not-allowed' : 'hover:border-gray-500']"
+                            class="p-3 rounded-xl border text-center transition-all">
+                        <span class="block text-sm font-bold text-white">Split 50/50</span>
+                        <span class="block text-[10px] opacity-60" x-text="partyBOnline ? 'Request B to pay half' : 'Party B is offline'"></span>
+                    </button>
+                </div>
+            </div>
+
+            <button type="button" @click.prevent="buyTime"
+                    :disabled="isExtending"
+                    class="w-full py-4 rounded-xl text-white font-bold uppercase tracking-widest shadow-lg transition-all"
+                    :class="isExtending ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'"
+                    style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+                <span x-text="isExtending ? 'Processing...' : 'Confirm & Extend'"></span>
+            </button>
+            <button @click="showExtendModal = false" class="w-full mt-3 text-xs opacity-50 hover:opacity-100 transition-opacity text-white">Cancel</button>
         </div>
     </div>
     </div>
@@ -795,10 +852,13 @@ function liveRoom(roomUuid, token) {
         // Extension & Warning State
         showExtendModal: false,
         extendingMinutes: 30,
+        paymentType: 'full',
         isExtending: false,
         notified10Min: false,
         notified5Min: false,
         notified1Min: false,
+        pendingExtension: null,
+        partyBOnline: false,
         
         submitResendInvite: function() {
             var self = this;
@@ -854,6 +914,16 @@ function liveRoom(roomUuid, token) {
             }, 1000);
         },
 
+        injectSystemMessage: function(content) {
+            this.messages.push({
+                id: 'sys_' + Date.now(),
+                sender_type: 'lex',
+                content: content,
+                created_at: new Date().toISOString()
+            });
+            this.scrollToBottom();
+        },
+
         checkWarnings: function() {
             if (this.remainingSeconds === 600 && !this.notified10Min) {
                 window.showToast('10 minutes remaining in this session.', 'info');
@@ -861,11 +931,13 @@ function liveRoom(roomUuid, token) {
             }
             if (this.remainingSeconds === 300 && !this.notified5Min) {
                 window.showToast('5 minutes remaining. Please start concluding.', 'warning');
+                this.injectSystemMessage("⚠️ You have 5 minutes remaining. Please begin wrapping up your closing statements.");
                 this.notified5Min = true;
             }
             if (this.remainingSeconds === 60 && !this.notified1Min) {
                 this.notified1Min = true;
-                alert('Only 1 minute left! Please round up your discussion.');
+                window.showToast('Only 1 minute left!', 'warning');
+                this.injectSystemMessage("⚠️ 1 minute remaining. The chat will be locked shortly unless extended.");
             }
         },
 
@@ -905,24 +977,36 @@ function liveRoom(roomUuid, token) {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify({ minutes: this.extendingMinutes })
+                body: JSON.stringify({ 
+                    minutes: this.extendingMinutes,
+                    payment_type: this.paymentType
+                })
             })
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 self.isExtending = false;
-                if (data.success) {
+                if (data.require_topup) {
+                    var confirmTopup = confirm(`Insufficient credits. You need $${data.amount}. Your balance is $${data.balance}. Would you like to top up now?`);
+                    if (confirmTopup) {
+                        window.location.href = '/subscription/topup?return_to=' + encodeURIComponent(window.location.pathname);
+                    }
+                } else if (data.success) {
                     self.showExtendModal = false;
-                    self.roomSessionStatus = 'active';
-                    self.remainingSeconds = data.timer.remaining_seconds;
-                    self.totalSeconds = data.timer.total_seconds;
-                    self.timerSynced = true;
+                    if (data.split_requested) {
+                        window.showToast('Split request sent to Party B.', 'info');
+                    } else {
+                        self.roomSessionStatus = 'active';
+                        self.remainingSeconds = data.timer.remaining_seconds;
+                        self.totalSeconds = data.timer.total_seconds;
+                        self.timerSynced = true;
 
-                    self.notified10Min = false;
-                    self.notified5Min = false;
-                    self.notified1Min = false;
+                        self.notified10Min = false;
+                        self.notified5Min = false;
+                        self.notified1Min = false;
 
-                    self.startLocalTimer();
-                    window.showToast(`Session extended by ${self.extendingMinutes} minutes!`);
+                        self.startLocalTimer();
+                        window.showToast(`Session extended by ${self.extendingMinutes} minutes!`);
+                    }
                 } else if (data.error) {
                     alert(data.error);
                 }
@@ -931,6 +1015,49 @@ function liveRoom(roomUuid, token) {
                 self.isExtending = false;
                 console.error('Extend error:', err);
                 alert('Failed to extend session. Check connection.');
+            });
+        },
+        
+        acceptSplit: function() {
+            var self = this;
+            fetch(`/rooms/${this.roomUuid}/extend/accept`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.require_topup) {
+                    var confirmTopup = confirm(`Insufficient credits for your half ($${data.amount}). Your balance is $${data.balance}. Would you like to top up now?`);
+                    if (confirmTopup) {
+                        window.location.href = '/subscription/topup?return_to=' + encodeURIComponent(window.location.pathname);
+                    }
+                } else if (data.success) {
+                    window.showToast('You accepted the split payment. Session extended!', 'success');
+                    self.poll();
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            });
+        },
+
+        declineSplit: function() {
+            var self = this;
+            fetch(`/rooms/${this.roomUuid}/extend/decline`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    window.showToast('You declined the split request.', 'info');
+                    self.poll();
+                }
             });
         },
         
@@ -953,6 +1080,13 @@ function liveRoom(roomUuid, token) {
                 
                 self.roomSessionStatus = data.status;
                 self.lexProcessing = data.lex_processing;
+                self.pendingExtension = data.pending_extension || null;
+                self.partyBOnline = data.party_b_online || false;
+                
+                // If payment type was split and party B goes offline, reset it
+                if (!self.partyBOnline && self.paymentType === 'split') {
+                    self.paymentType = 'full';
+                }
                 
                 // Check if Party B just clocked in
                 var wasNotClockedIn = !self.clockedIn;

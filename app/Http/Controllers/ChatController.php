@@ -27,6 +27,14 @@ class ChatController extends Controller
         $room = Room::where('uuid', $uuid)->firstOrFail();
         $since = $request->input('since', 0);
 
+        // Record Party B heartbeat
+        if ((Auth::check() && Auth::id() == $room->party_b_id) || $request->input('token') === $room->invite_token) {
+            Cache::put("room:{$room->id}:party_b_last_seen", now()->timestamp, 30);
+        }
+
+        $partyBLastSeen = Cache::get("room:{$room->id}:party_b_last_seen");
+        $partyBOnline = $partyBLastSeen && (now()->timestamp - $partyBLastSeen < 10);
+
         // Get new messages since last poll
         $messages = SessionMessage::where('room_id', $room->id)
             ->where('id', '>', $since)
@@ -75,6 +83,22 @@ class ChatController extends Controller
         // Check if Lex is processing
         $lexProcessing = Cache::get("room:{$room->id}:lex_processing", false);
 
+        // Check pending extensions
+        $pendingExtension = $room->extensionRequests()
+            ->whereIn('status', ['pending_party_b', 'pending_top_up'])
+            ->latest()
+            ->first();
+
+        // Check grace period expiry (2 minutes)
+        if ($pendingExtension && $room->status === 'completed' && $room->ended_at) {
+            if (now()->diffInSeconds($room->ended_at) > 120) {
+                $pendingExtension->update(['status' => 'expired']);
+                $pendingExtension = null;
+                // Dispatch report if not dispatched yet
+                GenerateReportJob::dispatch($room->id);
+            }
+        }
+
         return response()->json([
             'messages' => $messages,
             'timer' => [
@@ -86,6 +110,8 @@ class ChatController extends Controller
             'status' => $room->status,
             'party_b_clocked_in_at' => $room->party_b_clocked_in_at,
             'extended_minutes' => (int) $room->extended_minutes,
+            'pending_extension' => $pendingExtension,
+            'party_b_online' => $partyBOnline,
         ]);
     }
 
@@ -162,6 +188,22 @@ class ChatController extends Controller
             return response()->json(['success' => true, 'status' => $room->status]);
         }
 
+        if ($room->hasPendingExtension()) {
+            $room->update([
+                'status' => 'completed',
+                'ended_at' => now(),
+            ]);
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => '⚠️ The timer has expired, but an extension request is pending. A 2-minute grace period has started.',
+                'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+            ]);
+            // Dispatch a delayed check for report generation
+            GenerateReportJob::dispatch($room->id)->delay(now()->addMinutes(2));
+            return response()->json(['success' => true, 'status' => 'grace_period']);
+        }
+
         $room->update([
             'status' => 'completed',
             'ended_at' => now(),
@@ -192,6 +234,7 @@ class ChatController extends Controller
     {
         $request->validate([
             'minutes' => 'required|integer|in:30,60,90,120',
+            'payment_type' => 'nullable|in:full,split',
         ]);
 
         $room = Room::where('uuid', $uuid)->firstOrFail();
@@ -202,35 +245,65 @@ class ChatController extends Controller
             return response()->json(['error' => 'Only Party A can extend the session.'], 403);
         }
 
+        if ($room->extensionCount() >= 3) {
+            return response()->json(['error' => 'Maximum of 3 extensions per session reached.'], 403);
+        }
+
         // Room must be completed (expired) or active
         if (!in_array($room->status, ['completed', 'active'])) {
             return response()->json(['error' => 'Session cannot be extended in its current state.'], 400);
         }
 
+        if ($room->hasPendingExtension()) {
+            return response()->json(['error' => 'There is already a pending extension request.'], 400);
+        }
+
         $minutes = (int) $request->minutes;
+        $paymentType = $request->input('payment_type', 'full');
         $blocks = $minutes / 30;
-        $amount = $blocks * self::EXTENSION_COST_PER_30_MIN;
+        $totalAmount = $blocks * self::EXTENSION_COST_PER_30_MIN;
+        $requiredAmount = $paymentType === 'split' ? $totalAmount / 2 : $totalAmount;
 
         // Deduct from wallet
         $wallet = Wallet::where('user_id', $user->id)->first();
-        if (!$wallet || $wallet->credits_balance < $amount) {
+        if (!$wallet || $wallet->credits_balance < $requiredAmount) {
             return response()->json([
-                'error' => "Insufficient wallet balance. You need $" . number_format($amount) . " to extend by {$minutes} minutes.",
-                'required' => $amount,
+                'require_topup' => true,
+                'amount' => $requiredAmount,
                 'balance' => $wallet ? (float) $wallet->credits_balance : 0,
-            ], 402);
+            ]);
         }
 
-        DB::transaction(function () use ($room, $user, $wallet, $minutes, $amount) {
+        if ($paymentType === 'split') {
+            \App\Models\SessionExtensionRequest::create([
+                'room_id' => $room->id,
+                'initiator_id' => $user->id,
+                'payment_type' => 'split',
+                'minutes' => $minutes,
+                'total_amount' => $totalAmount,
+                'status' => 'pending_party_b'
+            ]);
+
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => "Party A requested a {$minutes}-minute extension and offered to split the cost ($" . number_format($totalAmount/2, 2) . " each). Party B, please accept or decline.",
+                'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+            ]);
+
+            return response()->json(['success' => true, 'split_requested' => true]);
+        }
+
+        DB::transaction(function () use ($room, $user, $wallet, $minutes, $totalAmount) {
             // Deduct wallet
-            $wallet->decrement('credits_balance', $amount);
+            $wallet->decrement('credits_balance', $totalAmount);
 
             // Record extension for admin tracking
             SessionExtension::create([
                 'room_id' => $room->id,
                 'user_id' => $user->id,
                 'minutes_added' => $minutes,
-                'amount_paid' => $amount,
+                'amount_paid' => $totalAmount,
                 'status' => 'paid',
             ]);
 
@@ -239,8 +312,6 @@ class ChatController extends Controller
             $room->update([
                 'extended_minutes' => $room->extended_minutes + $minutes,
                 'status' => 'active',
-                // If room was ended, adjust started_at to account for extension properly
-                // We keep original started_at. Timer calc will use new totalSeconds.
             ]);
 
             // If room was locked, clear ended_at so it's live again
@@ -249,7 +320,6 @@ class ChatController extends Controller
             }
 
             // Refresh cache for new total
-            $newTotal = ($room->duration + $room->extended_minutes + $minutes) * 60;
             Cache::put("room:{$room->id}:phase", Cache::get("room:{$room->id}:phase", 'opening'), 7200);
 
             // FM announcement
@@ -270,7 +340,7 @@ class ChatController extends Controller
         return response()->json([
             'success' => true,
             'minutes_added' => $minutes,
-            'amount_paid' => $amount,
+            'amount_paid' => $totalAmount,
             'extended_minutes' => (int) $room->extended_minutes,
             'timer' => [
                 'remaining_seconds' => (int) $remainingSeconds,
@@ -278,6 +348,95 @@ class ChatController extends Controller
             ],
             'wallet_balance' => (float) $wallet->fresh()->credits_balance,
         ]);
+    }
+
+    public function acceptExtensionSplit(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        
+        if (Auth::check() && $room->party_b_id !== Auth::id()) {
+            return response()->json(['error' => 'Only Party B can accept this split.'], 403);
+        }
+
+        $extensionRequest = $room->extensionRequests()->where('status', 'pending_party_b')->latest()->first();
+        if (!$extensionRequest) {
+            return response()->json(['error' => 'No active split request found.'], 400);
+        }
+
+        $halfAmount = $extensionRequest->total_amount / 2;
+
+        $walletB = Wallet::where('user_id', $room->party_b_id)->first();
+        if (!$walletB || $walletB->credits_balance < $halfAmount) {
+             return response()->json([
+                'require_topup' => true,
+                'amount' => $halfAmount,
+                'balance' => $walletB ? (float) $walletB->credits_balance : 0,
+            ]);
+        }
+
+        $walletA = Wallet::where('user_id', $room->party_a_id)->first();
+        if (!$walletA || $walletA->credits_balance < $halfAmount) {
+            return response()->json(['error' => 'Party A no longer has sufficient funds for this split.'], 400);
+        }
+
+        DB::transaction(function () use ($room, $walletA, $walletB, $extensionRequest, $halfAmount) {
+            $walletA->decrement('credits_balance', $halfAmount);
+            $walletB->decrement('credits_balance', $halfAmount);
+
+            $extensionRequest->update(['status' => 'completed']);
+
+            SessionExtension::create([
+                'room_id' => $room->id,
+                'user_id' => $room->party_a_id,
+                'minutes_added' => $extensionRequest->minutes,
+                'amount_paid' => $extensionRequest->total_amount,
+                'status' => 'paid',
+            ]);
+
+            $wasCompleted = $room->status === 'completed';
+            $room->update([
+                'extended_minutes' => $room->extended_minutes + $extensionRequest->minutes,
+                'status' => 'active',
+            ]);
+
+            if ($wasCompleted) {
+                $room->update(['ended_at' => null]);
+            }
+
+            SessionMessage::create([
+                'room_id' => $room->id,
+                'sender_type' => 'lex',
+                'content' => "⏱️ Party B accepted the split! Session extended by {$extensionRequest->minutes} minutes.",
+                'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+            ]);
+        });
+
+        return response()->json(['success' => true]);
+    }
+
+    public function declineExtensionSplit(Request $request, $uuid)
+    {
+        $room = Room::where('uuid', $uuid)->firstOrFail();
+        
+        if (Auth::check() && $room->party_b_id !== Auth::id()) {
+            return response()->json(['error' => 'Only Party B can decline this split.'], 403);
+        }
+
+        $extensionRequest = $room->extensionRequests()->where('status', 'pending_party_b')->latest()->first();
+        if (!$extensionRequest) {
+            return response()->json(['error' => 'No active split request found.'], 400);
+        }
+
+        $extensionRequest->update(['status' => 'declined']);
+
+        SessionMessage::create([
+            'room_id' => $room->id,
+            'sender_type' => 'lex',
+            'content' => "Party B has declined the extension split request. Party A may still pay in full to extend.",
+            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     /**
