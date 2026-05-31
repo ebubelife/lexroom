@@ -446,7 +446,7 @@
                     <template x-for="message in messages" :key="message.id">
                         <div>
                             <!-- Debug: Uncomment to see sender_type -->
-                            <div class="text-xs text-gray-500" x-text="'Sender: ' + message.sender_type"></div>
+                            <div class="text-xs text-gray-500" x-text="'Sender: ' + (message.sender_type === 'lex' ? 'First Mediator' : message.sender_type)"></div>
                             
                             <!-- FM Message -->
                             <div x-show="message.sender_type === 'lex'" class="w-full">
