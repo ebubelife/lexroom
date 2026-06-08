@@ -462,7 +462,7 @@
                             </div>
 
                             <!-- Party A Message (Blue - Left) -->
-                            <div x-show="message.sender_type === 'party_a'" x-cloak class="flex justify-start">
+                            <div x-show="message.sender_type === 'party_a'" class="flex justify-start">
                                 <div class="max-w-[85%] md:max-w-[70%]">
                                     <div class="flex items-center mb-1">
                                         <div class="w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2"
@@ -477,7 +477,7 @@
                             </div>
 
                             <!-- Party B Message (Purple - Right) -->
-                            <div x-show="message.sender_type === 'party_b'" x-cloak class="flex justify-end">
+                            <div x-show="message.sender_type === 'party_b'" class="flex justify-end">
                                 <div class="max-w-[85%] md:max-w-[70%]">
                                     <div class="flex items-center justify-end mb-1">
                                         <span class="text-xs font-medium mr-2" style="color: var(--text-secondary);">Party B</span>
@@ -1096,23 +1096,34 @@ function liveRoom(roomUuid, token) {
                 }
 
                 if (self.roomSessionStatus === 'active') {
-                    if (!self.timerSynced) {
-                        if (data.timer && data.timer.remaining_seconds > 0) {
-                            self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
-                            self.totalSeconds = Math.floor(data.timer.total_seconds);
-                        }
+                    // Always sync timer from server to prevent drift
+                    if (data.timer && data.timer.remaining_seconds >= 0) {
+                        self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
+                        self.totalSeconds = Math.floor(data.timer.total_seconds);
+                    }
+                    
+                    // Start local timer if not already running
+                    if (!self.timerInterval) {
                         self.timerSynced = true;
                         self.startLocalTimer();
                     }
                 } else if (self.roomSessionStatus === 'paused' || self.roomSessionStatus === 'pause_requested') {
+                    // Stop timer and sync frozen time from server
                     if (self.timerInterval) {
                         clearInterval(self.timerInterval);
                         self.timerInterval = null;
                     }
-                    if (data.timer && data.timer.remaining_seconds > 0) {
+                    if (data.timer && data.timer.remaining_seconds >= 0) {
                         self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
                     }
                     self.timerSynced = false;
+                } else if (self.roomSessionStatus === 'completed') {
+                    // Ensure timer is stopped
+                    if (self.timerInterval) {
+                        clearInterval(self.timerInterval);
+                        self.timerInterval = null;
+                    }
+                    self.remainingSeconds = 0;
                 }
             })
             .catch(function(err) {
@@ -1264,6 +1275,8 @@ function liveRoom(roomUuid, token) {
                 var data = await response.json();
                 if (data.success) {
                     window.showToast('Session resumed');
+                    // Reset timer sync flag and immediately poll to get updated timer
+                    this.timerSynced = false;
                     this.poll();
                 } else {
                     window.showToast(data.error || 'Failed to resume session', 'error');
