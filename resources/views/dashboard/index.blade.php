@@ -175,8 +175,8 @@
                 <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: var(--gold); color: var(--white);">
                     Continue Session
                 </a>
-                @elseif($session->status === 'pending')
-                <a href="{{ route('payment.checkout', $session->id) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #0D1B2A; color: #ffffff;">
+                @elseif(!$session->party_a_paid && ($session->status === 'pending' || $session->status === 'awaiting_party_b_payment'))
+                <a href="{{ route('rooms.show', $session->uuid) }}" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium transition-colors hover:opacity-90 mb-2" style="background-color: #0D1B2A; color: #ffffff;">
                     Complete Payment
                 </a>
                 @elseif($session->status === 'completed')
@@ -273,8 +273,8 @@
                     <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                         Enter Room
                     </a>
-                    @elseif($room->status === 'pending')
-                    <a href="{{ route('payment.checkout', $room->id) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
+                    @elseif(!$room->party_a_paid && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
+                    <a href="{{ route('rooms.show', $room->uuid) }}" class="block w-full text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
                         Complete Payment
                     </a>
                     @elseif($room->status === 'completed')
@@ -349,8 +349,8 @@
                                 <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: var(--gold); color: var(--white);">
                                     Enter Room
                                 </a>
-                                @elseif($room->status === 'pending')
-                                <a href="{{ route('payment.checkout', $room->id) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
+                                @elseif(!$room->party_a_paid && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
+                                <a href="{{ route('rooms.show', $room->uuid) }}" class="px-3 py-1 rounded text-xs font-medium transition-colors hover:opacity-90" style="background-color: #0D1B2A; color: #ffffff;">
                                     Complete Payment
                                 </a>
                                 @elseif($room->status === 'completed')
