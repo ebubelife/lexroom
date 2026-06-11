@@ -49,7 +49,11 @@ class StripeController extends Controller
     public function checkoutPartyA(Room $room)
     {
         abort_if($room->party_a_id != auth()->id(), 403);
-        abort_if($room->party_a_paid == true, 400, 'Already paid.');
+        
+        if ($room->party_a_paid) {
+            return redirect()->route('rooms.show', $room->uuid)
+                ->with('info', 'You have already completed payment for this session.');
+        }
 
         $package = SessionPackage::forDuration($room->duration);
         abort_if(!$package, 400, 'Session package not found.');
