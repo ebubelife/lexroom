@@ -259,7 +259,7 @@
                                     :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                                 <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
                             </button>
-                            <button @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                            <button @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
                             </button>
                         </div>
@@ -719,9 +719,8 @@
     </div>
 
     <!-- Resend/Correct Invite Modal -->
-    <template x-if="showResendModal">
-        <div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-            <div @click.away="showResendModal = false" class="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative border border-gray-100 dark:border-gray-700">
+    <div x-show="showResendModal" x-cloak class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+        <div @click.away="showResendModal = false" class="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative border border-gray-100 dark:border-gray-700">
                 <button @click="showResendModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -748,7 +747,7 @@
                 </button>
             </div>
         </div>
-    </template>
+    </div>
     
     <!-- Extend Session Modal -->
     <div x-show="showExtendModal" 
