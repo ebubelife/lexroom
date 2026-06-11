@@ -54,8 +54,8 @@
             </div>
 
             <div class="flex gap-3">
-                <template x-if="modal?.status_raw === 'pending'">
-                    <a :href="modal?.checkout_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: #0D1B2A;">Complete Payment</a>
+                <template x-if="!modal?.party_a_paid && (modal?.status_raw === 'pending' || modal?.status_raw === 'awaiting_party_b_payment')">
+                    <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: #0D1B2A;">Complete Payment</a>
                 </template>
                 <template x-if="modal?.status_raw === 'active'">
                     <a :href="modal?.room_url" class="flex-1 text-center py-2 rounded-lg text-sm font-medium text-white" style="background-color: var(--gold);">Enter Room</a>
@@ -205,7 +205,7 @@
                     payment_type: '{{ ucfirst($session->payment_type) }}',
                     party_b: '{{ addslashes($session->partyB?->name ?? $session->party_b_email ?? 'Pending') }}',
                     created_at: '{{ $session->created_at->format('M j, Y') }}',
-                    checkout_url: '{{ route('payment.checkout', $session->id) }}',
+                    party_a_paid: {{ $session->party_a_paid ? 'true' : 'false' }},
                     room_url: '{{ route('rooms.show', $session->uuid) }}',
                     report_url: '{{ route('reports.index') }}',
                 }" class="w-full inline-flex justify-center py-2 px-4 rounded-lg text-sm font-medium mt-1 transition-colors hover:opacity-80" style="color: var(--gold);">
@@ -321,7 +321,7 @@
                                         payment_type: '{{ ucfirst($room->payment_type) }}',
                                         party_b: '{{ addslashes($room->partyB?->name ?? $room->party_b_email ?? 'Pending') }}',
                                         created_at: '{{ $room->created_at->format('M j, Y') }}',
-                                        checkout_url: '{{ route('payment.checkout', $room->id) }}',
+                                        party_a_paid: {{ $room->party_a_paid ? 'true' : 'false' }},
                                         room_url: '{{ route('rooms.show', $room->uuid) }}',
                                         report_url: '{{ route('reports.index') }}',
                                     }">
@@ -464,7 +464,7 @@
                                         payment_type: '{{ ucfirst($room->payment_type) }}',
                                         party_b: '{{ addslashes($room->partyB?->name ?? $room->party_b_email ?? 'Pending') }}',
                                         created_at: '{{ $room->created_at->format('M j, Y') }}',
-                                        checkout_url: '{{ route('payment.checkout', $room->id) }}',
+                                        party_a_paid: {{ $room->party_a_paid ? 'true' : 'false' }},
                                         room_url: '{{ route('rooms.show', $room->uuid) }}',
                                         report_url: '{{ route('reports.index') }}',
                                     }">
