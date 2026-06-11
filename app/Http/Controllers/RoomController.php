@@ -300,23 +300,49 @@ class RoomController extends Controller
         
         \Log::info("Resending invite for room {$uuid} to {$email}");
 
-        // If email changed, update it and regenerate token
+        // If email changed, update it and regenerate tokens
         if ($email !== $room->party_b_email) {
-            \Log::info("Email changed from {$room->party_b_email} to {$email}, regenerating token");
-            $room->update([
+            \Log::info("Email changed from {$room->party_b_email} to {$email}, regenerating tokens");
+            
+            $updateData = [
                 'party_b_email' => $email,
-                'invite_token' => Str::random(64)
-            ]);
+                'invite_token' => \Str::random(64)
+            ];
+            
+            // If split payment, also regenerate payment token and set expiry
+            if ($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid) {
+                $updateData['party_b_payment_token'] = \Str::random(64);
+                $updateData['party_b_payment_expires_at'] = now()->addHours(48);
+            }
+            
+            $room->update($updateData);
             $room->refresh();
+        }
+        
+        // If split payment and Party A paid but Party B hasn't, ensure payment fields are set
+        if ($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid) {
+            if (!$room->party_b_payment_token || !$room->party_b_payment_expires_at) {
+                $room->update([
+                    'party_b_payment_token' => \Str::random(64),
+                    'party_b_payment_expires_at' => now()->addHours(48)
+                ]);
+                $room->refresh();
+            }
         }
 
         // Send email
         try {
-            Mail::to($email)->send(new RoomInvitation($room));
+            \Mail::to($email)->send(new \App\Mail\RoomInvitation($room));
             \Log::info("Successfully resent invitation email to Party B: " . $email);
+            
+            $message = 'Invitation sent successfully to ' . $email;
+            if ($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid) {
+                $message .= ' (includes payment link)';
+            }
+            
             return response()->json([
                 'success' => true, 
-                'message' => 'Invitation sent successfully to ' . $email
+                'message' => $message
             ]);
         } catch (\Exception $e) {
             \Log::error('Failed to resend Room Invitation to Party B: ' . $e->getMessage());

@@ -259,7 +259,7 @@
                                     :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                                 <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
                             </button>
-                            <button x-show="!clockedIn" @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                            <button @click="showResendModal = true" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
                             </button>
                         </div>
@@ -730,7 +730,11 @@
                         <svg class="w-6 h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
                     <h3 class="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2">Resend Invitation</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Current Party B Email Address:</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        <span x-show="'{{ $room->payment_type }}' === 'split' && {{ $room->party_a_paid ? 'true' : 'false' }} && !{{ $room->party_b_paid ? 'true' : 'false' }}">Email will include payment link for Party B</span>
+                        <span x-show="!('{{ $room->payment_type }}' === 'split' && {{ $room->party_a_paid ? 'true' : 'false' }} && !{{ $room->party_b_paid ? 'true' : 'false' }})">Email will include room access link</span>
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Party B Email Address:</p>
                 </div>
                 <div class="mb-6">
                     <input type="email" x-model="resendEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition-all text-center">
