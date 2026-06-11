@@ -288,6 +288,7 @@ class RoomController extends Controller
 
         // Ensure user is Party A
         if (auth()->id() !== $room->party_a_id) {
+            \Log::warning("Unauthorized resend invite attempt by user " . auth()->id() . " for room " . $uuid);
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -296,23 +297,35 @@ class RoomController extends Controller
         ]);
 
         $email = $request->email;
+        
+        \Log::info("Resending invite for room {$uuid} to {$email}");
 
         // If email changed, update it and regenerate token
         if ($email !== $room->party_b_email) {
+            \Log::info("Email changed from {$room->party_b_email} to {$email}, regenerating token");
             $room->update([
                 'party_b_email' => $email,
                 'invite_token' => Str::random(64)
             ]);
+            $room->refresh();
         }
 
         // Send email
         try {
             Mail::to($email)->send(new RoomInvitation($room));
-            Log::info("Successfully resent invitation email to Party B: " . $email);
-            return response()->json(['success' => true, 'message' => 'Invitation sent successfully.']);
+            \Log::info("Successfully resent invitation email to Party B: " . $email);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Invitation sent successfully to ' . $email
+            ]);
         } catch (\Exception $e) {
-            Log::error('Failed to resend Room Invitation to Party B: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to send invitation. Please try again later.'], 500);
+            \Log::error('Failed to resend Room Invitation to Party B: ' . $e->getMessage());
+            return response()->json([
+                'success' => false, 
+                'message' => 'Failed to send invitation. Please try again later.'
+            ], 500);
+        }
+    }
         }
     }
 }

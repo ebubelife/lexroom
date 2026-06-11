@@ -860,7 +860,14 @@ function liveRoom(roomUuid, token) {
         
         submitResendInvite: function() {
             var self = this;
+            
+            if (!this.resendEmail || !this.resendEmail.includes('@')) {
+                window.showToast('Please enter a valid email address', 'error');
+                return;
+            }
+            
             this.isResending = true;
+            
             fetch(`/rooms/${this.roomUuid}/resend-invite`, {
                 method: 'POST',
                 headers: {
@@ -869,19 +876,25 @@ function liveRoom(roomUuid, token) {
                 },
                 body: JSON.stringify({ email: this.resendEmail })
             })
-            .then(function(res) { return res.json(); })
+            .then(function(res) { 
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json(); 
+            })
             .then(function(data) {
                 self.isResending = false;
                 if (data.success) {
                     self.showResendModal = false;
-                    alert('Invitation sent successfully!');
+                    window.showToast(`Invitation email sent successfully to ${self.resendEmail}`, 'success');
                 } else {
-                    alert(data.message || 'Failed to resend invitation.');
+                    window.showToast(data.message || 'Failed to resend invitation', 'error');
                 }
             })
             .catch(function(err) {
+                console.error('Resend invite error:', err);
                 self.isResending = false;
-                alert('An error occurred while resending the invitation.');
+                window.showToast('An error occurred while sending the invitation', 'error');
             });
         },
         
