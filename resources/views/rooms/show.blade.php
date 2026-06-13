@@ -205,7 +205,7 @@
                                 @elseif($room->payment_type === 'split' && $room->party_a_paid)
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(245, 158, 11, 0.1); color: #B45309;">PENDING</span>
                                 @endif
-                                @if(auth()->check() && auth()->id() === $room->party_a_id && $room->status === 'pending')
+                                @if(auth()->check() && auth()->id() === $room->party_a_id && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
                                     <button @click="copyInviteLink" 
                                             class="p-1 rounded bg-gold bg-opacity-10 hover:bg-opacity-20 transition-all group"
                                             title="Copy Invite Link for Party B">
@@ -1318,8 +1318,24 @@ function liveRoom(roomUuid, token) {
         },
 
         copyInviteLink() {
-            navigator.clipboard.writeText(this.inviteUrl).then(() => {
-                window.showToast('Invite link copied! Open this in an Incognito window to join as Party B.');
+            // For split payment where Party A paid, copy payment link
+            let linkToCopy;
+            if ('{{ $room->payment_type }}' === 'split' && {{ $room->party_a_paid ? 'true' : 'false' }} && !{{ $room->party_b_paid ? 'true' : 'false' }}) {
+                linkToCopy = '{{ $room->party_b_payment_token ? route("payment.party-b.checkout", ["uuid" => $room->uuid, "token" => $room->party_b_payment_token]) : "#" }}';
+            } else {
+                linkToCopy = this.inviteUrl;
+            }
+            
+            if (linkToCopy === '#') {
+                window.showToast('Payment link not ready. Try resending the invite email.', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                const message = ('{{ $room->payment_type }}' === 'split' && {{ $room->party_a_paid ? 'true' : 'false' }} && !{{ $room->party_b_paid ? 'true' : 'false' }}) 
+                    ? 'Payment link copied! Party B can pay and join the session.' 
+                    : 'Invite link copied! Open this in an Incognito window to join as Party B.';
+                window.showToast(message);
             }).catch(err => {
                 console.error('Copy failed:', err);
                 window.showToast('Failed to copy link', 'error');
