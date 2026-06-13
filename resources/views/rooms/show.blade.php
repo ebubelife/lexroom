@@ -1135,7 +1135,7 @@ function liveRoom(roomUuid, token) {
                     window.showToast('Party B has joined the session! You can now start.', 'success');
                 }
 
-                if (self.roomSessionStatus === 'active') {
+                if (self.roomSessionStatus === 'active' || self.roomSessionStatus === 'pause_requested') {
                     // Always sync timer from server to prevent drift
                     if (data.timer && data.timer.remaining_seconds >= 0) {
                         self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
@@ -1147,7 +1147,7 @@ function liveRoom(roomUuid, token) {
                         self.timerSynced = true;
                         self.startLocalTimer();
                     }
-                } else if (self.roomSessionStatus === 'paused' || self.roomSessionStatus === 'pause_requested') {
+                } else if (self.roomSessionStatus === 'paused') {
                     // Stop timer and sync frozen time from server
                     if (self.timerInterval) {
                         clearInterval(self.timerInterval);
