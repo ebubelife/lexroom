@@ -42,7 +42,7 @@
 @php
     $isEnded   = in_array($room->status, ['locked', 'completed', 'expired']);
     $hasToken  = request('token') && request('token') === $room->invite_token;
-    $isPartyA  = auth()->check() && auth()->id() === $room->party_a_id;
+    $isPartyA  = auth()->check() && auth()->id() == $room->party_a_id;
     $showEndedScreen = $isEnded && $hasToken && !$isPartyA;
 @endphp
 
@@ -205,7 +205,7 @@
                                 @elseif($room->payment_type === 'split' && $room->party_a_paid)
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider" style="background-color: rgba(245, 158, 11, 0.1); color: #B45309;">PENDING</span>
                                 @endif
-                                @if(auth()->check() && auth()->id() === $room->party_a_id && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
+                                @if(auth()->check() && auth()->id() == $room->party_a_id && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
                                     <button @click="copyInviteLink" 
                                             class="ml-2 px-2 py-1 rounded-lg text-xs font-medium transition-all hover:scale-105"
                                             style="background-color: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.3);"
@@ -258,12 +258,12 @@
                                     :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                                 <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
                             </button>
-                            @if(auth()->id() === $room->party_a_id)
+                            @if(auth()->id() == $room->party_a_id)
                             <button @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="block w-full mt-2 px-4 py-2 rounded-lg text-sm font-medium text-center transition-all hover:opacity-90" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.4);">
                                 📧 RESEND / CORRECT INVITE EMAIL
                             </button>
                             @endif
-                            @if(auth()->id() === $room->party_a_id)
+                            @if(auth()->id() == $room->party_a_id)
                             <!-- Display Invite Link -->
                             <div class="mt-3 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
                                 <p class="text-xs font-medium mb-2" style="color: var(--gold);">Invite Link for Party B:</p>
