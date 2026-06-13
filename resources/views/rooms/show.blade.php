@@ -258,12 +258,14 @@
                                     :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                                 <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
                             </button>
-                            <button x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
-                                Resend / Correct Invite Email
+                            @if(auth()->id() === $room->party_a_id)
+                            <button @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="block w-full mt-2 px-4 py-2 rounded-lg text-sm font-medium text-center transition-all hover:opacity-90" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.4);">
+                                📧 RESEND / CORRECT INVITE EMAIL
                             </button>
-                            
+                            @endif
+                            @if(auth()->id() === $room->party_a_id)
                             <!-- Display Invite Link -->
-                            <div x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" class="mt-3 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
+                            <div class="mt-3 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
                                 <p class="text-xs font-medium mb-2" style="color: var(--gold);">Invite Link for Party B:</p>
                                 @if($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid)
                                     <p class="text-xs break-all" style="color: var(--text-primary); background: var(--bg-secondary); padding: 8px; border-radius: 6px; font-family: monospace;">
@@ -280,6 +282,7 @@
                                     📋 Copy Link
                                 </button>
                             </div>
+                            @endif
                         </div>
                         
                         <!-- Party B: Show Join Session button (only if NOT Party A) -->
