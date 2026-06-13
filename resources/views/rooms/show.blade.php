@@ -259,7 +259,7 @@
                                     :style="clockedIn ? 'background: linear-gradient(135deg, var(--gold) 0%, #b38f36 100%);' : 'background: #4B5563;'">
                                 <span x-text="clockedIn ? 'Start Session' : (roomSessionStatus === 'awaiting_party_b_payment' ? 'Waiting for Party B Payment...' : 'Waiting for Party B to Join...')"></span>
                             </button>
-                            <button @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
+                            <button x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
                             </button>
                         </div>

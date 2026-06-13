@@ -287,9 +287,11 @@ class RoomController extends Controller
         $room = Room::where('uuid', $uuid)->firstOrFail();
 
         // Ensure user is Party A
+        \Log::info("Resend invite check: User ID " . auth()->id() . " trying to resend for room {$uuid}. Room party_a_id: " . $room->party_a_id);
+        
         if (auth()->id() !== $room->party_a_id) {
-            \Log::warning("Unauthorized resend invite attempt by user " . auth()->id() . " for room " . $uuid);
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            \Log::warning("Unauthorized resend invite attempt by user " . auth()->id() . " for room " . $uuid . ". Room belongs to user " . $room->party_a_id);
+            return response()->json(['success' => false, 'message' => 'Only the room creator can resend invitations'], 403);
         }
 
         $request->validate([
