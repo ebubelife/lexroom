@@ -520,7 +520,7 @@
                     <!-- FM Processing Indicator -->
                     <div x-show="lexProcessing" class="w-full">
                         <div class="p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.05);">
-                            <p class="text-[10px] uppercase tracking-wider font-bold mb-1 opacity-50" style="color: var(--gold);">FM is analyzing...</p>
+                            <p class="text-[10px] uppercase tracking-wider font-bold mb-1 opacity-50 transition-all duration-300" style="color: var(--gold);" x-text="processingText"></p>
                             <div class="flex space-x-1.5 p-2 bg-opacity-50 rounded-lg inline-flex" style="background-color: var(--bg-secondary);">
                                 <div class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--gold); border-radius: 4px; border: 2px solid var(--gold); animation-delay: 0s"></div>
                                 <div class="w-1.5 h-1.5 rounded-full animate-bounce" style="background-color: var(--gold); border-radius: 4px; border: 2px solid var(--gold); animation-delay: 0.2s"></div>
@@ -854,6 +854,14 @@ function liveRoom(roomUuid, token) {
         roomSessionStatus: '{{ $room->status }}',
         timerSynced: false,
         lexProcessing: false,
+        processingText: 'FM is analyzing...',
+        processingPhrases: [
+            'FM is analyzing the context...',
+            'FM is weighing the arguments...',
+            'FM is reviewing the evidence...',
+            'FM is drafting a response...'
+        ],
+        processingInterval: null,
         files: [],
         pollInterval: null,
         timerInterval: null,
@@ -1117,7 +1125,22 @@ function liveRoom(roomUuid, token) {
                 }
                 
                 self.roomSessionStatus = data.status;
-                self.lexProcessing = data.lex_processing;
+                if (data.lex_processing && !self.lexProcessing) {
+                    self.lexProcessing = true;
+                    self.processingText = self.processingPhrases[0];
+                    var pIndex = 0;
+                    if (self.processingInterval) clearInterval(self.processingInterval);
+                    self.processingInterval = setInterval(function() {
+                        pIndex = (pIndex + 1) % self.processingPhrases.length;
+                        self.processingText = self.processingPhrases[pIndex];
+                    }, 4000);
+                } else if (!data.lex_processing && self.lexProcessing) {
+                    self.lexProcessing = false;
+                    if (self.processingInterval) {
+                        clearInterval(self.processingInterval);
+                        self.processingInterval = null;
+                    }
+                }
                 self.pendingExtension = data.pending_extension || null;
                 self.partyBOnline = data.party_b_online || false;
                 

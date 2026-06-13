@@ -156,14 +156,14 @@ class ChatController extends Controller
             'phase' => $currentPhase,
         ]);
 
-        // Trigger Lex response (queued)
-        Cache::put("room:{$room->id}:lex_processing", true, 60);
+        // Trigger Lex response (queued) with a 120s cache to account for the delay
+        Cache::put("room:{$room->id}:lex_processing", true, 120);
 
         if (config('queue.default') === 'sync') {
             set_time_limit(120);
         }
 
-        dispatch(new ProcessLexResponse($room->id, $message->id));
+        dispatch(new ProcessLexResponse($room->id, $message->id))->delay(now()->addSeconds(30));
 
         return response()->json([
             'success' => true,
