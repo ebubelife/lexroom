@@ -265,22 +265,25 @@
                             @endif
                             @if(auth()->id() == $room->party_a_id)
                             <!-- Display Invite Link -->
-                            <div class="mt-3 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
-                                <p class="text-xs font-medium mb-2" style="color: var(--gold);">Invite Link for Party B:</p>
+                            <div class="mt-3 p-3 w-full rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
+                                <p class="text-[10px] uppercase font-bold tracking-widest mb-2" style="color: var(--gold);">Invite Link for Party B:</p>
                                 @if($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid)
-                                    <p class="text-xs break-all" style="color: var(--text-primary); background: var(--bg-secondary); padding: 8px; border-radius: 6px; font-family: monospace;">
-                                        {{ $room->party_b_payment_token ? route('payment.party-b.checkout', ['uuid' => $room->uuid, 'token' => $room->party_b_payment_token]) : 'Payment link not ready' }}
-                                    </p>
-                                    <p class="text-xs mt-1 opacity-70" style="color: var(--text-secondary);">This link includes payment for Party B</p>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" readonly value="{{ $room->party_b_payment_token ? route('payment.party-b.checkout', ['uuid' => $room->uuid, 'token' => $room->party_b_payment_token]) : 'Payment link not ready' }}" class="flex-1 text-xs px-3 py-2 rounded-md outline-none border-none focus:ring-1" style="color: var(--text-primary); background: var(--bg-secondary); font-family: monospace; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                                        <button @click="copyInviteLink" class="px-3 py-2 rounded-md font-bold text-xs transition-all hover:scale-105 shrink-0 shadow-sm" style="background-color: var(--gold); color: #0D1B2A;" title="Copy Link">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <p class="text-[10px] mt-2 opacity-60" style="color: var(--text-secondary);">This link includes payment for Party B</p>
                                 @else
-                                    <p class="text-xs break-all" style="color: var(--text-primary); background: var(--bg-secondary); padding: 8px; border-radius: 6px; font-family: monospace;">
-                                        {{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}
-                                    </p>
-                                    <p class="text-xs mt-1 opacity-70" style="color: var(--text-secondary);">Direct room access link</p>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" readonly value="{{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}" class="flex-1 w-0 text-xs px-3 py-2 rounded-md outline-none border-none focus:ring-1" style="color: var(--text-primary); background: var(--bg-secondary); font-family: monospace; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                                        <button @click="copyInviteLink" class="px-3 py-2 rounded-md font-bold text-xs transition-all hover:scale-105 shrink-0 shadow-sm" style="background-color: var(--gold); color: #0D1B2A;" title="Copy Link">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <p class="text-[10px] mt-2 opacity-60" style="color: var(--text-secondary);">Direct room access link</p>
                                 @endif
-                                <button @click="copyInviteLink" class="mt-2 px-3 py-1 rounded text-xs font-medium transition-all hover:scale-105" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold);">
-                                    📋 Copy Link
-                                </button>
                             </div>
                             @endif
                         </div>
