@@ -35,7 +35,7 @@ class ReportsController extends Controller
         $room = $report->room;
         $user = auth()->user();
 
-        if ($room->party_a_id !== $user->id && $room->party_b_email !== $user->email) {
+        if ($room->party_a_id != $user->id && $room->party_b_email != $user->email) {
             abort(403);
         }
 
@@ -50,7 +50,7 @@ class ReportsController extends Controller
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
 
-        if ($room->party_a_id !== auth()->id()) {
+        if ($room->party_a_id != auth()->id()) {
             abort(403);
         }
 
