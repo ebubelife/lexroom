@@ -207,11 +207,10 @@
                                 @endif
                                 @if(auth()->check() && auth()->id() === $room->party_a_id && ($room->status === 'pending' || $room->status === 'awaiting_party_b_payment'))
                                     <button @click="copyInviteLink" 
-                                            class="p-1 rounded bg-gold bg-opacity-10 hover:bg-opacity-20 transition-all group"
+                                            class="ml-2 px-2 py-1 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                                            style="background-color: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.3);"
                                             title="Copy Invite Link for Party B">
-                                        <svg class="w-3 h-3" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                        </svg>
+                                        📋 Copy Link
                                     </button>
                                 @endif
                             </div>
@@ -261,6 +260,11 @@
                             </button>
                             <button x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" @click="console.log('Button clicked'); showResendModal = true; console.log('showResendModal set to', showResendModal);" class="text-[10px] sm:text-xs uppercase tracking-wider underline mt-2 hover:opacity-100 opacity-70 transition-opacity" style="color: var(--gold);">
                                 Resend / Correct Invite Email
+                            </button>
+                            
+                            <!-- Copy Invite Link Button -->
+                            <button x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" @click="copyInviteLink" class="mt-2 px-4 py-2 rounded-lg text-xs font-medium transition-all hover:scale-105" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.4);">
+                                📋 Copy Invite Link
                             </button>
                         </div>
                         
