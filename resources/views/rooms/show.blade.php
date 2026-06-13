@@ -219,7 +219,7 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-2 lg:flex lg:flex-col items-start lg:items-end gap-4 lg:gap-6 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-opacity-10 border-white">
+            <div class="grid grid-cols-2 lg:flex lg:flex-col items-start lg:items-end gap-4 lg:gap-6 w-full lg:w-96 lg:shrink-0 pt-4 lg:pt-0 border-t lg:border-t-0 border-opacity-10 border-white">
                 <!-- Status & Phase -->
                 <div class="flex items-center gap-3 mt-1 lg:mt-0 justify-start">
                     <div class="text-right hidden sm:block">
