@@ -262,10 +262,24 @@
                                 Resend / Correct Invite Email
                             </button>
                             
-                            <!-- Copy Invite Link Button -->
-                            <button x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" @click="copyInviteLink" class="mt-2 px-4 py-2 rounded-lg text-xs font-medium transition-all hover:scale-105" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.4);">
-                                📋 Copy Invite Link
-                            </button>
+                            <!-- Display Invite Link -->
+                            <div x-show="{{ auth()->id() === $room->party_a_id ? 'true' : 'false' }}" class="mt-3 p-3 rounded-lg" style="background-color: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3);">
+                                <p class="text-xs font-medium mb-2" style="color: var(--gold);">Invite Link for Party B:</p>
+                                @if($room->payment_type === 'split' && $room->party_a_paid && !$room->party_b_paid)
+                                    <p class="text-xs break-all" style="color: var(--text-primary); background: var(--bg-secondary); padding: 8px; border-radius: 6px; font-family: monospace;">
+                                        {{ $room->party_b_payment_token ? route('payment.party-b.checkout', ['uuid' => $room->uuid, 'token' => $room->party_b_payment_token]) : 'Payment link not ready' }}
+                                    </p>
+                                    <p class="text-xs mt-1 opacity-70" style="color: var(--text-secondary);">This link includes payment for Party B</p>
+                                @else
+                                    <p class="text-xs break-all" style="color: var(--text-primary); background: var(--bg-secondary); padding: 8px; border-radius: 6px; font-family: monospace;">
+                                        {{ route('rooms.show', ['uuid' => $room->uuid, 'token' => $room->invite_token]) }}
+                                    </p>
+                                    <p class="text-xs mt-1 opacity-70" style="color: var(--text-secondary);">Direct room access link</p>
+                                @endif
+                                <button @click="copyInviteLink" class="mt-2 px-3 py-1 rounded text-xs font-medium transition-all hover:scale-105" style="background-color: rgba(201, 168, 76, 0.2); color: var(--gold);">
+                                    📋 Copy Link
+                                </button>
+                            </div>
                         </div>
                         
                         <!-- Party B: Show Join Session button (only if NOT Party A) -->
