@@ -14,7 +14,7 @@ class ClaudeService
     public function __construct()
     {
         $this->apiKey = config('services.claude.api_key');
-        $this->model = config('services.claude.model', 'claude-sonnet-4-20250514');
+        $this->model = config('services.claude.model', 'claude-3-7-sonnet-20250219');
     }
 
     /**

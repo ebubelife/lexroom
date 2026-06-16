@@ -303,12 +303,12 @@
                     </div>
                     
                     <!-- Pause/Resume Actions for Party A -->
-                    <button x-show="roomSessionStatus === 'active'" x-cloak
+                    <button x-show="roomSessionStatus === 'active' && isPartyA" x-cloak
                             @click="showPauseModal = true"
                             class="col-span-2 w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
-                    <button x-show="roomSessionStatus === 'paused'" x-cloak
+                    <button x-show="roomSessionStatus === 'paused' && isPartyA" x-cloak
                             @click="resumeSession"
                             class="col-span-2 w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-green-600 hover:bg-green-700 text-center">
                         Resume Session
@@ -723,7 +723,7 @@
                     A paused session expires and ends automatically after 24 hours.
                 </p>
                 <div class="flex gap-2 w-full">
-                    <button @click="requestPause" class="flex-1 py-2 bg-yellow-600 text-white rounded-lg font-bold">Request Pause</button>
+                    <button @click="requestPause" class="flex-1 py-2 bg-yellow-600 text-white rounded-lg font-bold">Pause Session</button>
                     <button @click="showPauseModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg font-bold text-gray-800 dark:text-white">Cancel</button>
                 </div>
             </div>
