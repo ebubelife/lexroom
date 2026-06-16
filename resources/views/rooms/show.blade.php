@@ -304,7 +304,7 @@
                     
                     <!-- Pause/Resume Actions for Party A -->
                     <button x-show="roomSessionStatus === 'active' && isPartyA" x-cloak
-                            @click="showPauseModal = true"
+                            @click="requestPause"
                             class="col-span-2 w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold shadow transition-all border border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white text-center">
                         Pause Session
                     </button>
@@ -713,21 +713,7 @@
             </div>
         </div>
 
-        <!-- Pause Confirmation Modal for Party A -->
-        <div x-show="showPauseModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="showPauseModal = false"></div>
-            <div class="relative w-full max-w-sm p-6 rounded-2xl shadow-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <h3 class="text-xl font-serif mb-2 text-gray-900 dark:text-white">Pause Session?</h3>
-                <p class="text-sm opacity-80 mb-6 text-gray-600 dark:text-gray-300">
-                    Are you sure you want to pause the session? The timer will stop immediately. 
-                    A paused session expires and ends automatically after 24 hours.
-                </p>
-                <div class="flex gap-2 w-full">
-                    <button @click="requestPause" class="flex-1 py-2 bg-yellow-600 text-white rounded-lg font-bold">Pause Session</button>
-                    <button @click="showPauseModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg font-bold text-gray-800 dark:text-white">Cancel</button>
-                </div>
-            </div>
-        </div>
+
         
         <!-- Split Payment Request Prompt for Party B -->
         <div x-show="pendingExtension && pendingExtension.status === 'pending_party_b' && isPartyB" x-cloak class="fixed top-4 right-4 z-[120] bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-4 rounded shadow-2xl max-w-sm">
