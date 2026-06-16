@@ -15,7 +15,7 @@
     // Calculate remaining seconds for JS init
     $totalSeconds = ($room->duration + $room->extended_minutes) * 60;
     $remainingSeconds = 0;
-    if (in_array($room->status, ['active', 'pause_requested']) && $room->started_at) {
+    if ($room->status === 'active' && $room->started_at) {
         // Calculate elapsed time - ensure positive value
         $startTime = $room->started_at->timestamp;
         $currentTime = now()->timestamp;
@@ -318,7 +318,6 @@
                             class="col-span-2 w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-white text-sm font-bold shadow transition-all bg-blue-600 hover:bg-blue-700 text-center">
                         Extend Session
                     </button>
-                    <span x-show="roomSessionStatus === 'pause_requested'" x-cloak class="col-span-2 w-full sm:w-auto text-xs text-yellow-600 font-bold px-2 text-center flex items-center justify-center">Waiting for Party B to accept pause...</span>
 
                     {{-- Download / Generate Report (session ended) --}}
                     @if(in_array($room->status, ['locked', 'completed', 'expired']))
@@ -701,12 +700,16 @@
                 </div>
             </div>
         </div>
-        <!-- Pause Request Alert for Party B -->
-        <div x-show="roomSessionStatus === 'pause_requested' && isPartyB" class="fixed top-4 right-4 z-50 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg max-w-sm">
-            <div class="font-bold mb-1">Pause Requested</div>
-            <p class="text-sm mb-3">Party A has requested to pause this session. The countdown will stop once accepted.</p>
-            <div class="flex gap-2">
-                <button @click="acceptPause" class="px-3 py-1 bg-red-600 text-white rounded text-sm font-bold hover:bg-red-700">Accept Pause</button>
+        <!-- Sleek Paused Information Popup -->
+        <div x-show="roomSessionStatus === 'paused'" x-cloak class="fixed top-4 right-4 z-[120] p-4 rounded-xl shadow-2xl max-w-sm backdrop-blur-md bg-white/40 dark:bg-black/50 border border-white/30 dark:border-gray-600" style="backdrop-filter: blur(12px);">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-500/20 text-gray-800 dark:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-1">Session Paused</h4>
+                    <p class="text-xs text-gray-800 dark:text-gray-200">The session is currently paused and the timer has stopped. It will automatically expire 24 hours from when it was paused.</p>
+                </div>
             </div>
         </div>
 
@@ -716,7 +719,7 @@
             <div class="relative w-full max-w-sm p-6 rounded-2xl shadow-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <h3 class="text-xl font-serif mb-2 text-gray-900 dark:text-white">Pause Session?</h3>
                 <p class="text-sm opacity-80 mb-6 text-gray-600 dark:text-gray-300">
-                    A pause request will be sent to Party B. Once accepted, the session is paused and timer stops. 
+                    Are you sure you want to pause the session? The timer will stop immediately. 
                     A paused session expires and ends automatically after 24 hours.
                 </p>
                 <div class="flex gap-2 w-full">
@@ -949,13 +952,11 @@ function liveRoom(roomUuid, token) {
             var self = this;
             if (this.timerInterval) clearInterval(this.timerInterval);
             this.timerInterval = setInterval(function() {
-                if (self.roomSessionStatus === 'active') {
-                    if (self.remainingSeconds > 0) {
+                if (self.roomSessionStatus === 'active' && self.remainingSeconds > 0) {
                         self.remainingSeconds--;
                         self.checkWarnings();
-                    } else {
+                } else if (self.roomSessionStatus === 'active' && self.remainingSeconds <= 0) {
                         self.lockSession();
-                    }
                 }
             }, 1000);
         },
@@ -1117,10 +1118,13 @@ function liveRoom(roomUuid, token) {
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data.messages && data.messages.length > 0) {
-                    for (var i = 0; i < data.messages.length; i++) {
-                        self.messages.push(data.messages[i]);
-                    }
-                    self.lastMessageId = data.messages[data.messages.length - 1].id;
+                    data.messages.forEach(function(msg) {
+                        if (!self.messages.find(function(m) { return m.id === msg.id; })) {
+                            self.messages.push(msg);
+                        }
+                    });
+                    var maxId = Math.max.apply(null, data.messages.map(function(m){ return m.id; }));
+                    if (maxId > self.lastMessageId) self.lastMessageId = maxId;
                     self.$nextTick(function() { self.scrollToBottom(); });
                 }
                 
@@ -1144,34 +1148,28 @@ function liveRoom(roomUuid, token) {
                 self.pendingExtension = data.pending_extension || null;
                 self.partyBOnline = data.party_b_online || false;
                 
-                // If payment type was split and party B goes offline, reset it
                 if (!self.partyBOnline && self.paymentType === 'split') {
                     self.paymentType = 'full';
                 }
                 
-                // Check if Party B just clocked in
                 var wasNotClockedIn = !self.clockedIn;
                 self.clockedIn = !!data.party_b_clocked_in_at;
                 
-                // Notify Party A when Party B joins
                 if (self.isPartyA && wasNotClockedIn && self.clockedIn) {
                     window.showToast('Party B has joined the session! You can now start.', 'success');
                 }
 
-                if (self.roomSessionStatus === 'active' || self.roomSessionStatus === 'pause_requested') {
-                    // Always sync timer from server to prevent drift
+                if (self.roomSessionStatus === 'active') {
                     if (data.timer && data.timer.remaining_seconds >= 0) {
                         self.remainingSeconds = Math.floor(data.timer.remaining_seconds);
                         self.totalSeconds = Math.floor(data.timer.total_seconds);
                     }
                     
-                    // Start local timer if not already running
                     if (!self.timerInterval) {
                         self.timerSynced = true;
                         self.startLocalTimer();
                     }
                 } else if (self.roomSessionStatus === 'paused') {
-                    // Stop timer and sync frozen time from server
                     if (self.timerInterval) {
                         clearInterval(self.timerInterval);
                         self.timerInterval = null;
@@ -1181,7 +1179,6 @@ function liveRoom(roomUuid, token) {
                     }
                     self.timerSynced = false;
                 } else if (self.roomSessionStatus === 'completed') {
-                    // Ensure timer is stopped
                     if (self.timerInterval) {
                         clearInterval(self.timerInterval);
                         self.timerInterval = null;
@@ -1218,9 +1215,11 @@ function liveRoom(roomUuid, token) {
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data.success && data.message) {
-                    self.messages.push(data.message);
-                    if (data.message.id > self.lastMessageId) {
-                        self.lastMessageId = data.message.id;
+                    if (!self.messages.find(function(m) { return m.id === data.message.id; })) {
+                        self.messages.push(data.message);
+                        if (data.message.id > self.lastMessageId) {
+                            self.lastMessageId = data.message.id;
+                        }
                     }
                     self.$nextTick(function() { self.scrollToBottom(); });
                     setTimeout(function() { self.poll(); }, 500);
@@ -1310,24 +1309,6 @@ function liveRoom(roomUuid, token) {
             }
         },
 
-        acceptPause: async function() {
-            try {
-                var response = await fetch(`/rooms/${this.roomUuid}/pause-accept`, {
-                    method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
-                });
-                var data = await response.json();
-                if (data.success) {
-                    window.showToast('Session paused');
-                    this.poll();
-                } else {
-                    window.showToast(data.error || 'Failed to accept pause', 'error');
-                }
-            } catch (error) {
-                console.error(error);
-                window.showToast('Error accepting pause', 'error');
-            }
-        },
 
         resumeSession: async function() {
             try {
@@ -1489,7 +1470,6 @@ function liveRoom(roomUuid, token) {
                 'awaiting_party_b_payment': 'background-color: rgba(245, 158, 11, 0.1); color: #B45309;',
                 'active': 'background-color: rgba(34, 197, 94, 0.1); color: #15803D;',
                 'completed': 'background-color: rgba(107, 107, 104, 0.1); color: #6B6B68;',
-                'pause_requested': 'background-color: rgba(185, 28, 28, 0.1); color: #B91C1C;',
                 'paused': 'background-color: rgba(75, 85, 99, 0.1); color: #4B5563;'
             };
             return styles[currentSessionStatus] || styles.pending;
@@ -1501,7 +1481,6 @@ function liveRoom(roomUuid, token) {
                 'awaiting_party_b_payment': 'AWAITING PAYMENT',
                 'active': 'ACTIVE',
                 'completed': 'COMPLETED',
-                'pause_requested': 'PAUSE REQUESTED',
                 'paused': 'PAUSED',
                 'timer_expired': 'TIME EXPIRED'
             };

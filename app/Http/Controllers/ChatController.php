@@ -65,12 +65,33 @@ class ChatController extends Controller
             $remainingSeconds = max(0, $totalSeconds - $elapsed);
             Cache::put($timerKey, (int) $remainingSeconds, 7200);
         } elseif ($startedAt && $room->status === 'paused' && $room->paused_at) {
-            $startTime = $startedAt->timestamp;
-            $pauseTime = $room->paused_at->timestamp;
-            $elapsed = max(0, $pauseTime - $startTime);
-            $elapsed = $elapsed - (int) $room->total_paused_seconds;
-            $remainingSeconds = max(0, $totalSeconds - $elapsed);
-            Cache::put($timerKey, (int) $remainingSeconds, 7200);
+            // Check for 24-hour expiration
+            if (now()->diffInHours($room->paused_at) >= 24) {
+                $room->update([
+                    'status' => 'expired',
+                    'ended_at' => now(),
+                ]);
+                $remainingSeconds = 0;
+                Cache::forget($timerKey);
+
+                // Add FM message for expiration
+                SessionMessage::create([
+                    'room_id' => $room->id,
+                    'sender_type' => 'lex',
+                    'content' => '⏰ This session has been paused for over 24 hours and has now automatically expired.',
+                    'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
+                ]);
+                
+                // Dispatch report generation
+                GenerateReportJob::dispatch($room->id);
+            } else {
+                $startTime = $startedAt->timestamp;
+                $pauseTime = $room->paused_at->timestamp;
+                $elapsed = max(0, $pauseTime - $startTime);
+                $elapsed = $elapsed - (int) $room->total_paused_seconds;
+                $remainingSeconds = max(0, $totalSeconds - $elapsed);
+                Cache::put($timerKey, (int) $remainingSeconds, 7200);
+            }
         } else {
             // For pending/awaiting status, always show full time and clear any cached values
             $remainingSeconds = $totalSeconds;
@@ -555,34 +576,6 @@ class ChatController extends Controller
 
         if ($room->status !== 'active') {
             return response()->json(['error' => 'Session must be active to pause.'], 400);
-        }
-
-        $room->update([
-            'status' => 'pause_requested',
-            'pause_requested_at' => now(),
-        ]);
-
-        SessionMessage::create([
-            'room_id' => $room->id,
-            'sender_type' => 'lex',
-            'content' => "Party A has requested to pause the session. Party B, please accept to pause.",
-            'phase' => Cache::get("room:{$room->id}:phase", 'opening'),
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Pause requested.']);
-    }
-
-    public function acceptPause(Request $request, $uuid)
-    {
-        $room = Room::where('uuid', $uuid)->firstOrFail();
-
-        // Ensure user is Party B (could be guest with token or auth)
-        if (Auth::check() && $room->party_b_id !== Auth::id()) {
-            return response()->json(['error' => 'Only Party B can accept the pause.'], 403);
-        }
-
-        if ($room->status !== 'pause_requested') {
-            return response()->json(['error' => 'No active pause request.'], 400);
         }
 
         $room->update([

@@ -163,7 +163,6 @@ Route::get('/rooms/{uuid}/poll', [\App\Http\Controllers\ChatController::class, '
     Route::post('/rooms/{uuid}/clock-in', [\App\Http\Controllers\ChatController::class, 'clockIn'])->name('rooms.clock-in');
     Route::post('/rooms/{uuid}/start', [\App\Http\Controllers\ChatController::class, 'startSession'])->name('rooms.start');
     Route::post('/rooms/{uuid}/pause-request', [\App\Http\Controllers\ChatController::class, 'requestPause'])->name('rooms.pause-request');
-    Route::post('/rooms/{uuid}/pause-accept', [\App\Http\Controllers\ChatController::class, 'acceptPause'])->name('rooms.pause-accept');
     Route::post('/rooms/{uuid}/resume', [\App\Http\Controllers\ChatController::class, 'resumeSession'])->name('rooms.resume');
 Route::post('/rooms/{uuid}/phase', [\App\Http\Controllers\ChatController::class, 'changePhase'])->name('chat.phase');
 Route::post('/rooms/{uuid}/lock', [\App\Http\Controllers\ChatController::class, 'lockSession'])->name('rooms.lock');
