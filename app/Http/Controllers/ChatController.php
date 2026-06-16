@@ -571,11 +571,22 @@ class ChatController extends Controller
 
         // Only Party A can request pause
         if (!$user) {
-            return response()->json(['error' => 'You must be logged in to pause the session.'], 401);
+            return response()->json(['error' => 'You must be logged in to pause the session.', 'debug' => 'no_user'], 401);
         }
 
+        \Log::debug('requestPause check', [
+            'user_id' => $user->id,
+            'user_id_type' => gettype($user->id),
+            'party_a_id' => $room->party_a_id,
+            'party_a_id_type' => gettype($room->party_a_id),
+            'match' => (int)$room->party_a_id === (int)$user->id,
+        ]);
+
         if ((int)$room->party_a_id !== (int)$user->id) {
-            return response()->json(['error' => 'Only the room creator can request a pause.'], 403);
+            return response()->json([
+                'error' => 'Only the room creator can request a pause.',
+                'debug' => ['your_id' => $user->id, 'party_a_id' => $room->party_a_id]
+            ], 403);
         }
 
         if ($room->status !== 'active') {
