@@ -174,7 +174,7 @@
                 This will immediately process a full refund via Stripe. This action cannot be undone.
             </p>
 
-            <template x-for="billing in [{{ $billings->items() ? json_encode($billings->items()->map(fn($b) => ['id' => $b->id, 'amount' => $b->amount])->values()) : '[]' }}]" :key="billing.id">
+            <template x-for="billing in [{{ $billings->items() ? json_encode(collect($billings->items())->map(fn($b) => ['id' => $b->id, 'amount' => $b->amount])->values()) : '[]' }}]" :key="billing.id">
                 <div x-show="billing.id === selected"
                      class="p-3 rounded-lg text-sm font-medium text-center"
                      style="background: rgba(239,68,68,0.08); color: #F87171;">
