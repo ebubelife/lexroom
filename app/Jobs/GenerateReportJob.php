@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\Report;
 use App\Models\Room;
 use App\Models\SessionMessage;
-use App\Services\ClaudeService;
+use App\Contracts\AiProviderInterface;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +27,7 @@ class GenerateReportJob implements ShouldQueue
         $this->roomId = $roomId;
     }
 
-    public function handle(ClaudeService $claudeService): void
+    public function handle(AiProviderInterface $claudeService): void
     {
         $room = Room::with(['partyA', 'partyB', 'messages', 'evidence'])->find($this->roomId);
         

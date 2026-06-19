@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -75,6 +76,10 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
         Route::get('/wallets', [WalletController::class, 'index'])->name('wallets.index');
         Route::post('/wallets/{wallet}/adjust', [WalletController::class, 'adjust'])->name('wallets.adjust');
         Route::post('/wallets/{wallet}/release-escrow', [WalletController::class, 'releaseEscrow'])->name('wallets.release-escrow');
+
+        // Agents
+        Route::get('/agents', [AgentController::class, 'index'])->name('agents.index');
+        Route::put('/agents', [AgentController::class, 'update'])->name('agents.update');
 
         // Settings & Audit Log
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

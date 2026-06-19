@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\Room;
-use App\Services\ClaudeService;
+use App\Contracts\AiProviderInterface;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -46,7 +46,7 @@ class ReportsController extends Controller
      * Generate report for a locked room (Party A only).
      * Creates the Report record if it doesn't exist, then generates PDF inline.
      */
-    public function generate($uuid, ClaudeService $claude)
+    public function generate($uuid, AiProviderInterface $claude)
     {
         $room = Room::where('uuid', $uuid)->firstOrFail();
 
@@ -119,7 +119,7 @@ class ReportsController extends Controller
         ]);
     }
 
-    private function buildReport(Room $room, ClaudeService $claude): ?Report
+    private function buildReport(Room $room, AiProviderInterface $claude): ?Report
     {
         $room->load(['partyA', 'partyB', 'messages', 'evidenceFiles']);
 

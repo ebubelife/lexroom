@@ -7,18 +7,18 @@ use App\Traits\BuildsMediatorPrompt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class ClaudeService implements AiProviderInterface
+class OpenAiService implements AiProviderInterface
 {
     use BuildsMediatorPrompt;
 
     protected string $apiKey;
     protected string $model;
-    protected string $baseUrl = 'https://api.anthropic.com/v1/messages';
+    protected string $baseUrl = 'https://api.openai.com/v1/chat/completions';
 
     public function __construct()
     {
-        $this->apiKey = config('services.claude.api_key');
-        $this->model = config('services.claude.model', 'claude-sonnet-4-6');
+        $this->apiKey = config('services.openai.api_key', '');
+        $this->model = config('services.openai.model', 'gpt-4o');
     }
 
     public function generateResponse(array $conversationHistory, array $context = []): array
@@ -26,15 +26,19 @@ class ClaudeService implements AiProviderInterface
         $systemPrompt = $this->buildSystemPrompt($context);
         $messages = $this->formatMessages($conversationHistory);
 
+        // OpenAI expects the system prompt as the first message
+        array_unshift($messages, [
+            'role' => 'system',
+            'content' => $systemPrompt,
+        ]);
+
         try {
             $response = Http::withHeaders([
-                'x-api-key' => $this->apiKey,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
             ])->post($this->baseUrl, [
                 'model' => $this->model,
                 'max_tokens' => 2048,
-                'system' => $systemPrompt,
                 'messages' => $messages,
             ]);
 
@@ -42,22 +46,22 @@ class ClaudeService implements AiProviderInterface
                 $data = $response->json();
                 return [
                     'success' => true,
-                    'message' => $data['content'][0]['text'] ?? '',
+                    'message' => $data['choices'][0]['message']['content'] ?? '',
                     'usage' => $data['usage'] ?? null,
                 ];
             }
 
-            Log::error('Claude API Error', [
+            Log::error('OpenAI API Error', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
             return [
                 'success' => false,
-                'error' => 'Failed to get response from Claude API',
+                'error' => 'Failed to get response from OpenAI API',
             ];
         } catch (\Exception $e) {
-            Log::error('Claude API Exception', [
+            Log::error('OpenAI API Exception', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

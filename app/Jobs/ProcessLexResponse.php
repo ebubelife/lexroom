@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Room;
 use App\Models\SessionMessage;
-use App\Services\ClaudeService;
+use App\Contracts\AiProviderInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,7 +26,7 @@ class ProcessLexResponse implements ShouldQueue
         $this->triggeredByMessageId = $triggeredByMessageId;
     }
 
-    public function handle(ClaudeService $claudeService): void
+    public function handle(AiProviderInterface $claudeService): void
     {
         $room = Room::find($this->roomId);
         

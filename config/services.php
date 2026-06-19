@@ -49,7 +49,12 @@ return [
 
     'claude' => [
         'api_key' => env('CLAUDE_API_KEY'),
-        'model' => env('CLAUDE_MODEL', 'claude-3-7-sonnet-20250219'),
+        'model' => env('CLAUDE_MODEL', 'claude-sonnet-4-6'),
+    ],
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_MODEL', 'gpt-4o'),
     ],
 
     'mailgun' => [
