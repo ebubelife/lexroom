@@ -134,6 +134,7 @@
         </div>
 
         {{-- Nav --}}
+        @php $navAdmin = auth('admin')->user(); @endphp
         <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
             <a href="{{ route('admin.dashboard') }}"
                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -144,10 +145,13 @@
                 Dashboard
             </a>
 
+            @if($navAdmin->hasAnyAbility('admin.users.view', 'admin.rooms.view', 'admin.billing.view', 'admin.files.view', 'admin.reports.view'))
             <div class="pt-3 pb-1">
                 <p class="px-3 text-xs font-semibold uppercase tracking-widest" style="color: var(--text-secondary); opacity: 0.5;">Manage</p>
             </div>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.users.view'))
             <a href="{{ route('admin.users.index') }}"
                class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,7 +160,9 @@
                 </svg>
                 Users
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.rooms.view'))
             <a href="{{ route('admin.rooms.index') }}"
                class="nav-link {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +171,9 @@
                 </svg>
                 Rooms
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.billing.view'))
             <a href="{{ route('admin.billing.index') }}"
                class="nav-link {{ request()->routeIs('admin.billing.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,7 +182,9 @@
                 </svg>
                 Billing
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.files.view'))
             <a href="{{ route('admin.files.index') }}"
                class="nav-link {{ request()->routeIs('admin.files.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,7 +193,9 @@
                 </svg>
                 Files
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.reports.view'))
             <a href="{{ route('admin.reports.index') }}"
                class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,11 +204,15 @@
                 </svg>
                 Reports
             </a>
+            @endif
 
+            @if($navAdmin->hasAnyAbility('admin.wallets.view', 'admin.referrals.view'))
             <div class="pt-3 pb-1">
                 <p class="px-3 text-xs font-semibold uppercase tracking-widest" style="color: var(--text-secondary); opacity: 0.5;">Finance</p>
             </div>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.wallets.view'))
             <a href="{{ route('admin.wallets.index') }}"
                class="nav-link {{ request()->routeIs('admin.wallets.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +221,9 @@
                 </svg>
                 Wallets
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.referrals.view'))
             <a href="{{ route('admin.referrals.index') }}"
                class="nav-link {{ request()->routeIs('admin.referrals.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,11 +232,15 @@
                 </svg>
                 Referrals
             </a>
+            @endif
 
+            @if($navAdmin->hasAnyAbility('admin.agents.manage', 'admin.settings.manage', 'admin.lawyers.view', 'admin.jurisdictions.view', 'admin.plans.view', 'admin.credits.view', 'admin.admins.manage'))
             <div class="pt-3 pb-1">
                 <p class="px-3 text-xs font-semibold uppercase tracking-widest" style="color: var(--text-secondary); opacity: 0.5;">System</p>
             </div>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.agents.manage'))
             <a href="{{ route('admin.agents.index') }}"
                class="nav-link {{ request()->routeIs('admin.agents.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,7 +249,9 @@
                 </svg>
                 Agents
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.settings.manage'))
             <a href="{{ route('admin.settings.index') }}"
                class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,7 +261,9 @@
                 </svg>
                 Settings
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.lawyers.view'))
             <a href="{{ route('admin.lawyers.index') }}"
                class="nav-link {{ request()->routeIs('admin.lawyers.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +272,9 @@
                 </svg>
                 FM Refer Lawyers
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.jurisdictions.view'))
             <a href="{{ route('admin.jurisdictions.index') }}"
                class="nav-link {{ request()->routeIs('admin.jurisdictions.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,7 +283,9 @@
                 </svg>
                 Jurisdictions
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.plans.view'))
             <a href="{{ route('admin.plans.index') }}"
                class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +294,9 @@
                 </svg>
                 Plans
             </a>
+            @endif
 
+            @if($navAdmin->hasAbility('admin.credits.view'))
             <a href="{{ route('admin.credits.index') }}"
                class="nav-link {{ request()->routeIs('admin.credits.*') ? 'active' : '' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,6 +305,18 @@
                 </svg>
                 Credits
             </a>
+            @endif
+
+            @if($navAdmin->hasAbility('admin.admins.manage'))
+            <a href="{{ route('admin.admin-users.index') }}"
+               class="nav-link {{ request()->routeIs('admin.admin-users.*') ? 'active' : '' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Admin Users
+            </a>
+            @endif
         </nav>
 
         {{-- Admin user --}}
@@ -284,7 +328,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium truncate" style="color: var(--text-primary);">{{ auth('admin')->user()->name }}</p>
-                    <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth('admin')->user()->role }}</p>
+                    <p class="text-xs truncate" style="color: var(--text-secondary);">{{ auth('admin')->user()->roleLabel() }}</p>
                 </div>
                 <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf

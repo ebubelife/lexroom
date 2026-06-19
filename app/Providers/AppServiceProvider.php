@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Contracts\AiProviderInterface;
+use App\Models\Admin;
 use App\Models\PlatformSetting;
 use App\Models\Setting;
 use App\Services\ClaudeService;
 use App\Services\OpenAiService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Route::model('adminUser', Admin::class);
+
         Paginator::defaultView('partials.pagination');
 
         // Share currency symbol and code with all views
