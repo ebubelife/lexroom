@@ -94,6 +94,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/verify/resend', [OtpController::class, 'resendOtp'])->name('otp.resend');
 });
 
+// Support ticket submission (guest or auth)
+Route::get('/support/new', [\App\Http\Controllers\SupportController::class, 'create'])->name('support.create');
+Route::post('/support', [\App\Http\Controllers\SupportController::class, 'store'])->name('support.store');
+
 // Authenticated and verified routes
 Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -129,6 +133,11 @@ Route::middleware(['auth', App\Http\Middleware\EnsureUserIsVerified::class])->gr
     Route::get('/fmrefer', [\App\Http\Controllers\FmReferController::class, 'index'])->name('fmrefer.index');
     Route::get('/fmrefer/{lawyer}', [\App\Http\Controllers\EscalationController::class, 'show'])->name('fmrefer.show');
     Route::post('/fmrefer/{lawyer}/escalate', [\App\Http\Controllers\EscalationController::class, 'store'])->name('escalation.store');
+
+    // Support tickets
+    Route::get('/support', [\App\Http\Controllers\SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/{uuid}', [\App\Http\Controllers\SupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{uuid}/reply', [\App\Http\Controllers\SupportController::class, 'reply'])->name('support.reply');
 
     // Vault routes
     Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');

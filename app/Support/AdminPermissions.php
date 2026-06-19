@@ -84,5 +84,9 @@ class AdminPermissions
 
         // Admin account management — super_admin only
         'admin.admins.manage'        => [],
+
+        // Support tickets
+        'admin.support.view'         => ['platform_admin', 'support_agent', 'auditor'],
+        'admin.support.manage'       => ['platform_admin', 'support_agent'],
     ];
 }

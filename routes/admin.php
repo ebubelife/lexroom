@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\SupportController as AdminSupportController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\CreditSettingsController;
@@ -166,6 +167,16 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
             Route::put('/credits/topup/{package}', [CreditSettingsController::class, 'updateTopup'])->name('credits.topup.update');
             Route::post('/credits/topup/{package}/toggle', [CreditSettingsController::class, 'toggleTopup'])->name('credits.topup.toggle');
             Route::delete('/credits/topup/{package}', [CreditSettingsController::class, 'destroyTopup'])->name('credits.topup.destroy');
+        });
+
+        // Support Tickets
+        Route::middleware('admin.can:admin.support.view')->group(function () {
+            Route::get('/support', [AdminSupportController::class, 'index'])->name('support.index');
+            Route::get('/support/{ticket}', [AdminSupportController::class, 'show'])->name('support.show');
+        });
+        Route::middleware('admin.can:admin.support.manage')->group(function () {
+            Route::post('/support/{ticket}/reply', [AdminSupportController::class, 'reply'])->name('support.reply');
+            Route::post('/support/{ticket}/status', [AdminSupportController::class, 'updateStatus'])->name('support.status');
         });
 
         // Admin User Management (Super Admin only)
