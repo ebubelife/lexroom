@@ -56,10 +56,15 @@
                         </div>
                         <div class="peer-checked:block">
                             <p class="text-xs mb-1" style="color: var(--text-secondary);">Model</p>
-                            <input type="text" name="claude_model" value="{{ old('claude_model', $claudeModel) }}"
-                                   placeholder="claude-sonnet-4-6"
-                                   class="w-full px-3 py-2 rounded-lg text-sm font-mono"
-                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); outline: none;">
+                            <select name="claude_model"
+                                    class="w-full px-3 py-2 rounded-lg text-sm font-mono"
+                                    style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); outline: none;">
+                                @foreach($claudeModels as $model)
+                                    <option value="{{ $model }}" {{ old('claude_model', $claudeModel) === $model ? 'selected' : '' }}>
+                                        {{ $model }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     {{-- Selected indicator --}}
@@ -98,10 +103,15 @@
                         </div>
                         <div>
                             <p class="text-xs mb-1" style="color: var(--text-secondary);">Model</p>
-                            <input type="text" name="openai_model" value="{{ old('openai_model', $openaiModel) }}"
-                                   placeholder="gpt-4o"
-                                   class="w-full px-3 py-2 rounded-lg text-sm font-mono"
-                                   style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); outline: none;">
+                            <select name="openai_model"
+                                    class="w-full px-3 py-2 rounded-lg text-sm font-mono"
+                                    style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); outline: none;">
+                                @foreach($openaiModels as $model)
+                                    <option value="{{ $model }}" {{ old('openai_model', $openaiModel) === $model ? 'selected' : '' }}>
+                                        {{ $model }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="absolute top-4 right-4 hidden peer-checked:flex w-4 h-4 rounded-full items-center justify-center"
@@ -117,7 +127,17 @@
 
         {{-- API key hint --}}
         <div class="mb-6 px-4 py-3 rounded-lg text-xs" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-secondary);">
-            API keys are set via environment variables (<code class="font-mono text-xs" style="color: var(--gold);">CLAUDE_API_KEY</code> / <code class="font-mono text-xs" style="color: var(--gold);">OPENAI_API_KEY</code>) — not stored here. Model names and the active provider are saved to the database and override the env defaults.
+            <div class="flex items-center justify-between gap-4">
+                <span>API keys are set via environment variables (<code class="font-mono text-xs" style="color: var(--gold);">CLAUDE_API_KEY</code> / <code class="font-mono text-xs" style="color: var(--gold);">OPENAI_API_KEY</code>) — not stored here. Model lists are fetched live from each provider's API.</span>
+                <a href="{{ route('admin.agents.index') }}"
+                   class="flex-shrink-0 flex items-center gap-1 text-xs font-medium transition-opacity hover:opacity-70"
+                   style="color: var(--gold);">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Refresh models
+                </a>
+            </div>
         </div>
 
         @if($errors->any())
