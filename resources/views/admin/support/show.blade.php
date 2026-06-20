@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Ticket #' . str_pad($ticket->id, 5, '0', STR_PAD_LEFT'))
+@section('title', 'Ticket #' . str_pad($ticket->id, 5, '0', STR_PAD_LEFT))
 @section('page-title', 'Support Ticket')
 
 @section('content')
