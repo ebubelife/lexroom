@@ -73,7 +73,6 @@ class PhoneHelper
     public static function isValidNigerianNumber($phone)
     {
 
-    
 
 
         // Must be 11 digits starting with 0
