@@ -613,7 +613,79 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
   </div>
 </section>
 
-@include('partials.footer')
+{{-- ================= FOOTER (ported from first-mediator (2) Footer.tsx, real routes) ================= --}}
+<footer class="border-t" style="border-color:var(--border); background:var(--bg-alt);">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-10 mb-14">
+
+      <!-- Brand -->
+      <div class="col-span-2 sm:col-span-3 lg:col-span-1">
+        <a href="{{ url('/') }}" class="flex items-center gap-2 mb-4">
+          <img src="{{ asset('assets/images/logos/FM_Icon.svg') }}" alt="First Mediator" class="w-7 h-7">
+          <span class="font-semibold text-base" style="color:var(--text-primary);">First Mediator</span>
+        </a>
+        <p class="text-sm leading-relaxed mb-5" style="color:var(--text-secondary);">AI-powered online mediation for everyday disputes.</p>
+        <div class="flex gap-2.5">
+          @foreach (['𝕏','in','▶'] as $icon)
+          <span class="w-8 h-8 rounded-lg border flex items-center justify-center text-xs" style="border-color:var(--border); color:var(--text-muted);">{{ $icon }}</span>
+          @endforeach
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="font-semibold text-sm mb-4" style="color:var(--text-primary);">Company</div>
+        <div class="flex flex-col gap-2.5 text-sm" style="color:var(--text-secondary);">
+          <a href="{{ route('about') }}" class="hover:text-gold">About Us</a>
+          <a href="mailto:info@firstmediator.com" class="hover:text-gold">Contact</a>
+        </div>
+      </div>
+
+      <!-- Product -->
+      <div>
+        <div class="font-semibold text-sm mb-4" style="color:var(--text-primary);">Product</div>
+        <div class="flex flex-col gap-2.5 text-sm" style="color:var(--text-secondary);">
+          <a href="{{ url('/#how') }}" class="hover:text-gold">How it Works</a>
+          <a href="{{ url('/#features') }}" class="hover:text-gold">Features</a>
+          <a href="{{ url('/#pricing') }}" class="hover:text-gold">Pricing</a>
+          <a href="{{ url('/#security') }}" class="hover:text-gold">Security</a>
+          <a href="{{ route('register') }}" class="hover:text-gold">Create Room</a>
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <div class="font-semibold text-sm mb-4" style="color:var(--text-primary);">Resources</div>
+        <div class="flex flex-col gap-2.5 text-sm" style="color:var(--text-secondary);">
+          <a href="{{ url('/#faq') }}" class="hover:text-gold">Help Centre &amp; FAQs</a>
+          <a href="{{ route('about') }}" class="hover:text-gold">Case Method</a>
+          <a href="{{ route('gdpr') }}" class="hover:text-gold">Data Rights</a>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <div class="font-semibold text-sm mb-4" style="color:var(--text-primary);">Legal</div>
+        <div class="flex flex-col gap-2.5 text-sm" style="color:var(--text-secondary);">
+          <a href="{{ route('privacy') }}" class="hover:text-gold">Privacy Policy</a>
+          <a href="{{ route('terms') }}" class="hover:text-gold">Terms of Service</a>
+          <a href="{{ route('privacy') }}" class="hover:text-gold">Cookie Policy</a>
+          <a href="{{ route('gdpr') }}" class="hover:text-gold">GDPR Compliance</a>
+          <a href="{{ route('disclaimer') }}" class="hover:text-gold">Legal Disclaimer</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2 pt-8 border-t text-xs" style="border-color:var(--border); color:var(--text-muted);">
+      <span>&copy; {{ date('Y') }} First Mediator Ltd. All rights reserved.</span>
+      <div class="flex gap-4">
+        <a href="{{ route('terms') }}" class="hover:underline">Terms</a>
+        <a href="{{ route('privacy') }}" class="hover:underline">Privacy</a>
+        <a href="{{ route('disclaimer') }}" class="hover:underline">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
 // Scroll reveal — same IntersectionObserver mechanism used across the site
