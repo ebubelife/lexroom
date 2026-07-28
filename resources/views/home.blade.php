@@ -109,7 +109,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); font-family: var(--sans); }
-h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.15; font-weight: 400; }
+h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.15; font-weight: 600; }
+.accent-serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
 
 /* ── SCROLL REVEAL (site-standard, same mechanism as welcome.blade.php) ── */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1); }
@@ -161,7 +162,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
       AI-assisted mediation · No lawyer required
     </div>
     <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary);">
-      Resolve disputes without<br><em class="italic text-gold">expensive lawyers.</em>
+      Resolve disputes without<br><em class="accent-serif text-gold">expensive lawyers.</em>
     </h1>
     <p class="reveal reveal-delay-2 text-lg font-light max-w-xl mx-auto mb-10" style="color:var(--text-secondary);">
       Two parties. One room. An impartial AI mediator. A formal resolution report — in under 90 minutes.
@@ -250,19 +251,19 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
   </div>
   <div class="grid-4 max-w-4xl mx-auto grid grid-cols-4 gap-6 mt-10 text-center">
     <div>
-      <div class="font-serif text-3xl" style="color:var(--text-primary);"><span class="text-gold">15</span> min</div>
+      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">15</span> min</div>
       <div class="text-xs mt-1" style="color:var(--text-secondary);">Average time to set up and start a session</div>
     </div>
     <div>
-      <div class="font-serif text-3xl" style="color:var(--text-primary);"><span class="text-gold">100%</span></div>
+      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">100%</span></div>
       <div class="text-xs mt-1" style="color:var(--text-secondary);">AI-impartial — no side, no bias, no agenda</div>
     </div>
     <div>
-      <div class="font-serif text-3xl" style="color:var(--text-primary);"><span class="text-gold">PDF</span></div>
+      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">PDF</span></div>
       <div class="text-xs mt-1" style="color:var(--text-secondary);">Formal, timestamped resolution report</div>
     </div>
     <div>
-      <div class="font-serif text-3xl" style="color:var(--text-primary);"><span class="text-gold">0</span></div>
+      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">0</span></div>
       <div class="text-xs mt-1" style="color:var(--text-secondary);">Subscriptions required — <a href="{{ route('pricing') }}" class="underline text-gold">see pricing</a></div>
     </div>
   </div>
@@ -273,7 +274,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
   <div class="max-w-5xl mx-auto">
     <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-4 text-gold">The problem</div>
     <h2 class="reveal text-4xl sm:text-5xl mb-14 max-w-2xl" style="color:var(--text-primary);">
-      Between a WhatsApp argument and a <em class="italic text-gold">courtroom,</em> there was nothing. Until now.
+      Between a WhatsApp argument and a <em class="accent-serif text-gold">courtroom,</em> there was nothing. Until now.
     </h2>
     <div class="grid md:grid-cols-2 gap-6">
       <div class="reveal reveal-delay-1 card rounded-2xl p-8">
@@ -387,22 +388,22 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
     <div class="grid md:grid-cols-3 gap-4 mb-4">
       <div class="reveal reveal-delay-1 card card-hover md:col-span-2 rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">⚡</div>
-        <div class="text-xl mb-2 font-serif" style="color:var(--text-primary);">AI Mediation Engine</div>
+        <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">AI Mediation Engine</div>
         <p class="text-sm max-w-md" style="color:var(--text-secondary);">Our impartial AI reads both sides, weighs the evidence, asks clarifying questions, and reasons through the dispute with structured logic.</p>
       </div>
       <div class="reveal reveal-delay-2 card card-hover rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">🔒</div>
-        <div class="text-xl mb-2 font-serif" style="color:var(--text-primary);">End-to-End Encrypted</div>
+        <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">End-to-End Encrypted</div>
         <p class="text-sm" style="color:var(--text-secondary);">Every room is private. Evidence, messages, and reports are fully encrypted.</p>
       </div>
       <div class="reveal reveal-delay-3 card card-hover rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">📄</div>
-        <div class="text-xl mb-2 font-serif" style="color:var(--text-primary);">Formal PDF Reports</div>
+        <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">Formal PDF Reports</div>
         <p class="text-sm" style="color:var(--text-secondary);">Structured reports with AI reasoning, findings, and recommendations — professional and shareable.</p>
       </div>
       <div class="reveal reveal-delay-1 card card-hover md:col-span-2 rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">📁</div>
-        <div class="text-xl mb-2 font-serif" style="color:var(--text-primary);">Evidence Management</div>
+        <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">Evidence Management</div>
         <p class="text-sm max-w-md mb-4" style="color:var(--text-secondary);">Upload contracts, invoices, photos, screenshots, and messages. Organise your case file and let the AI reference every document accurately.</p>
         <div class="flex flex-wrap gap-2">
           @foreach (['Contract.pdf','Invoice_03.pdf','Screenshot.png','Email.pdf'] as $f)
@@ -450,7 +451,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
       ] as $i => $cat)
       <a href="{{ route('register') }}" class="reveal reveal-delay-{{ ($i % 4) + 1 }} card card-hover rounded-xl p-6 block no-underline">
         <div class="text-3xl mb-3">{{ $cat['icon'] }}</div>
-        <div class="font-serif text-lg mb-2" style="color:var(--text-primary);">{{ $cat['title'] }}</div>
+        <div class="font-semibold text-lg mb-2" style="color:var(--text-primary);">{{ $cat['title'] }}</div>
         <p class="text-sm mb-3" style="color:var(--text-secondary);">{{ $cat['desc'] }}</p>
         <div class="flex items-center gap-1.5 text-sm font-medium text-gold">
           Start a case
@@ -572,7 +573,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
     ] as $i => $faq)
     <div class="card rounded-xl overflow-hidden">
       <button type="button" @click="open = (open === {{ $i }} ? null : {{ $i }})" class="w-full flex items-center justify-between gap-4 px-6 py-5 text-left">
-        <span class="font-serif text-lg" style="color:var(--text-primary);">{{ $faq['q'] }}</span>
+        <span class="font-semibold text-lg" style="color:var(--text-primary);">{{ $faq['q'] }}</span>
         <span class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-lg font-light transition-transform"
               :class="open === {{ $i }} ? 'rotate-45' : ''"
               :style="open === {{ $i }} ? 'background:var(--gold-pale); color:var(--gold);' : 'background:var(--bg-alt); color:var(--text-secondary);'">+</span>
@@ -596,7 +597,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
 <section class="py-28 px-6 border-t text-center" style="border-color:var(--border);">
   <div class="max-w-xl mx-auto">
     <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-5 text-gold">Get started</div>
-    <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl mb-6" style="color:var(--text-primary);">Your dispute deserves<br><em class="italic text-gold">a proper resolution.</em></h2>
+    <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl mb-6" style="color:var(--text-primary);">Your dispute deserves<br><em class="accent-serif text-gold">a proper resolution.</em></h2>
     <p class="reveal reveal-delay-2 text-lg font-light mb-10" style="color:var(--text-secondary);">Stop going back and forth. Get a room, present your case, and walk away with a formal report.</p>
     <a href="{{ route('register') }}" class="reveal reveal-delay-3 btn-gold inline-flex items-center gap-2 text-base font-semibold px-8 py-3.5 rounded-lg">
       Create a Mediation Room
@@ -632,7 +633,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
           @foreach ($socialLinks as $network => $social)
             @if (!empty($social['url']))
             <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="{{ ucfirst($network) }}"
-               class="w-8 h-8 rounded-lg border flex items-center justify-center card-hover" style="border-color:var(--border); color:var(--text-muted);">
+               class="w-8 h-8 rounded-lg border flex items-center justify-center card-hover" style="border-color:var(--border); color:var(--gold);">
               <svg width="15" height="15" viewBox="0 0 24 24">{!! $social['svg'] !!}</svg>
             </a>
             @endif
@@ -646,6 +647,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
         <div class="flex flex-col gap-2.5 text-sm" style="color:var(--text-secondary);">
           <a href="{{ route('about') }}" class="hover:text-gold">About Us</a>
           <a href="mailto:info@firstmediator.com" class="hover:text-gold">Contact</a>
+          <a href="{{ route('lawyers.apply') }}" class="font-semibold hover:underline text-gold">Join Lawyers Panel</a>
         </div>
       </div>
 
