@@ -164,19 +164,15 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
     <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary);">
       Resolve disputes without<br><em class="accent-serif text-gold">expensive lawyers.</em>
     </h1>
-    <p class="reveal reveal-delay-2 text-lg font-light max-w-xl mx-auto mb-10" style="color:var(--text-secondary);">
-      Two parties. One room. An impartial AI mediator. A formal resolution report — in under 90 minutes.
+    <p class="reveal reveal-delay-2 text-lg font-normal max-w-2xl mx-auto mb-10" style="color:var(--text-secondary);">
+      Two parties. One room. An impartial AI mediator. A formal resolution report — in under 30 minutes. No retainers. No court dates.
     </p>
     <div class="reveal reveal-delay-3 flex items-center justify-center gap-3 flex-wrap">
       <a href="{{ route('register') }}" class="btn-gold inline-flex items-center gap-2 text-base font-semibold px-8 py-3.5 rounded-lg">
         Create a Mediation Room
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <a href="#how" class="btn-outline text-base px-6 py-3.5 rounded-lg">See how it works</a>
     </div>
-    <p class="reveal reveal-delay-4 text-sm mt-4" style="color:var(--text-muted);">
-      Setup in 15 minutes · PDF report included · <a href="{{ route('pricing') }}" class="underline hover:no-underline" style="color:var(--gold);">See pricing</a>
-    </p>
   </div>
 
   <!-- Browser mockup: illustrative example session, not a real case -->
