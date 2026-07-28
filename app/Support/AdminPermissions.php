@@ -88,5 +88,9 @@ class AdminPermissions
         // Support tickets
         'admin.support.view'         => ['platform_admin', 'support_agent', 'auditor'],
         'admin.support.manage'       => ['platform_admin', 'support_agent'],
+
+        // Newsletter subscribers
+        'admin.newsletter.view'      => ['platform_admin', 'support_agent', 'auditor'],
+        'admin.newsletter.manage'    => ['platform_admin'],
     ];
 }

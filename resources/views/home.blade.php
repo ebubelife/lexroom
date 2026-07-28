@@ -162,7 +162,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
       AI-assisted mediation · No lawyer required
     </div>
     <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary); font-weight:700;">
-      Resolve disputes without<br><em class="accent-serif text-gold" style="font-weight:800;">expensive lawyers.</em>
+      Resolve disputes without <em class="accent-serif text-gold" style="font-weight:900; -webkit-text-stroke: 0.4px currentColor;">expensive lawyers.</em>
     </h1>
     <p class="reveal reveal-delay-2 text-lg font-normal max-w-2xl mx-auto mb-10" style="color:var(--text-secondary);">
       Two parties. One room. An impartial AI mediator. A formal resolution report — in under 30 minutes. No retainers. No court dates.
@@ -680,6 +680,23 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
           <a href="{{ route('disclaimer') }}" class="hover:text-gold">Legal Disclaimer</a>
         </div>
       </div>
+    </div>
+
+    <div id="newsletter" class="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-b mb-8" style="border-color:var(--border);">
+      <div>
+        <div class="font-semibold text-base mb-1" style="color:var(--text-primary);">Stay in the loop</div>
+        <div class="text-sm" style="color:var(--text-secondary);">Updates on features, legal-tech insights, and dispute resolution tips.</div>
+      </div>
+
+      <form method="POST" action="{{ route('newsletter.subscribe') }}" class="flex gap-2 w-full sm:w-auto">
+        @csrf
+        <input type="email" name="email" required placeholder="Enter your email"
+               class="px-4 py-2.5 rounded-md border text-sm outline-none flex-1 sm:w-64"
+               style="border-color:var(--border); background:var(--bg); color:var(--text-primary);">
+        <button type="submit" class="btn-gold px-5 py-2.5 rounded-md text-sm font-semibold whitespace-nowrap">
+          {{ session('subscribed') ? 'Subscribed ✓' : 'Subscribe' }}
+        </button>
+      </form>
     </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-between gap-2 pt-8 border-t text-xs" style="border-color:var(--border); color:var(--text-muted);">

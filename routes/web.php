@@ -23,6 +23,8 @@ Route::view('/disclaimer', 'disclaimer')->name('disclaimer');
 Route::get('/join-lawyers', [\App\Http\Controllers\LawyerApplicationController::class, 'create'])->name('lawyers.apply');
 Route::post('/join-lawyers', [\App\Http\Controllers\LawyerApplicationController::class, 'store'])->name('lawyers.apply.store')->middleware('throttle:6,1');
 
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\NewsletterController::class, 'store'])->name('newsletter.subscribe')->middleware('throttle:6,1');
+
 // Test Email Dispatch — sends both emails to kongonut@gmail.com
 Route::get('/test-email', function () {
     $testTo = 'kongonut@gmail.com';

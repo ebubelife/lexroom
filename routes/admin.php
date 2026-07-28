@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EvidenceController;
 use App\Http\Controllers\Admin\JurisdictionController;
 use App\Http\Controllers\Admin\LawyerController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ReferralController;
 use App\Http\Controllers\Admin\ReportController;
@@ -135,6 +136,14 @@ Route::prefix('f-med/admin')->name('admin.')->group(function () {
             Route::put('/lawyers/{lawyer}', [LawyerController::class, 'update'])->name('lawyers.update');
             Route::post('/lawyers/{lawyer}/toggle', [LawyerController::class, 'toggle'])->name('lawyers.toggle');
             Route::delete('/lawyers/{lawyer}', [LawyerController::class, 'destroy'])->name('lawyers.destroy');
+        });
+
+        // Newsletter subscribers
+        Route::middleware('admin.can:admin.newsletter.view')->group(function () {
+            Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter.index');
+        });
+        Route::middleware('admin.can:admin.newsletter.manage')->group(function () {
+            Route::delete('/newsletter/{subscriber}', [NewsletterController::class, 'destroy'])->name('newsletter.destroy');
         });
 
         // Jurisdictions
