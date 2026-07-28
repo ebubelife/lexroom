@@ -625,9 +625,22 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
           <span class="font-semibold text-base" style="color:var(--text-primary);">First Mediator</span>
         </a>
         <p class="text-sm leading-relaxed mb-5" style="color:var(--text-secondary);">AI-powered online mediation for everyday disputes.</p>
+        @php
+          $socialLinks = [
+            'facebook'  => ['url' => \App\Models\Setting::get('social_facebook_url', ''),  'svg' => '<path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/>'],
+            'instagram' => ['url' => \App\Models\Setting::get('social_instagram_url', ''), 'svg' => '<rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.1"/>'],
+            'x'         => ['url' => \App\Models\Setting::get('social_x_url', ''),         'svg' => '<path d="M4 3l7 9.2L4.3 21H7l5.4-6.4L17 21h4l-7.4-9.6L20.4 3H18l-5 5.9L9 3z" fill="currentColor"/>'],
+            'linkedin'  => ['url' => \App\Models\Setting::get('social_linkedin_url', ''),  'svg' => '<rect x="2" y="9" width="4" height="12" fill="currentColor"/><circle cx="4" cy="4" r="2.2" fill="currentColor"/><path d="M10 9h4v2c.7-1.2 2-2.3 4-2.3 3 0 4.5 2 4.5 5.4V21h-4v-6c0-1.6-.6-2.6-2-2.6-1.1 0-1.7.7-2 1.5-.1.3-.1.6-.1 1V21h-4z"/>'],
+          ];
+        @endphp
         <div class="flex gap-2.5">
-          @foreach (['𝕏','in','▶'] as $icon)
-          <span class="w-8 h-8 rounded-lg border flex items-center justify-center text-xs" style="border-color:var(--border); color:var(--text-muted);">{{ $icon }}</span>
+          @foreach ($socialLinks as $network => $social)
+            @if (!empty($social['url']))
+            <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="{{ ucfirst($network) }}"
+               class="w-8 h-8 rounded-lg border flex items-center justify-center card-hover" style="border-color:var(--border); color:var(--text-muted);">
+              <svg width="15" height="15" viewBox="0 0 24 24">{!! $social['svg'] !!}</svg>
+            </a>
+            @endif
           @endforeach
         </div>
       </div>

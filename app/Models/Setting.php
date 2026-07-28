@@ -75,6 +75,12 @@ class Setting extends Model
                 'feature_split_payment'  => ['label' => 'Enable Split Payment',     'type' => 'boolean', 'description' => 'Allow rooms to use split payment mode'],
                 'feature_session_extend' => ['label' => 'Enable Session Extension', 'type' => 'boolean', 'description' => 'Allow parties to extend sessions'],
             ],
+            'Social Media' => [
+                'social_facebook_url'  => ['label' => 'Facebook',  'type' => 'string', 'description' => 'Full URL to your Facebook page. Leave blank to hide the icon in the footer.'],
+                'social_instagram_url' => ['label' => 'Instagram', 'type' => 'string', 'description' => 'Full URL to your Instagram profile. Leave blank to hide the icon in the footer.'],
+                'social_x_url'         => ['label' => 'X (Twitter)', 'type' => 'string', 'description' => 'Full URL to your X/Twitter profile. Leave blank to hide the icon in the footer.'],
+                'social_linkedin_url'  => ['label' => 'LinkedIn', 'type' => 'string', 'description' => 'Full URL to your LinkedIn page. Leave blank to hide the icon in the footer.'],
+            ],
         ];
     }
 }
