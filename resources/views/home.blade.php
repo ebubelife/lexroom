@@ -55,7 +55,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
 <script src="{{ asset('js/shared-layout.js') }}"></script>
 
@@ -161,8 +161,8 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
       <span class="hero-eyebrow-dot w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>
       AI-assisted mediation · No lawyer required
     </div>
-    <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary);">
-      Resolve disputes without<br><em class="accent-serif text-gold">expensive lawyers.</em>
+    <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary); font-weight:700;">
+      Resolve disputes without<br><em class="accent-serif text-gold" style="font-weight:800;">expensive lawyers.</em>
     </h1>
     <p class="reveal reveal-delay-2 text-lg font-normal max-w-2xl mx-auto mb-10" style="color:var(--text-secondary);">
       Two parties. One room. An impartial AI mediator. A formal resolution report — in under 30 minutes. No retainers. No court dates.
