@@ -199,11 +199,11 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
           </div>
           <div class="flex gap-2.5 items-start">
             <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0" style="background:#E8F0FE;color:#2563EB;">A</div>
-            <div class="text-sm rounded-xl rounded-bl-sm px-3.5 py-2.5" style="background:#EFF6FF; color:var(--text-primary); max-width:75%;">The invoice was sent on March 3rd. I have email proof. Payment was due within 14 days.</div>
+            <div class="text-sm rounded-xl rounded-bl-sm px-3.5 py-2.5" style="background:#EFF6FF; color:#1E293B; max-width:75%;">The invoice was sent on March 3rd. I have email proof. Payment was due within 14 days.</div>
           </div>
           <div class="flex gap-2.5 items-start flex-row-reverse">
             <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0" style="background:#F3E8FF;color:#7C3AED;">B</div>
-            <div class="text-sm rounded-xl rounded-br-sm px-3.5 py-2.5" style="background:#F5F3FF; color:var(--text-primary); max-width:75%;">The deliverables were incomplete. The final logo variants were never submitted.</div>
+            <div class="text-sm rounded-xl rounded-br-sm px-3.5 py-2.5" style="background:#F5F3FF; color:#1E293B; max-width:75%;">The deliverables were incomplete. The final logo variants were never submitted.</div>
           </div>
           <div class="text-sm rounded-lg px-3.5 py-3" style="background:linear-gradient(135deg, rgba(201,168,76,.08), rgba(201,168,76,.04)); border:1px solid rgba(201,168,76,.2); color:var(--text-primary);">
             <span class="block text-[10px] font-bold tracking-widest uppercase mb-1.5 text-gold">⚖ First Mediator</span>
@@ -211,7 +211,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
           </div>
           <div class="flex gap-2.5 items-start">
             <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0" style="background:#E8F0FE;color:#2563EB;">A</div>
-            <div class="text-sm rounded-xl rounded-bl-sm px-3.5 py-2.5" style="background:#EFF6FF; color:var(--text-primary); max-width:75%;">All 3 variants were delivered — see the link in my last email, attached as Exhibit 3.</div>
+            <div class="text-sm rounded-xl rounded-bl-sm px-3.5 py-2.5" style="background:#EFF6FF; color:#1E293B; max-width:75%;">All 3 variants were delivered — see the link in my last email, attached as Exhibit 3.</div>
           </div>
         </div>
         <div class="p-5 flex flex-col gap-4" style="background:var(--bg-alt);">
