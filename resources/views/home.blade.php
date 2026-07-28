@@ -510,15 +510,10 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
       <div class="section-label text-xs font-semibold tracking-widest uppercase mb-4 text-gold">Security</div>
       <h2 class="text-4xl sm:text-5xl mb-6" style="color:var(--text-primary);">Your case stays <span class="text-gold">completely private.</span></h2>
       <p class="text-base sm:text-lg mb-8" style="color:var(--text-secondary);">We've built First Mediator with privacy as the foundation, not an afterthought. Every room is isolated, every file encrypted, and every party verified.</p>
-      <div class="flex flex-wrap gap-2.5">
-        @foreach (['GDPR Compliant','AES-256 Encryption','TLS 1.3'] as $badge)
-        <span class="px-4 py-2 rounded-lg border text-sm font-medium" style="border-color:var(--border); color:var(--text-primary);">{{ $badge }}</span>
-        @endforeach
-      </div>
     </div>
     <div class="flex flex-col gap-4">
       @foreach ([
-        ['title'=>'AES-256 Encryption','desc'=>'All evidence, messages, and reports are encrypted at rest and in transit.'],
+        ['title'=>'Encrypted by Design','desc'=>'Evidence, messages, and reports are encrypted at rest and in transit.'],
         ['title'=>'Private Rooms','desc'=>'Every case exists in an isolated room. Only invited parties can access it.'],
         ['title'=>'AI Transparency','desc'=>'First Mediator explains its reasoning step-by-step — every finding comes with a confidence score.'],
         ['title'=>'Confidentiality by Default','desc'=>'Session data is retained for 12 months then deleted, in line with our privacy policy.'],
@@ -572,7 +567,7 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
       ['q'=>'Is the First Mediator report legally binding?','a'=>'No. The Mediation Report is not a court order and does not constitute legal advice. However, it is a timestamped, formal document that can be used as supporting evidence if your dispute proceeds to court. First Mediator is a technology tool, not a law firm.'],
       ['q'=>'What if the other party refuses to join?','a'=>'We send the other party a room invite link via email. If they decline to join, the session does not proceed and you are not charged. Their refusal to engage is itself documented — which can be relevant if the matter escalates.'],
       ['q'=>'How does First Mediator stay impartial?','a'=>'First Mediator has no relationship with either party and no financial stake in the outcome. It analyses both positions, the uploaded evidence, and the applicable legal framework for your jurisdiction. Every finding comes with a confidence score so you can see how certain the analysis is.'],
-      ['q'=>'Is my case data private and secure?','a'=>'Yes. All session data is encrypted at rest (AES-256) and in transit (TLS 1.3). Evidence files are stored on secure cloud infrastructure. First Mediator complies with global data protection standards (GDPR, CCPA). Session transcripts are retained for 12 months then deleted.'],
+      ['q'=>'Is my case data private and secure?','a'=>'Yes. Session data is encrypted at rest and in transit and stored on secure cloud infrastructure. Session transcripts are retained for 12 months then deleted, in line with our privacy policy.'],
       ['q'=>'Can I escalate to a real lawyer after?','a'=>'Yes — this is FMRefer. At the end of any session you can escalate to a verified lawyer from our directory, filtered by jurisdiction and speciality. Your full case file (transcript, evidence, First Mediator report) is packaged and sent to the lawyer automatically. They respond within 48–72 hours.'],
     ] as $i => $faq)
     <div class="card rounded-xl overflow-hidden">
@@ -699,6 +694,93 @@ h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.02em; line-height: 1.
     </div>
   </div>
 </footer>
+
+{{-- ================= COOKIE CONSENT (ported from first-mediator (2) CookieConsentBanner.tsx) ================= --}}
+<div
+  x-data="{
+    visible: false,
+    showPreferences: false,
+    analyticsConsent: true,
+    init() {
+      if (!localStorage.getItem('first_mediator_cookie_consent')) {
+        setTimeout(() => { this.visible = true }, 1000);
+      }
+    },
+    save(analytics) {
+      localStorage.setItem('first_mediator_cookie_consent', JSON.stringify({
+        essential: true, analytics: analytics, timestamp: new Date().toISOString()
+      }));
+      this.visible = false;
+    }
+  }"
+  x-show="visible"
+  x-cloak
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0 translate-y-4"
+  x-transition:enter-end="opacity-100 translate-y-0"
+  class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50"
+>
+  <div class="card rounded-xl p-5 relative" style="box-shadow:var(--shadow-lg);">
+    <button type="button" @click="save(false)" aria-label="Close and accept essential only"
+            class="absolute top-3 right-3 p-1" style="color:var(--text-muted);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="flex items-start gap-3 mb-3 pr-6">
+      <div class="p-2 rounded-lg flex-shrink-0 mt-0.5" style="background:var(--gold-pale); color:var(--gold);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r=".5" fill="currentColor"/><circle cx="14" cy="8.5" r=".5" fill="currentColor"/><circle cx="15" cy="13" r=".5" fill="currentColor"/><circle cx="9.5" cy="14" r=".5" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <h4 class="font-semibold text-sm" style="color:var(--text-primary);">Cookie &amp; Privacy Notice</h4>
+        <p class="text-xs mt-1 leading-relaxed" style="color:var(--text-secondary);">We use essential cookies to secure your mediation sessions and maintain room state. We also use analytics cookies to help us improve the platform.</p>
+      </div>
+    </div>
+
+    <template x-if="showPreferences">
+      <div class="my-3 p-3 rounded-lg space-y-2 text-xs border" style="background:var(--bg-alt); border-color:var(--border);">
+        <div class="flex items-center justify-between pb-2 border-b" style="border-color:var(--border);">
+          <div>
+            <span class="font-semibold block" style="color:var(--text-primary);">Essential Session Cookies</span>
+            <span style="color:var(--text-muted);">Required for room encryption and auth.</span>
+          </div>
+          <span class="font-semibold px-2 py-0.5 rounded" style="color:#22C55E; background:rgba(34,197,94,.1);">Always Active</span>
+        </div>
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <span class="font-semibold block" style="color:var(--text-primary);">Analytics &amp; Performance</span>
+            <span style="color:var(--text-muted);">Helps us optimise resolution speeds.</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" x-model="analyticsConsent" class="sr-only peer">
+            <div class="w-9 h-5 rounded-full peer transition-colors" :style="analyticsConsent ? 'background:var(--gold)' : 'background:var(--border)'">
+              <div class="bg-white rounded-full h-4 w-4 mt-0.5 transition-transform" :style="analyticsConsent ? 'transform:translateX(18px)' : 'transform:translateX(2px)'"></div>
+            </div>
+          </label>
+        </div>
+        <div class="pt-2">
+          <button type="button" @click="save(analyticsConsent)" class="btn-gold w-full py-1.5 text-xs font-bold rounded">Save Preferences</button>
+        </div>
+      </div>
+    </template>
+
+    <template x-if="!showPreferences">
+      <div class="flex items-center gap-2 text-xs mb-4" style="color:var(--text-muted);">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M12 1l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V5l8-4z"/></svg>
+        <span>Your choice, your control</span>
+        <span>&middot;</span>
+        <a href="{{ route('privacy') }}" class="hover:underline text-gold">Cookie Policy</a>
+        <span>&middot;</span>
+        <a href="{{ route('privacy') }}" class="hover:underline text-gold">Privacy Policy</a>
+      </div>
+    </template>
+
+    <div class="flex flex-wrap items-center gap-2" x-show="!showPreferences">
+      <button type="button" @click="save(true)" class="btn-gold flex-1 py-2 px-3 text-xs font-bold rounded">Accept All</button>
+      <button type="button" @click="save(false)" class="btn-outline py-2 px-3 text-xs rounded">Essential Only</button>
+      <button type="button" @click="showPreferences = true" class="py-2 px-2 text-xs underline" style="color:var(--text-muted);">Customize</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // Scroll reveal — same IntersectionObserver mechanism used across the site
