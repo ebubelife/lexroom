@@ -210,6 +210,11 @@ footer {
   .nav-right .btn-ghost, .nav-right .btn-primary { display: none; }
   .mobile-menu-btn { display: block; }
 }
+@media (max-width: 640px) {
+  .nav-inner { height: 72px; }
+  .logo-text { height: 40px !important; }
+  .mobile-nav { top: 72px; }
+}
 @media (max-width: 900px) {
   .footer-grid {
     grid-template-columns: 1fr;

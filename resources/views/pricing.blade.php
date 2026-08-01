@@ -29,6 +29,9 @@
 @media (max-width: 900px) {
   .pricing-page-container { padding-top: 120px; }
 }
+@media (max-width: 640px) {
+  .pricing-page-container { padding-top: 96px; }
+}
 </style>
 </head>
 <body>

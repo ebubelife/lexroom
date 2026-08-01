@@ -155,13 +155,13 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
 @include('partials.navbar')
 
 <!-- ================= HERO ================= -->
-<section id="hero" class="pt-40 pb-20 px-6 text-center relative">
+<section id="hero" class="pt-28 sm:pt-36 md:pt-40 pb-20 px-6 text-center relative">
   <div class="max-w-3xl mx-auto">
     <div class="reveal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm mb-8" style="background:var(--gold-pale); color:#8B6B1A;">
       <span class="hero-eyebrow-dot w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>
       AI-assisted mediation · No lawyer required
     </div>
-    <h1 class="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary); font-weight:700;">
+    <h1 class="reveal reveal-delay-1 text-4xl sm:text-6xl md:text-7xl mb-6" style="color:var(--text-primary); font-weight:700;">
       Resolve disputes without <em class="accent-serif text-gold" style="font-weight:900; -webkit-text-stroke: 0.4px currentColor;">expensive lawyers.</em>
     </h1>
     <p class="reveal reveal-delay-2 text-lg font-normal max-w-2xl mx-auto mb-10" style="color:var(--text-secondary);">
