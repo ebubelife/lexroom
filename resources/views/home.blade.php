@@ -107,8 +107,8 @@
   --logo-dark-display: block !important;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { background: var(--bg); font-family: var(--sans); }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { background: var(--bg); font-family: var(--sans); overflow-x: hidden; max-width: 100vw; }
 h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.15; font-weight: 600; }
 .accent-serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
 
