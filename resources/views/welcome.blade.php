@@ -9,6 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
 <script src="{{ asset('js/shared-layout.js') }}"></script>
+
+<!-- Tailwind (compiled) -- required for the shared footer's utility classes -->
+@vite(['resources/css/app.css'])
 <style>
 :root {
   --navy: #0D1B2A;

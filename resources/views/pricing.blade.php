@@ -1,10 +1,41 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — First Mediator</title>
+<meta name="description" content="Simple, transparent pricing. Subscribe and save, or pay per session — no hidden fees.">
 
-@section('title', 'Pricing — First Mediator')
-@section('page-title', 'Pricing')
+<link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/FM_Icon.svg') }}">
 
-@section('content')
-<div class="max-w-5xl mx-auto" x-data="{ cycle: 'monthly' }">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
+<script src="{{ asset('js/shared-layout.js') }}"></script>
+
+<!-- Tailwind (compiled) -- required for the shared footer's utility classes -->
+@vite(['resources/css/app.css'])
+
+<!-- Alpine.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+.pricing-page-container {
+  max-width: 1160px; margin: 0 auto;
+  padding: 140px 24px 80px;
+}
+@media (max-width: 900px) {
+  .pricing-page-container { padding-top: 120px; }
+}
+</style>
+</head>
+<body>
+
+@include('partials.navbar')
+
+<main class="pricing-page-container" x-data="{ cycle: 'monthly' }">
 
     {{-- Header --}}
     <div class="text-center mb-10">
@@ -16,7 +47,7 @@
         </p>
 
         {{-- Billing cycle toggle --}}
-        <div class="inline-flex rounded-xl p-1 gap-1" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="inline-flex rounded-xl p-1 gap-1" style="background: var(--bg-alt); border: 1px solid var(--border);">
             @foreach(['monthly' => 'Monthly', 'quarterly' => 'Quarterly', 'yearly' => 'Yearly'] as $key => $label)
                 <button @click="cycle = '{{ $key }}'"
                         class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
@@ -40,8 +71,8 @@
             @php $isPopular = $plan->slug === 'standard'; @endphp
             <div class="rounded-2xl p-6 flex flex-col relative {{ $isPopular ? 'ring-2' : '' }}"
                  style="{{ $isPopular
-                     ? 'background: var(--bg-secondary); border: 1px solid var(--gold); ring-color: var(--gold);'
-                     : 'background: var(--bg-secondary); border: 1px solid var(--border-color);' }}">
+                     ? 'background: var(--bg-alt); border: 1px solid var(--gold); ring-color: var(--gold);'
+                     : 'background: var(--bg-alt); border: 1px solid var(--border);' }}">
 
                 @if($isPopular)
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -103,7 +134,7 @@
                                     class="w-full py-3 rounded-xl text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity"
                                     style="{{ $isPopular
                                         ? 'background: var(--gold); color: #0D1B2A;'
-                                        : 'background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);' }}">
+                                        : 'background: var(--bg); border: 1px solid var(--border); color: var(--text-primary);' }}">
                                 Subscribe Now
                             </button>
                         </form>
@@ -113,7 +144,7 @@
                        class="w-full py-3 rounded-xl text-sm font-bold uppercase tracking-wider text-center hover:opacity-90 transition-opacity block"
                        style="{{ $isPopular
                            ? 'background: var(--gold); color: #0D1B2A;'
-                           : 'background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);' }}">
+                           : 'background: var(--bg); border: 1px solid var(--border); color: var(--text-primary);' }}">
                         Get Started
                     </a>
                 @endauth
@@ -122,16 +153,17 @@
     </div>
 
     {{-- Pay per session --}}
-    <div class="rounded-2xl p-6 mb-14 text-center" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+    <div class="rounded-2xl p-6 mb-14 text-center" style="background: var(--bg-alt); border: 1px solid var(--border);">
         <h3 class="text-lg font-serif mb-2" style="color: var(--text-primary);">Just need one session?</h3>
         <p class="text-sm mb-4" style="color: var(--text-secondary);">
-            Pay per session with no commitment. Starter from <strong style="color: var(--gold);">£3.50</strong>,
-            Standard <strong style="color: var(--gold);">£6.00</strong>,
-            Extended <strong style="color: var(--gold);">£8.00</strong>.
+            Pay per session with no commitment.
+            @foreach($sessions as $i => $session)
+                {{ $session->name }} <strong style="color: var(--gold);">£{{ number_format($session->full_price, 0) }}</strong>{{ !$loop->last ? ($loop->remaining === 1 ? ' and ' : ', ') : '.' }}
+            @endforeach
         </p>
         <a href="{{ route('rooms.create') }}"
            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
-           style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+           style="background: var(--bg); border: 1px solid var(--border); color: var(--text-primary);">
             Create a Room →
         </a>
     </div>
@@ -143,7 +175,7 @@
         <p class="text-sm text-center mb-6" style="color: var(--text-secondary);">Already subscribed? Add extra credits anytime.</p>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($topups as $pkg)
-                <div class="rounded-xl p-4 text-center" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                <div class="rounded-xl p-4 text-center" style="background: var(--bg-alt); border: 1px solid var(--border);">
                     <p class="text-sm font-semibold mb-1" style="color: var(--text-primary);">{{ $pkg->label }}</p>
                     <p class="text-2xl font-bold mb-1" style="color: var(--gold);">£{{ number_format($pkg->price, 0) }}</p>
                     <p class="text-xs mb-3" style="color: var(--text-secondary);">
@@ -174,5 +206,9 @@
     </div>
     @endif
 
-</div>
-@endsection
+</main>
+
+@include('partials.footer')
+
+</body>
+</html>

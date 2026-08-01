@@ -16,10 +16,12 @@
       >
     </a>
     <ul class="nav-links">
-      <li><a href="{{ url('/#how') }}">How it works</a></li>
-      <li><a href="{{ url('/#categories') }}">Disputes</a></li>
+      <li><a href="{{ url('/#features') }}">Product</a></li>
+      <li><a href="{{ url('/#how') }}">How it Works</a></li>
       <li><a href="{{ url('/#pricing') }}">Pricing</a></li>
-      <li><a href="{{ url('/#faq') }}">FAQ</a></li>
+      <li><a href="{{ url('/#faq') }}">FAQs</a></li>
+      <li><a href="{{ route('about') }}">About</a></li>
+      <li><a href="{{ route('lawyers.apply') }}" class="nav-link-lawyers">Lawyers Panel</a></li>
     </ul>
     <div class="nav-right">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -46,10 +48,12 @@
   <!-- Mobile Nav Dropdown -->
   <div id="mobile-nav" class="mobile-nav">
     <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">
-      <li><a href="{{ url('/#how') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">How it works</a></li>
-      <li><a href="{{ url('/#categories') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Disputes</a></li>
+      <li><a href="{{ url('/#features') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Product</a></li>
+      <li><a href="{{ url('/#how') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">How it Works</a></li>
       <li><a href="{{ url('/#pricing') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">Pricing</a></li>
-      <li><a href="{{ url('/#faq') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">FAQ</a></li>
+      <li><a href="{{ url('/#faq') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">FAQs</a></li>
+      <li><a href="{{ route('about') }}" style="text-decoration: none; color: var(--text-secondary); font-size: 15px;" onclick="toggleMobileMenu()">About</a></li>
+      <li><a href="{{ route('lawyers.apply') }}" style="text-decoration: none; color: var(--gold); font-weight: 600; font-size: 15px;" onclick="toggleMobileMenu()">Lawyers Panel</a></li>
     </ul>
 
     <div style="height: 1px; background: var(--border); margin: 8px 0;"></div>

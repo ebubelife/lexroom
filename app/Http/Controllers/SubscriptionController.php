@@ -16,11 +16,12 @@ class SubscriptionController extends Controller
 
     public function pricing()
     {
-        $plans   = SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
-        $topups  = TopupPackage::where('is_active', true)->orderBy('sort_order')->get();
-        $current = auth()->check() ? $this->service->getActiveSub(auth()->user()) : null;
+        $plans    = SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
+        $topups   = TopupPackage::where('is_active', true)->orderBy('sort_order')->get();
+        $current  = auth()->check() ? $this->service->getActiveSub(auth()->user()) : null;
+        $sessions = \App\Models\SessionPackage::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('pricing', compact('plans', 'topups', 'current'));
+        return view('pricing', compact('plans', 'topups', 'current', 'sessions'));
     }
 
     public function checkout(Request $request)

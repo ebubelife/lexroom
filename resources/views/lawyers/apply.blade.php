@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="{{ asset('css/shared-layout.css') }}">
 <script src="{{ asset('js/shared-layout.js') }}"></script>
 
+<!-- Tailwind (compiled) -- required for the shared footer's utility classes -->
+@vite(['resources/css/app.css'])
+
 <style>
 [data-theme="dark"] { --bg-alt: #0F2336; }
 
