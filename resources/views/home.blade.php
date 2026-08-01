@@ -155,7 +155,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
 @include('partials.navbar')
 
 <!-- ================= HERO ================= -->
-<section id="hero" class="pt-28 sm:pt-36 md:pt-40 pb-20 px-6 text-center relative">
+<section id="hero" class="pt-36 sm:pt-36 md:pt-40 pb-20 px-6 text-center relative">
   <div class="max-w-3xl mx-auto">
     <div class="reveal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm mb-8" style="background:var(--gold-pale); color:#8B6B1A;">
       <span class="hero-eyebrow-dot w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>
