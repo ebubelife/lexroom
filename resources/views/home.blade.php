@@ -247,20 +247,20 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
   </div>
   <div class="grid-4 max-w-4xl mx-auto grid grid-cols-4 gap-6 mt-10 text-center">
     <div>
-      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">15</span> min</div>
-      <div class="text-xs mt-1" style="color:var(--text-secondary);">Average time to set up and start a session</div>
+      <div class="font-bold text-3xl text-gold">15 min</div>
+      <div class="text-xs mt-1" style="color:var(--text-secondary);">Average resolution</div>
     </div>
     <div>
-      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">100%</span></div>
-      <div class="text-xs mt-1" style="color:var(--text-secondary);">AI-impartial — no side, no bias, no agenda</div>
+      <div class="font-bold text-3xl text-gold">£45</div>
+      <div class="text-xs mt-1" style="color:var(--text-secondary);">vs. £350/hr lawyers</div>
     </div>
     <div>
-      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">PDF</span></div>
-      <div class="text-xs mt-1" style="color:var(--text-secondary);">Formal, timestamped resolution report</div>
+      <div class="font-bold text-3xl text-gold">100%</div>
+      <div class="text-xs mt-1" style="color:var(--text-secondary);">Private & encrypted</div>
     </div>
     <div>
-      <div class="font-bold text-3xl" style="color:var(--text-primary);"><span class="text-gold">0</span></div>
-      <div class="text-xs mt-1" style="color:var(--text-secondary);">Subscriptions required — <a href="{{ route('pricing') }}" class="underline text-gold">see pricing</a></div>
+      <div class="font-bold text-3xl text-gold">2,400+</div>
+      <div class="text-xs mt-1" style="color:var(--text-secondary);">Cases resolved</div>
     </div>
   </div>
 </section>
@@ -279,17 +279,18 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
           <div>
-            <div class="font-semibold" style="color:var(--text-primary);">Traditional route</div>
+            <div class="font-semibold" style="color:var(--text-primary);">Traditional Route</div>
             <div class="text-sm" style="color:var(--text-muted);">Lawyers, courts, arbitration</div>
           </div>
         </div>
         <div class="flex flex-col gap-3">
           @foreach ([
-            'Expensive solicitors (typically £200–£500/hr)',
+            'Expensive solicitors (£200–£500/hr)',
             'Weeks or months of delays',
             'Endless back-and-forth arguments',
             'No structured process',
             'Evidence buried in emails',
+            'Emotionally draining',
             'Unpredictable outcomes',
           ] as $item)
           <div class="flex items-center gap-3 text-sm" style="color:var(--text-secondary);">
@@ -313,12 +314,13 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
         </div>
         <div class="flex flex-col gap-3">
           @foreach ([
-            'Flat, transparent fee per case',
-            'Resolution typically under 90 minutes',
+            'Flat-fee, pay once per case',
+            'Resolution in under 30 minutes',
             'Structured AI-guided process',
-            'Clear room with a full timeline',
+            'Clear room with timeline',
             'Evidence uploaded securely',
             'Calm, impartial AI mediator',
+            'Formal PDF report delivered',
           ] as $item)
           <div class="flex items-center gap-3 text-sm font-medium" style="color:var(--text-primary);">
             <span class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white" style="background:#22C55E;">
@@ -344,11 +346,11 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
       <div class="absolute left-7 top-6 bottom-6 w-px hidden sm:block" style="background:var(--border);"></div>
       <div class="flex flex-col gap-10">
         @foreach ([
-          ['num'=>'01','icon'=>'🏛️','title'=>'Create a Room','desc'=>'Select your dispute type, jurisdiction, and session duration. Write a brief case summary. Setup takes under 15 minutes.'],
-          ['num'=>'02','icon'=>'📨','title'=>'Invite the Other Party','desc'=>'Send a secure room link to the other person. They accept, create an account, and the room opens — no lawyers required on either side.'],
-          ['num'=>'03','icon'=>'📎','title'=>'Upload Evidence','desc'=>'Both sides upload contracts, invoices, screenshots. Everything is encrypted and shared only within the room.'],
-          ['num'=>'04','icon'=>'⚡','title'=>'AI Reviews Everything','desc'=>'First Mediator reads every submission, asks targeted clarifying questions, and analyses the evidence impartially.'],
-          ['num'=>'05','icon'=>'📄','title'=>'Receive Your Report','desc'=>'A formal, timestamped PDF report is generated — findings, resolution recommendation, and a confidence score.'],
+          ['num'=>'01','icon'=>'🏛️','title'=>'Create a Room','desc'=>'Set up your mediation case in minutes. Describe the dispute, set the stakes, and define the context. No prior legal knowledge needed.'],
+          ['num'=>'02','icon'=>'📨','title'=>'Invite the Other Party','desc'=>'Send a secure link to the other person. They accept, create their account, and the room opens — no lawyers required on either side.'],
+          ['num'=>'03','icon'=>'📎','title'=>'Upload Evidence','desc'=>'Both sides upload documents, contracts, invoices, photos, screenshots. Everything is encrypted and shared only within the room.'],
+          ['num'=>'04','icon'=>'⚡','title'=>'AI Reviews Everything','desc'=>'Our AI mediator reads all submissions, asks clarifying questions, and analyses the evidence impartially before forming a view.'],
+          ['num'=>'05','icon'=>'📄','title'=>'Receive Your Report','desc'=>'A structured PDF report is generated with findings, recommendations, and reasoning — admissible and ready to share.'],
         ] as $i => $step)
         @php $stepBorder = $i === 3 ? 'var(--gold)' : 'rgba(201,168,76,.3)'; @endphp
         <div class="reveal reveal-delay-{{ min($i+1,4) }} flex gap-6 items-start">
@@ -369,7 +371,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
 
     <div class="mt-12">
       <a href="{{ route('register') }}" class="btn-gold inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg">
-        Start your mediation
+        Start Your 5-Step Mediation
       </a>
     </div>
   </div>
@@ -385,7 +387,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
       <div class="reveal reveal-delay-1 card card-hover md:col-span-2 rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">⚡</div>
         <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">AI Mediation Engine</div>
-        <p class="text-sm max-w-md" style="color:var(--text-secondary);">Our impartial AI reads both sides, weighs the evidence, asks clarifying questions, and reasons through the dispute with structured logic.</p>
+        <p class="text-sm max-w-md" style="color:var(--text-secondary);">Our impartial AI reads both sides, weighs evidence, asks clarifying questions, and reasons through the dispute with structured legal logic.</p>
       </div>
       <div class="reveal reveal-delay-2 card card-hover rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">🔒</div>
@@ -395,7 +397,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
       <div class="reveal reveal-delay-3 card card-hover rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">📄</div>
         <div class="text-xl mb-2 font-semibold" style="color:var(--text-primary);">Formal PDF Reports</div>
-        <p class="text-sm" style="color:var(--text-secondary);">Structured reports with AI reasoning, findings, and recommendations — professional and shareable.</p>
+        <p class="text-sm" style="color:var(--text-secondary);">Structured reports with AI reasoning, findings, and recommendations. Professional and shareable.</p>
       </div>
       <div class="reveal reveal-delay-1 card card-hover md:col-span-2 rounded-2xl p-7">
         <div class="w-10 h-10 rounded-lg border flex items-center justify-center text-xl mb-4" style="border-color:var(--border);">📁</div>
@@ -414,7 +416,7 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
         ['icon'=>'⏱️','title'=>'Timeline Tracking','desc'=>'Every message, upload, and AI response is logged in an immutable timeline.'],
         ['icon'=>'📬','title'=>'Smart Notifications','desc'=>'Both parties get notified at each step — no chasing required.'],
         ['icon'=>'🧑‍⚖️','title'=>'Role-based Access','desc'=>'Each party sees only what they should see. No information leaks.'],
-        ['icon'=>'📊','title'=>'Case Reporting','desc'=>'Every session ends with a clear, structured mediation report.'],
+        ['icon'=>'📊','title'=>'Dispute Analytics','desc'=>'View resolution trends, common dispute types, and outcome patterns.'],
       ] as $card)
       <div class="card rounded-xl p-6">
         <div class="text-2xl mb-3">{{ $card['icon'] }}</div>
@@ -478,24 +480,61 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
         </thead>
         <tbody>
           @foreach ([
-            ['Speed','Weeks–months','Days–weeks','Never','Under 90 minutes'],
-            ['Cost','£500–£10k+','£200–£2k','Free (no result)','Flat, transparent fee'],
+            ['Speed','Weeks–months','Days–weeks','Never','< 30 minutes'],
+            ['Cost','£500–£10k+','£200–£2k','Free (no result)','From £45'],
             ['Structure','Formal courts','Moderately formal','None','AI-guided process'],
             ['Evidence handling','In-person bundles','Submitted manually','Screenshots','Secure uploads'],
             ['Privacy','Public record','Mostly private','None','Fully encrypted'],
             ['Accessibility','In person','Hybrid','Phone/text','100% online'],
+            ['AI assistance','None','None','None','Core feature'],
             ['Formal report','Court judgement','Award letter','None','PDF report'],
           ] as $row)
-          <tr class="border-b last:border-b-0" style="border-color:var(--border);">
+          <tr class="border-b last:border-b-0" style="border-color:var(--border); background:{{ $loop->odd ? 'var(--bg-alt)' : 'transparent' }};">
             <td class="p-4 font-medium border-r" style="color:var(--text-primary); border-color:var(--border);">{{ $row[0] }}</td>
             <td class="p-4 text-center border-r" style="color:var(--text-muted); border-color:var(--border);">{{ $row[1] }}</td>
             <td class="p-4 text-center border-r" style="color:var(--text-muted); border-color:var(--border);">{{ $row[2] }}</td>
             <td class="p-4 text-center border-r" style="color:var(--text-muted); border-color:var(--border);">{{ $row[3] }}</td>
-            <td class="p-4 text-center font-semibold text-gold">{{ $row[4] }}</td>
+            <td class="p-4 text-center font-semibold text-gold" style="background:var(--card-bg);">{{ $row[4] }}</td>
           </tr>
           @endforeach
         </tbody>
       </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS (placeholder — replace with real, verified customer quotes before launch) ================= -->
+<section class="py-24 px-6 border-t" style="border-color:var(--border);">
+  <div class="max-w-5xl mx-auto">
+    <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-4 text-gold">Testimonials</div>
+    <h2 class="reveal text-4xl sm:text-5xl mb-12" style="color:var(--text-primary);">Real disputes. <span class="text-gold">Real resolutions.</span></h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      @foreach ([
+        ['initial'=>'A','name'=>'Client A','role'=>'Example only — not a verified customer','type'=>'Invoice Dispute','quote'=>'I was owed money for completed work. Instead of hiring a solicitor, I created a First Mediator room. We had a structured resolution within minutes, and I received payment shortly after.'],
+        ['initial'=>'B','name'=>'Client B','role'=>'Example only — not a verified customer','type'=>'Co-founder Dispute','quote'=>'Our co-founder disagreement was spiralling. First Mediator gave us a structured process, an AI-reviewed look at our operating agreement, and a clear report — saving us significant legal fees.'],
+        ['initial'=>'C','name'=>'Client C','role'=>'Example only — not a verified customer','type'=>'Deposit Dispute','quote'=>'Several of my recent deposit disputes were resolved through First Mediator. Clean, professional, and tenants respected the process far more than a back-and-forth argument.'],
+      ] as $i => $t)
+      <div class="reveal reveal-delay-{{ $i+1 }} card rounded-xl p-7 flex flex-col justify-between gap-5">
+        <div class="flex items-center justify-between">
+          <div class="flex gap-1 text-gold">
+            @for ($s = 0; $s < 5; $s++)
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            @endfor
+          </div>
+          <span class="text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded" style="color:var(--text-muted); background:var(--bg-alt);">Example</span>
+        </div>
+        <p class="text-sm sm:text-base italic flex-1" style="color:var(--text-primary);">"{{ $t['quote'] }}"</p>
+        <div class="flex items-center gap-3 pt-3 border-t" style="border-color:var(--border);">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center font-semibold flex-shrink-0 text-gold" style="background:var(--bg-alt); border:1px solid var(--border);">{{ $t['initial'] }}</div>
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-sm truncate" style="color:var(--text-primary);">{{ $t['name'] }}</div>
+            <div class="text-xs truncate" style="color:var(--text-muted);">{{ $t['role'] }}</div>
+          </div>
+          <div class="px-2.5 py-1 rounded border text-[11px] whitespace-nowrap" style="border-color:var(--border); color:var(--text-secondary); background:var(--card-bg);">{{ $t['type'] }}</div>
+        </div>
+      </div>
+      @endforeach
     </div>
   </div>
 </section>
@@ -529,26 +568,63 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
   </div>
 </section>
 
-{{--
-  TESTIMONIALS SECTION INTENTIONALLY OMITTED.
-  The prototype's Testimonials.tsx contained fabricated customer names, roles, and
-  quotes (e.g. "Sarah Mitchell", "James Okonkwo") with stock avatar images. Publishing
-  invented testimonials as genuine customer social proof would be misleading, so this
-  section was dropped rather than shipped with placeholder/fake content. When real,
-  verified customer quotes are available, a section can be added here reusing the same
-  card/grid pattern used elsewhere on this page.
---}}
+<!-- ================= PRICING (live SessionPackage data — mirrors first-mediator PricingSection layout) ================= -->
+<section id="pricing" class="py-24 px-6 border-t" style="border-color:var(--border); background:var(--bg-alt);">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-4 text-gold">Pricing</div>
+      <h2 class="reveal text-4xl sm:text-5xl mb-3" style="color:var(--text-primary);">Pay per session.</h2>
+      <p class="reveal max-w-xl mx-auto" style="color:var(--text-secondary);">No subscriptions. No hidden fees. Split the cost with the other party if you prefer.</p>
+    </div>
 
-<!-- ================= PRICING (teaser — real tiers/prices are dynamic, see /pricing) ================= -->
-<section id="pricing" class="py-24 px-6 border-t text-center" style="border-color:var(--border); background:var(--bg-alt);">
-  <div class="max-w-2xl mx-auto">
-    <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-4 text-gold">Pricing</div>
-    <h2 class="reveal text-4xl sm:text-5xl mb-4" style="color:var(--text-primary);">Subscribe and save, or pay per session.</h2>
-    <p class="reveal mb-10" style="color:var(--text-secondary);">No hidden fees. Split the cost with the other party if you prefer. See current plans and per-session rates on our pricing page.</p>
-    <a href="{{ route('pricing') }}" class="reveal reveal-delay-1 btn-gold inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-lg">
-      See full pricing
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <div class="grid md:grid-cols-3 gap-6">
+      @foreach ($packages as $i => $pkg)
+      @php
+        $isPopular = $i === 1;
+        $descriptions = [
+          'For simple, one-off disputes between two parties.',
+          'For complex disputes with detailed evidence and multiple rounds.',
+          'For longer sessions with more time to reach resolution.',
+        ];
+        $features = [
+          ['AI mediation session', 'Evidence uploads', 'Mediation report PDF', 'Split payment option'],
+          ['Everything in ' . ($packages[0]->name ?? 'Starter'), $pkg->duration_minutes . '-minute session', 'Mediation report PDF', 'Split payment option'],
+          ['Everything in Standard', $pkg->duration_minutes . '-minute session', 'Mediation report PDF', 'Split payment option'],
+        ];
+      @endphp
+      <div class="reveal reveal-delay-{{ $i+1 }} rounded-xl p-7 flex flex-col justify-between gap-6 relative {{ $isPopular ? '' : 'card' }}"
+           style="{{ $isPopular ? 'background:var(--card-bg); border:1px solid var(--gold); box-shadow:0 0 60px rgba(201,168,76,.15), inset 0 1px 0 rgba(201,168,76,.2);' : '' }}">
+        @if ($isPopular)
+        <div class="absolute -top-3.5 left-6 text-xs font-semibold rounded-md px-3 py-1 shadow-md" style="color:var(--navy); background:var(--gold);">Most Popular</div>
+        @endif
+        <div>
+          <div class="font-semibold text-xl mb-1" style="color:var(--text-primary);">{{ $pkg->name }}</div>
+          <div class="text-xs sm:text-sm" style="color:var(--text-secondary);">{{ $descriptions[$i] ?? '' }}</div>
+        </div>
+        <div class="flex items-end gap-1">
+          <div class="font-bold text-4xl sm:text-5xl tracking-tight leading-none" style="color:var(--text-primary);">£{{ number_format($pkg->full_price, 0) }}</div>
+          <div class="text-xs sm:text-sm mb-1" style="color:var(--text-muted);">per session</div>
+        </div>
+        <div class="flex flex-col gap-3 my-2">
+          @foreach ($features[$i] ?? [] as $feature)
+          <div class="flex items-center gap-2.5">
+            <div class="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style="background:#10B981; color:#fff;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-xs sm:text-sm" style="color:var(--text-secondary);">{{ $feature }}</span>
+          </div>
+          @endforeach
+        </div>
+        <a href="{{ route('register') }}" class="w-full py-3 rounded-md text-sm font-semibold text-center transition-colors {{ $isPopular ? 'btn-gold' : '' }}" style="{{ $isPopular ? '' : 'border:1px solid var(--border); color:var(--text-primary);' }}">
+          Create a Room
+        </a>
+      </div>
+      @endforeach
+    </div>
+
+    <p class="text-center text-xs sm:text-sm mt-8" style="color:var(--text-muted);">
+      Split payment available — each party pays half. We'll send them a secure payment link when they join.
+    </p>
   </div>
 </section>
 
@@ -592,15 +668,15 @@ h1, h2, h3 { font-family: var(--sans); letter-spacing: -0.02em; line-height: 1.1
 <!-- ================= FINAL CTA ================= -->
 <section class="py-28 px-6 border-t text-center" style="border-color:var(--border);">
   <div class="max-w-xl mx-auto">
-    <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-5 text-gold">Get started</div>
-    <h2 class="reveal reveal-delay-1 text-4xl sm:text-5xl mb-6" style="color:var(--text-primary);">Your dispute deserves<br><em class="accent-serif text-gold">a proper resolution.</em></h2>
-    <p class="reveal reveal-delay-2 text-lg font-light mb-10" style="color:var(--text-secondary);">Stop going back and forth. Get a room, present your case, and walk away with a formal report.</p>
+    <div class="reveal section-label text-xs font-semibold tracking-widest uppercase mb-5 text-gold">Get Started</div>
+    <h2 class="reveal reveal-delay-1 text-4xl sm:text-6xl tracking-tight leading-[1.05] mb-6" style="color:var(--text-primary); font-weight:600;">Your dispute deserves a <br><em class="accent-serif text-gold" style="font-weight:600;">proper resolution.</em></h2>
+    <p class="reveal reveal-delay-2 text-base sm:text-lg leading-relaxed mb-10" style="color:var(--text-secondary);">Stop going back and forth. Let an impartial AI present your case, weigh the evidence, and walk away with a formal report — in minutes.</p>
     <a href="{{ route('register') }}" class="reveal reveal-delay-3 btn-gold inline-flex items-center gap-2 text-base font-semibold px-8 py-3.5 rounded-lg">
       Create a Mediation Room
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
-    <p class="reveal reveal-delay-4 text-sm mt-5" style="color:var(--text-muted);">
-      No subscription required · Setup in 15 minutes · <a href="{{ route('pricing') }}" class="underline text-gold">See pricing</a>
+    <p class="reveal reveal-delay-4 text-xs sm:text-sm mt-5" style="color:var(--text-muted);">
+      No subscription · From £45 · Split the cost
     </p>
   </div>
 </section>

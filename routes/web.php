@@ -9,7 +9,11 @@ use App\Http\Controllers\VaultController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('home');
+    $packages = \App\Models\SessionPackage::where('is_active', true)
+        ->orderBy('sort_order')
+        ->get();
+
+    return view('home', compact('packages'));
 });
 
 Route::get('/pricing', [\App\Http\Controllers\SubscriptionController::class, 'pricing'])->name('pricing');
